@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import PhishingReport
-from apps.core.views import update_statistics
 from apps.core.utils import update_statistics
+
 def report(request):
    
     """Ֆիշինգի զեկուցման էջ"""

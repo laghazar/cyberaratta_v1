@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.utils import timezone
 from .models import QuizCategory, Question, Answer, QuizSession, QuizResult
-from apps.core.views import update_statistics
+from apps.core.utils import update_statistics
 
 def quiz_home(request):
     """Քուիզի գլխավոր էջ"""

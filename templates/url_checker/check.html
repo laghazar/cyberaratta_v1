@@ -11,6 +11,29 @@
         <button type="submit" class="btn btn-primary">Ստուգել</button>
     </form>
     <div id="result"></div>
+
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Հաշվված Հղումներ</h5>
+                    <p class="card-text">{{ stats.checked_urls }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Հայտնաբերված Սպառնալիքներ</h5>
+                    <p class="card-text">{{ stats.detected_threats }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <script>
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();

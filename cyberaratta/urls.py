@@ -20,3 +20,5 @@ if settings.DEBUG:
 admin.site.site_header = "CyberAratta Ադմինիստրացիա"
 admin.site.site_title = "CyberAratta Admin"
 admin.site.index_title = "Կառավարման Համակարգ"
+
+

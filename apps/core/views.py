@@ -7,8 +7,7 @@ from .models import SiteStatistics, Character
 from apps.reporting.models import PhishingReport
 from apps.quiz.models import QuizResult, QuizAttempt
 from apps.url_checker.models import URLCheck
-
-
+from .utils import update_statistics
 
 from django.shortcuts import render 
 def home(request):

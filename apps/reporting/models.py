@@ -25,3 +25,12 @@ class PhishingReport(models.Model):
 
     def __str__(self):
         return f"{self.get_category_display()} - {self.created_at.date()}"
+    
+
+class Report(models.Model):
+    description = models.TextField()
+    reported_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"Report at {self.reported_at}"

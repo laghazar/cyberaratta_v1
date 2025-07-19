@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Threat
 from apps.reporting.models import PhishingReport
 from django.db.models import Count
+from apps.core.utils import update_statistics
 
 def threat_map(request):
     """Սպառնալիքների քարտեզի էջ"""
@@ -14,3 +15,5 @@ def threat_map(request):
         'threat_types': threat_types,
     }
     return render(request, 'threat_map/map.html', context)
+
+

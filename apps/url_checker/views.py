@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import URLCheck
 from django.conf import settings
-from apps.core.views import update_statistics
+from apps.core.utils import update_statistics
 
 @csrf_exempt
 def check_url(request):

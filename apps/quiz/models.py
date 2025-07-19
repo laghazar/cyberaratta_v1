@@ -106,3 +106,11 @@ class QuizResult(models.Model):
     class Meta:
         verbose_name = "Քուիզի արդյունք"
         verbose_name_plural = "Քուիզի արդյունքներ"
+        
+class QuizAttempt(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+    completed_at = models.DateTimeField(auto_now_add=True)
+    score = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Quiz Attempt by {self.user} at {self.completed_at}"
