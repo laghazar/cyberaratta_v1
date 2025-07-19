@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Քուիզի Արդյունք{% endblock %}
+{% block content %}
+    <h1>Քուիզի Արդյունք</h1>
+    <p>Ձեր միավորները: {{ result.final_score }} / {{ session.total_questions|multiply:10 }}</p>
+    <p>Տոկոս: {{ result.percentage }}%</p>
+    <p>Կերպար: {{ result.get_character_result_display }}</p>
+    <p>{{ result.feedback_message }}</p>
+    <a href="{% url 'quiz:quiz_home' %}" class="btn btn-primary">Հաշվել նորից</a>
+{% endblock %}

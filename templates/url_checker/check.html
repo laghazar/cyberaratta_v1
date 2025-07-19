@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Ստուգիր Հղումը{% endblock %}
+{% block content %}
+    <h1>Ստուգիր Հղումը կամ Էլ. փոստը</h1>
+    <form method="post" action="{% url 'url_checker:check_url' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="input_text">URL կամ Էլ. փոստ:</label>
+            <input type="text" name="input_text" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Ստուգել</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch("{% url 'url_checker:check_url' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new FormData(this)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `
+                    <div class="alert alert-${data.status == 'Անվտանգ' ? 'success' : data.status == 'Վտանգավոր' ? 'danger' : 'warning'}">
+                        Կարգավիճակ: ${data.status}<br>
+                        ${data.result}
+                    </div>
+                `;
+            });
+        });
+    </script>
+{% endblock %}

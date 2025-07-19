@@ -1,0 +1,50 @@
+/* Custom Styles for CyberAratta */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.module-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.module-card:hover {
+    transform: scale(1.05);
+}
+
+.module-card img {
+    max-width: 120px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.module-card a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.module-card h5 {
+    margin: 10px 0;
+    font-size: 1.3rem;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+h1, h3 {
+    color: #343a40;
+}

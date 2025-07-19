@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Իմացիր Կիբեռը{% endblock %}
+{% block content %}
+    <h1>Իմացիր Կիլբեռը</h1>
+    <p>Ընտրեք կատեգորիա և սկսեք վիկտորինան:</p>
+    <form method="post" action="{% url 'quiz:start_quiz' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="category">Կատեգորիա:</label>
+            <select name="category" class="form-control">
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="question_type">Հարցի տեսակ:</label>
+            <select name="question_type" class="form-control">
+                {% for value, display in Question.QUESTION_TYPES %}
+                    <option value="{{ value }}">{{ display }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Սկսել Քուիզը</button>
+    </form>
+{% endblock %}

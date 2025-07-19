@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Սպառնալիքների Քարտեզ{% endblock %}
+
+{% block content %}
+    <h1>Սպառնալիքների Քարտեզ</h1>
+    <div id="threat-map" style="height: 500px;"></div>
+    
+    <h3>Վիճակագրություն</h3>
+    <ul>
+        {% for threat in threat_types %}
+            <li>{{ threat.category }}: {{ threat.count }} զեկուցում</li>
+        {% endfor %}
+    </ul>
+
+    <script src="{% static 'js/threat_map.js' %}"></script>
+{% endblock %}

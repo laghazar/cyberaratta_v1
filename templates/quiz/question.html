@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Քուիզի Հարց{% endblock %}
+{% block content %}
+    <h1>Հարց {{ question_number }} / {{ total_questions }}</h1>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <p>{{ question.question_text }}</p>
+    {% if question.image %}
+        <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid">
+    {% endif %}
+    <form id="answer-form">
+        {% csrf_token %}
+        {% for answer in answers %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}">
+                <label class="form-check-label" for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary mt-3">Հաստատել</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById('answer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch("{% url 'quiz:submit_answer' session.id %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ answer_id: document.querySelector('input[name="answer_id"]:checked').value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = `
+                    <div class="alert alert-${data.correct ? 'success' : 'danger'}">
+                        ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}<br>
+                        Բացատրություն: ${data.explanation}<br>
+                        Միավորներ: ${data.points_earned}
+                    </div>
+                `;
+                setTimeout(() => window.location.href = "{% url 'quiz:quiz_question' session.id %}", 2000);
+            });
+        });
+    </script>
+{% endblock %}
