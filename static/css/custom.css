@@ -24,12 +24,12 @@ body.cyber-bg {
     margin-bottom: 4vh;
     max-width: 100%; /* Թույլ է տալիս ֆորմային զբաղեցնել ամբողջ տարածքը */
     width: 100%;
-    background: rgba(24, 31, 47, 0.9);
+    background: rgba(15, 20, 32, 0.389);
     border-radius: 24px;
-    box-shadow: 0 8px 32px #10ffcb33;
+    box-shadow: 0 8px 32px #01231c33;
     padding: 40px 30px;
     text-align: center;
-    border: 2px solid var(--neon-green);
+    text-shadow: 0 0 10px rgba(6, 30, 25, 0.686);
 }
 
 .hero-center-card .hero-title {
@@ -112,7 +112,7 @@ body.cyber-bg {
 .module-card {
     flex: 1 1 220px;
     max-width: 260px;
-    background: rgba(24, 31, 47, 0.98);
+    background: rgba(9, 13, 21, 0.855);
     border-radius: 16px;
     box-shadow: 0 0 20px #10ffcb44;
     padding: 20px;

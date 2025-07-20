@@ -17,18 +17,18 @@ body.cyber-bg {
     min-height: 100vh;
 }
 
-/* === Hero Section === */
-.hero-center-card {
-    margin: 0 auto;
-    margin-top: 6vh;
-    margin-bottom: 4vh;
-     max-width: 100%; /* Թույլ է տալիս ֆորմային զբաղեցնել ամբողջ տարածքը */
-    background: rgba(24, 31, 47, 0.9);
+
+/* Hero Section Card Styling for Main Page */
+.hero-center-card.main-hero {
+    max-width: 600px; /* Սահմանափակում է քարտի լայնությունը */
+    width: 100%; /* Թույլ է տալիս քարտին զբաղեցնել հասանելի տարածքը */
+    margin: 0 auto; /* Կենտրոնացնում է քարտը */
     border-radius: 24px;
-    box-shadow: 0 8px 32px #10ffcb33;
+    box-shadow: 0 8px 32px rgba(16, 255, 203, 0.2);
+    background: rgba(24, 31, 47, 0.9);
+    border: 2px solid var(--neon-green);
     padding: 40px 30px;
     text-align: center;
-    border: 2px solid var(--neon-green);
 }
 
 .hero-center-card .hero-title {
@@ -109,7 +109,7 @@ body.cyber-bg {
 }
 
 .module-card {
-      flex: 1 1 auto; /* Թույլ է տալիս ավելի լայն լինել */
+    flex: 1 1 auto; /* Թույլ է տալիս ավելի լայն լինել */
     max-width: 100%; /* Հեռացնում է լայնության սահմանափակումը */
     background: rgba(24, 31, 47, 0.98);
     border-radius: 16px;
@@ -251,7 +251,6 @@ body.cyber-bg {
     }
 }
 
-/* Section Header Styling */
 .section-header {
     margin-bottom: 20px;
     text-align: center;
@@ -267,3 +266,4 @@ body.cyber-bg {
     display: inline-block;
     padding-bottom: 5px;
 }
+
