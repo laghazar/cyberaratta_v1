@@ -1,22 +1,71 @@
 /* Custom Styles for CyberAratta */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: #f8f9fa;
+    color: #343a40;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(26, 42, 68, 0.8), rgba(26, 42, 68, 0.8)), url('/static/images/hero-bg.jpg') no-repeat center center/cover;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    margin-top: -56px; /* Adjust for navbar height */
+    padding-top: 56px;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background-color: #00FF99;
+    border-color: #00FF99;
+    color: #1A2A44;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+}
+
+.btn-primary:hover {
+    background-color: #00cc7a;
+    border-color: #00cc7a;
+}
+
+/* Modules Section */
+.modules-section {
+    background-color: #fff;
 }
 
 .module-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: #1A2A44;
+    color: #fff;
+    border: none;
     border-radius: 10px;
     padding: 20px;
     margin-bottom: 20px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .module-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .module-card img {
@@ -27,7 +76,7 @@ body {
 
 .module-card a {
     text-decoration: none;
-    color: #007bff;
+    color: #00FF99;
 }
 
 .module-card h5 {
@@ -35,16 +84,52 @@ body {
     font-size: 1.3rem;
 }
 
-.card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Statistics Section */
+.stats-section {
+    background-color: #E9ECEF;
 }
 
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
+.stats-section .module-card {
+    background-color: #fff;
+    color: #1A2A44;
 }
 
-h1, h3 {
-    color: #343a40;
+.stats-section .module-card a {
+    color: #007bff;
+}
+
+/* Responsive Design */
+@media (max-width: 767.98px) {
+    .hero-section {
+        height: 50vh;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .module-card {
+        width: 100%;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+    }
 }

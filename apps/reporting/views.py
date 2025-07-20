@@ -4,8 +4,7 @@ from .models import PhishingReport
 from apps.core.utils import update_statistics
 
 def PhishingReport(request):
-   
-    """Ֆիշինգի զեկուցման էջ"""
+    """Ֆիշինգի զেকուցման էջ"""
     if request.method == 'POST':
         category = request.POST.get('category')
         description = request.POST.get('description')
@@ -25,14 +24,11 @@ def PhishingReport(request):
 
         update_statistics()
         messages.success(request, 'Զեկուցումը հաջողությամբ ուղարկվել է։')
-        return redirect('reporting:report_phishing')
+        return redirect('reporting:report')
 
+    stats = update_statistics()
     return render(request, 'reporting/report.html', {
         'page_title': 'Զեկուցել Ֆիշինգի մասին',
-        'categories': PhishingReport.CATEGORY_CHOICES
+        'categories': PhishingReport.CATEGORY_CHOICES,
+        'stats': stats
     })
-    
-
-def PhishingReport(request):
-    stats = update_statistics()
-    return render(request, 'reporting/report.html', {'stats': stats})

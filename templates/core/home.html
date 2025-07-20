@@ -1,142 +1,76 @@
-<!DOCTYPE html>
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}CyberAratta - Գլխավոր{% endblock %}
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <!-- Header Section -->
-    <div class="row text-center my-5">
-        <div class="col-12">
-            <h1>Բարի գալուստ CyberAratta</h1>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container-fluid p-0">
+        <div class="hero-content text-center">
+            <h1 class="hero-title">CyberAratta: Ձեր կիբեռպաշտպանությունը</h1>
+            <p class="hero-subtitle">Միացե՛ք մեզ՝ Ձեր անվտանգությունն ապահովելու համար</p>
+            <a href="#modules" class="btn btn-primary btn-lg">Իմացեք ավելին</a>
         </div>
     </div>
+</section>
 
-
-    
-    <!-- Full-width Image -->
-    <div class="row">
-        <div class="col-12">
-            <img src="{% static 'images/hero-image.jpg' %}" class="img-fluid w-100" alt="CyberAratta Hero Image" style="max-height: 400px; object-fit: cover;">
-        </div>
-    </div>
-
-    <!-- Modules and Stats Section -->
-    <div class="row mt-5">
-        <!-- Modules Section (Centered) -->
-        <div class="col-12 text-center">
-            <h3 class="mb-4">Մեր մոդուլները</h3>
-        </div>
+<!-- Modules Section -->
+<section id="modules" class="modules-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Մեր մոդուլները</h2>
         <div class="row justify-content-center">
-            <div class="col-md-3">
-                <div class="module-card">
-                    <a href="{% url 'quiz:quiz_home' %}">
-                        <img src="{% static 'images/quiz-icon.png' %}" class="img-fluid" alt="Quiz Icon">
-                        <h5>Իմացիր Կիբեռը</h5>
-                    </a>
-                </div>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <a href="{% url 'quiz:home' %}">
+                    <img src="{% static 'images/quiz-icon.png' %}" alt="Quiz Icon" class="img-fluid">
+                    <h5>Իմացիր Կիբեռը</h5>
+                </a>
             </div>
-            <div class="col-md-3">
-                <div class="module-card">
-                    <a href="{% url 'url_checker:check_url' %}">
-                        <img src="{% static 'images/url-checker-icon.png' %}" class="img-fluid" alt="URL Checker Icon">
-                        <h5>Ստուգիր Հղումը</h5>
-                    </a>
-                </div>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <a href="{% url 'url_checker:check_url' %}">
+                    <img src="{% static 'images/url-checker-icon.png' %}" alt="URL Checker Icon" class="img-fluid">
+                    <h5>Ստուգիր Հղումը</h5>
+                </a>
             </div>
-            <div class="col-md-3">
-                <div class="module-card">
-                    <a href="{% url 'reporting:report' %}">
-                        <img src="{% static 'images/reporting-icon.png' %}" class="img-fluid" alt="Reporting Icon">
-                        <h5>Զեկուցում</h5>
-                    </a>
-                </div>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <a href="{% url 'reporting:report' %}">
+                    <img src="{% static 'images/reporting-icon.png' %}" alt="Reporting Icon" class="img-fluid">
+                    <h5>Զեկուցում</h5>
+                </a>
             </div>
-            <div class="col-md-3">
-                <div class="module-card">
-                    <a href="{% url 'threat_map:map' %}">
-                        <img src="{% static 'images/threat-map-icon.png' %}" class="img-fluid" alt="Threat Map Icon">
-                        <h5>Սպառնալիքների Քարտեզ</h5>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Section -->
-        <div class="col-12 text-center mt-5">
-            <h3 class="mb-4">Վիճակագրություն</h3>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Հաշվված Հղումներ</h5>
-                        <p class="card-text">{{ stats.checked_urls }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Հայտնաբերված Սպառնալիքներ</h5>
-                        <p class="card-text">{{ stats.detected_threats }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Ավարտված Քուիզեր</h5>
-                        <p class="card-text">{{ stats.completed_quizzes }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Զեկուցումներ</h5>
-                        <p class="card-text">{{ stats.reports }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <canvas id="threatChart" height="200"></canvas>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <a href="{% url 'threat_map:map' %}">
+                    <img src="{% static 'images/threat-map-icon.png' %}" alt="Threat Map Icon" class="img-fluid">
+                    <h5>Սպառնալիքների Քարտեզ</h5>
+                </a>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Chart.js Script for Stats -->
-<script src="{% static 'js/chart.min.js' %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var ctx = document.getElementById('threatChart').getContext('2d');
-        var threatChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Հաշվված Հղումներ', 'Հայտնաբերված Սպառնալիքներ', 'Ավարտված Քուիզեր', 'Զեկուցումներ'],
-                datasets: [{
-                    label: 'Վիճակագրություն',
-                    data: [{{ stats.checked_urls }}, {{ stats.detected_threats }}, {{ stats.completed_quizzes }}, {{ stats.reports }}],
-                    backgroundColor: ['#007bff', '#dc3545', '#28a745', '#ffc107'],
-                    borderColor: ['#0056b3', '#a71d2a', '#1f7a44', '#cc8e00'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    });
-</script>
+<!-- Statistics Section -->
+<section class="stats-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Վիճակագրություն</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-3 col-12 module-card mb-4">
+                <h5>Հաշվված Հղումներ</h5>
+                <p>{{ stats.checked_urls }}</p>
+            </div>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <h5>Հայտնաբերված Սպառնալիքներ</h5>
+                <p>{{ stats.detected_threats }}</p>
+            </div>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <h5>Ավարտված Քուիզեր</h5>
+                <p>{{ stats.completed_quizzes }}</p>
+            </div>
+            <div class="col-md-3 col-12 module-card mb-4">
+                <h5>Զեկուցումներ</h5>
+                <p>{{ stats.reports }}</p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

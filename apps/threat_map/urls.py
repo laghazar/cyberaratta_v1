@@ -4,5 +4,5 @@ from . import views
 app_name = 'threat_map'
 
 urlpatterns = [
-    path('', views.threat_map, name='map'),
+    path('map/', views.threat_map, name='map'),  # URL pattern for threat_map:map
 ]
