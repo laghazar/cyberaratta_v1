@@ -127,7 +127,7 @@ input:focus, textarea:focus, select:focus {
     margin-top: 8vh;
     margin-bottom: 6vh;
     max-width: 560px;
-    background: rgba(0, 0, 0, 0.569); /* overlay չկա, նկարը պայծառ */
+    background: rgba(0, 0, 0, 0.504); /* overlay չկա, նկարը պայծառ */
     border-radius: 32px;
     box-shadow: 0 8px 48px #10ffcb33;
     padding: 48px 32px 38px 32px;
