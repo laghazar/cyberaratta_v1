@@ -1,116 +1,80 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 class QuizCategory(models.Model):
-    """Քուիզի կատեգորիաներ"""
-    CATEGORY_TYPES = [
+    CATEGORY_TYPE_CHOICES = [
         ('school', 'Դպրոցական'),
         ('student', 'Ուսանող'),
         ('professional', 'Մասնագիտական'),
     ]
-    
-    PROFESSIONAL_FIELDS = [
-        ('government', 'Պետական'),
-        ('banking', 'Բանկային/Ֆինանսներ'),
-        ('education', 'Կրթություն'),
-        ('healthcare', 'Առողջապահություն'),
-        ('it', 'Տեղեկատվական տեխնոլոգիաներ'),
-        ('other', 'Այլ'),
+    PROFESSIONAL_FIELD_CHOICES = [
+        ('gov', 'Պետական'),
+        ('bank', 'Բանկային'),
+        ('edu', 'Կրթական'),
+        ('it', 'IT'),
+        # ավելացրու ըստ անհրաժեշտության
     ]
-    
-    name = models.CharField(max_length=100, verbose_name="Անվանում")
-    category_type = models.CharField(max_length=20, choices=CATEGORY_TYPES, verbose_name="Կատեգորիա")
-    professional_field = models.CharField(max_length=20, choices=PROFESSIONAL_FIELDS, blank=True, null=True, verbose_name="Մասնագիտական ոլորտ")
-    description = models.TextField(blank=True, verbose_name="Նկարագրություն")
-    is_active = models.BooleanField(default=True, verbose_name="Ակտիվ")
-    
-    class Meta:
-        verbose_name = "Քուիզի կատեգորիա"
-        verbose_name_plural = "Քուիզի կատեգորիաներ"
-    
+    name = models.CharField(max_length=100)
+    category_type = models.CharField(max_length=20, choices=CATEGORY_TYPE_CHOICES)
+    professional_field = models.CharField(max_length=20, choices=PROFESSIONAL_FIELD_CHOICES, blank=True, null=True)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
     def __str__(self):
-        if self.professional_field:
-            return f"{self.name} - {self.get_professional_field_display()}"
         return self.name
 
 class Question(models.Model):
-    """Հարցեր"""
     QUESTION_TYPES = [
-        ('phishing_detection', 'Ֆիշինգ է թե ոչ'),
-        ('educational', 'Ուսուցողական'),
+        ('classic', 'Ուսուցողական Քուիզ'),
         ('millionaire', 'Միլիոնատեր'),
     ]
-    
-    DIFFICULTY_LEVELS = [
-        ('easy', 'Հեշտ'),
-        ('medium', 'Միջին'),
-        ('hard', 'Դժվար'),
-    ]
-    
-    question_text = models.TextField(verbose_name="Հարցի տեքստ")
-    question_type = models.CharField(max_length=20, choices=QUESTION_TYPES, verbose_name="Հարցի տեսակ")
-    category = models.ForeignKey(QuizCategory, on_delete=models.CASCADE, verbose_name="Կատեգորիա")
-    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_LEVELS, default='medium', verbose_name="Բարդություն")
-    image = models.ImageField(upload_to='questions/', blank=True, null=True, verbose_name="Նկար")
-    explanation = models.TextField(blank=True, verbose_name="Բացատրություն")
-    points = models.IntegerField(default=10, validators=[MinValueValidator(1), MaxValueValidator(100)], verbose_name="Միավորներ")
-    is_active = models.BooleanField(default=True, verbose_name="Ակտիվ")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Ստեղծված")
-    
-    class Meta:
-        verbose_name = "Հարց"
-        verbose_name_plural = "Հարցեր"
-        ordering = ['question_type', 'difficulty', 'created_at']
-    
+    question_text = models.TextField()
+    question_type = models.CharField(max_length=20, choices=QUESTION_TYPES)
+    category = models.ForeignKey(QuizCategory, on_delete=models.CASCADE)
+    difficulty = models.IntegerField(default=1)
+    points = models.IntegerField(default=10)
+    image = models.ImageField(upload_to='questions/', blank=True, null=True)
+    explanation = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
     def __str__(self):
-        return f"{self.get_question_type_display()} - {self.question_text[:50]}..."
+        return self.question_text
 
 class Answer(models.Model):
-    """Պատասխաններ"""
-    question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE, verbose_name="Հարց")
-    answer_text = models.CharField(max_length=200, verbose_name="Պատասխանի տեքստ")
-    is_correct = models.BooleanField(default=False, verbose_name="Ճիշտ պատասխան")
-    
-    class Meta:
-        verbose_name = "Պատասխան"
-        verbose_name_plural = "Պատասխաններ"
-    
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    answer_text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
     def __str__(self):
-        return f"{self.question.question_text[:30]}... - {self.answer_text}"
+        return self.answer_text
 
 class QuizSession(models.Model):
-    """Քուիզի սեսիա"""
-    session_key = models.CharField(max_length=100, unique=True, verbose_name="Սեսիայի բանալի")
-    category = models.ForeignKey(QuizCategory, on_delete=models.CASCADE, verbose_name="Կատեգորիա")
-    question_type = models.CharField(max_length=20, choices=Question.QUESTION_TYPES, verbose_name="Հարցի տեսակ")
-    current_question = models.IntegerField(default=0, verbose_name="Ընթացիկ հարց")
-    total_questions = models.IntegerField(default=10, verbose_name="Ընդհանուր հարցեր")
-    score = models.IntegerField(default=0, verbose_name="Միավորներ")
-    is_completed = models.BooleanField(default=False, verbose_name="Ավարտված")
-    started_at = models.DateTimeField(auto_now_add=True, verbose_name="Սկսվել է")
-    completed_at = models.DateTimeField(blank=True, null=True, verbose_name="Ավարտվել է")
-    
-    class Meta:
-        verbose_name = "Քուիզի սեսիա"
-        verbose_name_plural = "Քուիզի սեսիաներ"
+    session_key = models.CharField(max_length=64)
+    category = models.ForeignKey(QuizCategory, on_delete=models.SET_NULL, null=True)
+    question_type = models.CharField(max_length=20, choices=Question.QUESTION_TYPES)
+    current_question = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
+    is_completed = models.BooleanField(default=False)
+    started_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.session_key} - {self.category}"
 
 class QuizResult(models.Model):
-    """Քուիզի արդյունք"""
-    session = models.OneToOneField(QuizSession, on_delete=models.CASCADE, verbose_name="Սեսիա")
-    final_score = models.IntegerField(verbose_name="Վերջնական միավոր")
-    percentage = models.FloatField(verbose_name="Տոկոսային արդյունք")
-    character_result = models.CharField(max_length=20, choices=[('ara', 'Արա Գեղեցիկ'), ('shamiram', 'Շամիրամ')], verbose_name="Կերպարային արդյունք")
-    feedback_message = models.TextField(verbose_name="Արձագանքի հաղորդագրություն")
-    
-    class Meta:
-        verbose_name = "Քուիզի արդյունք"
-        verbose_name_plural = "Քուիզի արդյունքներ"
-        
-class QuizAttempt(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
-    completed_at = models.DateTimeField(auto_now_add=True)
-    score = models.IntegerField(default=0)
-
+    CHARACTER_RESULT_CHOICES = [
+        ('ara', 'Արա Գեղեցիկ'),
+        ('shamiram', 'Շամիրամ'),
+    ]
+    session = models.OneToOneField(QuizSession, on_delete=models.CASCADE)
+    final_score = models.IntegerField()
+    percentage = models.FloatField()
+    character_result = models.CharField(max_length=20, choices=CHARACTER_RESULT_CHOICES)
+    feedback_message = models.TextField(blank=True)
+    def get_character_result_display(self):
+        return dict(self.CHARACTER_RESULT_CHOICES).get(self.character_result, "")
     def __str__(self):
-        return f"Quiz Attempt by {self.user} at {self.completed_at}"
+        return f"{self.session} - {self.character_result}"
+
+class QuizAttempt(models.Model):
+    session = models.ForeignKey(QuizSession, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.SET_NULL, null=True, blank=True)
+    is_correct = models.BooleanField(default=False)
+    attempted_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.session} - {self.question} - {'Correct' if self.is_correct else 'Incorrect'}"

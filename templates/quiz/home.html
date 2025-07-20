@@ -1,29 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Իմացիր Կիբեռը{% endblock %}
 {% block content %}
-    <h1>Իմացիր Կիլբեռը</h1>
-    <p>Ընտրեք կատեգորիա և սկսեք վիկտորինան:</p>
-    <form method="post" action="{% url 'quiz:start_quiz' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="category">Կատեգորիա:</label>
-            <select name="category" class="form-control">
-                {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="question_type">Հարցի տեսակ:</label>
-            <select name="question_type" class="form-control">
-                {% for value, display in Question.QUESTION_TYPES %}
-                    <option value="{{ value }}">{{ display }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Սկսել Քուիզը</button>
-    </form>
+    <div class="quiz-home">
+        <h1>Իմացիր Կիբեռը</h1>
+        <p>Ընտրեք ձեր լսարանը և խաղի ձևը՝ ստուգելու և զարգացնելու ձեր կիբեռանվտանգության գիտելիքները:</p>
+        <form method="post" action="{% url 'quiz:start_quiz' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="category">Լսարանի տեսակ:</label>
+                <select name="category" class="form-control">
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">
+                            {{ category.get_category_type_display }}{% if category.professional_field %} - {{ category.get_professional_field_display }}{% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="question_type">Խաղի ձև:</label>
+                <select name="question_type" class="form-control">
+                    {% for value, display in Question.QUESTION_TYPES %}
+                        <option value="{{ value }}">{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Սկսել Քուիզը</button>
+        </form>
+        <hr>
+        <h3>Մոդուլներ</h3>
+        <ul>
+            <li>Ուսուցողական քուիզ (ֆիշինգի, սպառնալիքների մասին)</li>
+            <li>Ով է ուզում դառնալ միլիոնատեր (խաղային վիկտորինա ֆիշինգի թեմայով)</li>
+        </ul>
+    </div>
 {% endblock %}
-
-
-
