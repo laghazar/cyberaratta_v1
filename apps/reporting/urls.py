@@ -4,5 +4,5 @@ from . import views
 app_name = 'reporting'
 
 urlpatterns = [
-    path('report/', views.PhishingReport, name='report'),  # Փոխել views.report-ը views.PhishingReport-ի
+    path('report/', views.phishing_report_view, name='report'),  # Փոխել views.PhishingReport-ը views.phishing_report_view-ի
 ]

@@ -23,6 +23,3 @@ class URLCheck(models.Model):
 
     def __str__(self):
         return f"{self.input_text} - {self.get_status_display()}"
-    
-    
-    from django.db import models

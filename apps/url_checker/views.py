@@ -1,5 +1,6 @@
 import requests
-from django.shortcuts import render, redirect
+from django.db import models
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import URLCheck
@@ -18,7 +19,7 @@ def check_url(request):
 
         try:
             headers = {'x-apikey': settings.VIRUSTOTAL_API_KEY}
-            response = requests.post('https://www.virustotal.com/api/v3/urls', headers=headers, data={'url': input_text})
+            response = requests.post('https://www.virustotal.com/api/v3/urls', headers=headers, data={'url': input_text}, timeout=10)
             response.raise_for_status()
             result = response.json()
 

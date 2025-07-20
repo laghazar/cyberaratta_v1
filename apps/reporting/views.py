@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import PhishingReport
+from .models import PhishingReport  # Հստակ ներմուծում
 from apps.core.utils import update_statistics
 
-def PhishingReport(request):
-    """Ֆիշինգի զেকուցման էջ"""
+def phishing_report_view(request):
+    """Handle phishing report submission and display report form."""
     if request.method == 'POST':
         category = request.POST.get('category')
         description = request.POST.get('description')
@@ -29,6 +29,9 @@ def PhishingReport(request):
     stats = update_statistics()
     return render(request, 'reporting/report.html', {
         'page_title': 'Զեկուցել Ֆիշինգի մասին',
-        'categories': PhishingReport.CATEGORY_CHOICES,
+        'categories': PhishingReport.CATEGORY_CHOICES,  # Հաշվի առնելով models.py
         'stats': stats
     })
+    
+    
+    
