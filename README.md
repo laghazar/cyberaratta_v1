@@ -1,230 +1,80 @@
-# cyberaratta_v1
-cyberaratta by phish hunters of Aratta
+# Cyberaratta
 
-CyberAratta v1
-Overview
-CyberAratta v1 is a Django-based web application designed to provide cybersecurity-related functionalities, including a quiz system, threat map visualization, URL checking, and reporting features. The project is structured as a modular Django application with multiple apps (core, quiz, reporting, threat_map, url_checker) and utilizes Bootstrap for styling, Celery for asynchronous tasks, and SQLite as the default database.
-Project Structure
-The repository is organized as follows:
+A modern cybersecurity platform focused on phishing detection and security awareness.
 
-apps/: Contains Django apps for different functionalities:
-core/: Handles the homepage and core features.
-quiz/: Manages quiz-related functionality (e.g., questions, results).
-reporting/: Provides reporting capabilities.
-threat_map/: Displays a threat map visualization.
-url_checker/: Handles URL checking tasks.
+## Overview
 
+Cyberaratta is a web-based cybersecurity platform that helps users identify and report suspicious URLs, emails, and other potential phishing attempts. With a sleek cyber-themed interface and powerful scanning capabilities, it provides tools for the security-conscious user.
 
-cyberaratta/: Django project settings and configuration files.
-settings.py: Project settings (e.g., database, static files).
-urls.py: Main URL routing.
-celery.py: Celery configuration for asynchronous tasks.
+## Features
 
+- **URL Checker** - Scan URLs against VirusTotal and Kaspersky databases to detect malicious websites
+- **Phishing Report System** - Submit and categorize suspicious phishing attempts
+- **Security Statistics** - View updated statistics about security threats
+- **Responsive Design** - Fully optimized for all devices
+- **Modern UI** - Cyber-themed interface with intuitive navigation
 
-static/: Static assets (CSS, JavaScript, images).
-css/: Bootstrap and custom styles.
-js/: JavaScript files, including Bootstrap and custom scripts (e.g., threat_map.js).
-images/: Images used across the application (e.g., hero-image.jpg).
+## Technologies
 
+- Django web framework
+- Python
+- HTML/CSS/JavaScript
+- Integration with VirusTotal and Kaspersky APIs
+- Responsive design
 
-templates/: HTML templates for rendering pages.
-core/: Homepage and stats templates.
-quiz/: Quiz-related templates (e.g., millionaire.html, result.html).
-reporting/: Reporting templates.
-threat_map/: Threat map template.
-url_checker/: URL checker template.
-base.html: Base template for shared layout.
+## Installation
 
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/cyberaratta_v1.git
+   cd cyberaratta_v1
+   ```
 
-.env: Environment variables (e.g., SECRET_KEY, database credentials).
-db.sqlite3: SQLite database file.
-manage.py: Django management script.
-requirements.txt: Python dependencies.
-venv/: Virtual environment for the project.
+2. Create and activate virtual environment
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-Prerequisites
+3. Install dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Python 3.10 or higher
-Virtualenv (recommended for dependency isolation)
-Redis (for Celery task queue)
-Git
+4. Apply migrations
+   ```bash
+   python manage.py migrate
+   ```
 
-Setup Instructions
+5. Run the development server
+   ```bash
+   python manage.py runserver
+   ```
 
-Clone the Repository:
-git clone https://github.com/laghazar/cyberaratta_v1.git
-cd cyberaratta_v1
+6. Visit http://127.0.0.1:8000 in your browser
 
+## Usage
 
-Create and Activate a Virtual Environment:
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+### URL Checking
+Enter any suspicious URL into the URL checker to scan it against multiple security databases. Results will show whether the URL is safe, suspicious, or dangerous.
 
-Install Dependencies:
-pip install -r requirements.txt
+### Reporting Phishing
+Use the phishing report form to submit suspicious emails or websites you encounter. Include relevant details like the suspicious URL, email content, and category of threat.
 
-Configure Environment Variables:
+## Configuration
 
-Create a .env file in the project root (if not already present).
-Add necessary variables, e.g.:SECRET_KEY=your-secret-key
-DEBUG=True
-DATABASE_URL=sqlite:///db.sqlite3
-CELERY_BROKER_URL=redis://localhost:6379/0
-Apply Database Migrations:
-python manage.py makemigrations
-python manage.py migrate
+To set up API connections with VirusTotal and Kaspersky, add your API keys to the settings:
 
+```python
+# settings.py
+VIRUSTOTAL_API_KEY = 'your_api_key_here'
+KASPERSKY_API_KEY = 'your_api_key_here'
+```
 
-Collect Static Files:
-python manage.py collectstatic
+## Contributing
 
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Run the Development Server:
-python manage.py runserver
+## License
 
-
-Access the application at http://localhost:8000.
-
-
-Run Celery (for asynchronous tasks):
-
-Ensure Redis is running locally or update CELERY_BROKER_URL in .env.
-Start the Celery worker:celery -A cyberaratta worker --loglevel=info
-Usage
-
-Homepage: Access the main page at http://localhost:8000, rendered by core/templates/core/home.html.
-Quiz: Navigate to the quiz section for interactive cybersecurity quizzes.
-Threat Map: View real-time threat visualizations.
-URL Checker: Submit URLs for security analysis.
-Reporting: Generate reports based on collected data.
-Use the Django admin panel (http://localhost:8000/admin) to manage data (create a superuser with python manage.py createsuperuser).
-
-Contributing
-Contributions are welcome. Please follow these steps:
-
-Fork the repository.
-Create a new branch (git checkout -b feature/your-feature).
-Commit changes (git commit -m "Add your feature").
-Push to the branch (git push origin feature/your-feature).
-Open a pull request.
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details (if applicable).
-
-
-
-
-cyberaratta_v1/
-├── apps/
-│   ├── core/
-│   │   ├── migrations/
-│   │   ├── admin.py
-│   │   ├── api_urls.py
-│   │   ├── apps.py
-│   │   ├── forms.py
-│   │   ├── models.py
-│   │   ├── urls.py
-│   │   ├── utils.py
-│   │   ├── views.py
-│   │   └── __init__.py
-│   ├── quiz/
-│   │   ├── migrations/
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── forms.py
-│   │   ├── models.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   └── __init__.py
-│   ├── reporting/
-│   │   ├── migrations/
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── forms.py
-│   │   ├── models.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   └── __init__.py
-│   ├── threat_map/
-│   │   ├── migrations/
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── forms.py
-│   │   ├── models.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   └── __init__.py
-│   ├── url_checker/
-│   │   ├── migrations/
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── forms.py
-│   │   ├── models.py
-│   │   ├── tasks.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   └── __init__.py
-│   └── __pycache__/
-│       └── __init__.cpython-313.pyc
-├── cyberaratta/
-│   ├── __pycache__/
-│   ├── __init__.py
-│   ├── asgi.py
-│   ├── celery.py
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── static/
-│   ├── css/
-│   │   ├── bootstrap.min.css
-│   │   └── custom.css
-│   ├── images/
-│   │   ├── hero-image.jpg
-│   │   ├── quiz-icon.png
-│   │   ├── reporting-icon.png
-│   │   ├── threat-map-icon.png
-│   │   └── url-checker-icon.png
-│   └── js/
-│       ├── bootstrap.min.js
-│       ├── chart.min.js
-│       └── threat_map.js
-├── staticfiles/
-│   ├── admin/
-│   ├── css/
-│   ├── images/
-│   └── js/
-├── templates/
-│   ├── core/
-│   │   ├── home.html
-│   │   └── stats.html
-│   ├── quiz/
-│   │   ├── home.html
-│   │   ├── millionaire.html
-│   │   ├── question.html
-│   │   ├── result.html
-│   │   └── start.html
-│   ├── reporting/
-│   │   └── report.html
-│   ├── threat_map/
-│   │   └── map.html
-│   ├── url_checker/
-│   │   └── check.html
-│   └── base.html
-├── .env
-├── README.md
-├── db.sqlite3
-├── manage.py
-├── requirements.txt
-└── venv/
-    ├── Include/
-    ├── Lib/
-    │   └── site-packages/
-    ├── Scripts/
-    │   ├── activate
-    │   ├── activate.bat
-    │   ├── Activate.ps1
-    │   ├── celery.exe
-    │   ├── django-admin.exe
-    │   └── python.exe
-    ├── .gitignore
-    └── pyvenv.cfg
+This project is licensed under the MIT License - see the LICENSE file
