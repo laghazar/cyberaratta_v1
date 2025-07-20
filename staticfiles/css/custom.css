@@ -22,7 +22,7 @@ body.cyber-bg {
     margin: 0 auto;
     margin-top: 6vh;
     margin-bottom: 4vh;
-    max-width: 600px;
+     max-width: 100%; /* Թույլ է տալիս ֆորմային զբաղեցնել ամբողջ տարածքը */
     background: rgba(24, 31, 47, 0.9);
     border-radius: 24px;
     box-shadow: 0 8px 32px #10ffcb33;
@@ -35,7 +35,7 @@ body.cyber-bg {
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--neon-green);
-    text-shadow: 0 0 12px var(--neon-green), 0 0 20px var(--neon-blue);
+    text-shadow: 0 0 12px var(--neon-green), 0 0 10 var(--neon-blue);
     margin-bottom: 1rem;
 }
 
@@ -109,8 +109,8 @@ body.cyber-bg {
 }
 
 .module-card {
-    flex: 1 1 220px;
-    max-width: 260px;
+      flex: 1 1 auto; /* Թույլ է տալիս ավելի լայն լինել */
+    max-width: 100%; /* Հեռացնում է լայնության սահմանափակումը */
     background: rgba(24, 31, 47, 0.98);
     border-radius: 16px;
     box-shadow: 0 0 20px #10ffcb44;
@@ -206,4 +206,64 @@ body.cyber-bg {
     .hero-center-card .hero-desc { font-size: 1rem; }
     .cyber-brand { font-size: 1.5rem; padding: 8px 10px; }
     .cyber-link { font-size: 0.95rem; padding: 8px 10px; margin: 0 3px; }
+}
+
+/* General container styling */
+.container {
+    max-width: 1200px;
+}
+
+/* Card styling */
+.card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-text {
+    color: #6c757d;
+}
+
+/* Button styling */
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-success:hover {
+    background-color: #157347;
+    border-color: #157347;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin-top: 20px;
+    }
+}
+
+/* Section Header Styling */
+.section-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.section-header .hero-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    text-shadow: 0 0 8px var(--neon-green), 0 0 12px var(--neon-blue);
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid var(--neon-green);
+    display: inline-block;
+    padding-bottom: 5px;
 }

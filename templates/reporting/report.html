@@ -1,51 +1,91 @@
-{% extends 'base.html' %}
-{% block title %}Զեկուցել Ֆիշինգի մասին{% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Կիբեռանվտանգության զեկուցման ֆորմա</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+</head>
+<body class="cyber-bg">
 {% block content %}
-    <h1>Զեկուցել Ֆիշինգի մասին</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="category">Կատեգորիա:</label>
-            <select name="category" class="form-control" required>
-                {% for value, display in categories %}
-                    <option value="{{ value }}">{{ display }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="description">Նկարագրություն:</label>
-            <textarea name="description" class="form-control" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="suspicious_url">Կասկածելի URL:</label>
-            <input type="text" name="suspicious_url" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="suspicious_email">Կասկածելի Էլ. փոստ:</label>
-            <input type="email" name="suspicious_email" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="contact_info">Հետադարձ կապի տվյալներ (ըստ ցանկության):</label>
-            <input type="text" name="contact_info" class="form-control">
-        </div>
-        <div class="form-check">
-            <input type="checkbox" name="is_anonymous" class="form-check-input" checked>
-            <label class="form-check-label">Անանուն</label>
-        </div>
-        <button type="submit" class="btn btn-primary">Ուղարկել</button>
-    </form>
-
-     <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card">
+<div class="container mt-5">
+    <div class="row g-4">
+        <!-- Ձախ կողմում՝ Ֆորմա -->
+        <div class="col-lg-6">
+            <div class="section-header text-center mb-4">
+                <h2 class="hero-title">Լրացրեք դիմումը, կիսվեք ձեզ հանդիպած դեպքերով, օգնեք այլ մարդկանց</h2>
+            </div>
+            <div class="card hero-center-card">
                 <div class="card-body">
-                    <h5 class="card-title">Զեկուցումներ</h5>
-                    <p class="card-text">{{ stats.reports }}</p>
+                    <h4 class="hero-title">Դիմումի լրացման ֆորմա</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Կատեգորիա</label>
+                            <select id="category" name="category" class="form-select">
+                                {% for choice in categories %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Նկարագրություն</label>
+                            <textarea id="description" name="description" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="suspicious_url" class="form-label">Կասկածելի URL</label>
+                            <input type="url" id="suspicious_url" name="suspicious_url" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="suspicious_email" class="form-label">Կասկածելի էլ. փոստ</label>
+                            <input type="email" id="suspicious_email" name="suspicious_email" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contact_info" class="form-label">Հետադարձ կապի տվյալներ</label>
+                            <input type="text" id="contact_info" name="contact_info" class="form-control">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" id="is_anonymous" name="is_anonymous" class="form-check-input">
+                            <label for="is_anonymous" class="form-check-label">Անանուն</label>
+                        </div>
+                        <button type="submit" class="btn btn-cyber w-100">Ուղարկել</button>
+                    </form>
                 </div>
             </div>
         </div>
+
+        <!-- Աջ կողմում՝ Ում դիմել -->
+        <div class="col-lg-6">
+            <div class="section-header text-center mb-4">
+                <h2 class="hero-title">Ում դիմել</h2>
+            </div>
+            <div class="row row-cols-1 g-3">
+                {% for contact in contacts %}
+                <div class="col">
+                    <div class="card module-card">
+                        <div class="card-body">
+                            <h5 class="module-title">{{ contact.name }}</h5>
+                            <p class="module-desc">{{ contact.description }}</p>
+                            {% if contact.phone %}
+                            <p><strong>Հեռախոս:</strong> {{ contact.phone }}</p>
+                            {% endif %}
+                            {% if contact.email %}
+                            <p><strong>Էլ. փոստ:</strong> <a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
+                            {% endif %}
+                            {% if contact.website %}
+                            <p><strong>Կայք:</strong> <a href="{{ contact.website }}" target="_blank">{{ contact.website }}</a></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
-
-
-

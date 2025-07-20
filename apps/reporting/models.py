@@ -34,3 +34,16 @@ class Report(models.Model):
 
     def __str__(self):
         return f"Report at {self.reported_at}"
+    
+# filepath: apps/reporting/models.py
+
+
+class ContactInfo(models.Model):
+    name = models.CharField(max_length=255)  # Name of the contact
+    description = models.TextField(blank=True, null=True)  # Description of the contact
+    phone = models.CharField(max_length=50, blank=True, null=True)  # Phone number
+    email = models.EmailField(blank=True, null=True)  # Email address
+    website = models.URLField(blank=True, null=True)  # Website URL
+
+    def __str__(self):
+        return self.name

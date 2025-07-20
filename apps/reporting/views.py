@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import PhishingReport  # Հստակ ներմուծում
+from .models import ContactInfo
+
 from apps.core.utils import update_statistics
 
 def phishing_report_view(request):
@@ -33,5 +35,10 @@ def phishing_report_view(request):
         'stats': stats
     })
     
-    
-    
+
+def phishing_report_view(request):
+    contacts = ContactInfo.objects.all()  # Բոլոր կոնտակտները
+    return render(request, 'reporting/report.html', {
+        'page_title': 'Զեկուցել Ֆիշինգի մասին',
+        'contacts': contacts,
+    })
