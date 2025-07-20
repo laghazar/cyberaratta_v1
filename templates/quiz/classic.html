@@ -1,180 +1,24 @@
-{% extends 'base.html' %}
-{% load static %}
-{% load quiz_extras %}
-{% block title %}Ուսուցողական Քուիզ{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
-{% endblock %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="quiz-question-container">
-    <div class="quiz-progress">
-        <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" 
-                 aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div class="progress-text">
-            <span>Հարց {{ question_number }} / {{ total_questions }}</span>
-            <span>Միավորներ: {{ session.score }}</span>
-        </div>
-    </div>
-    
-    <div class="question-block">
-        <div class="question-number">{{ question_number }}</div>
-        <div class="quiz-timer" id="timer">30</div>
-        
-        <p class="question-text">{{ question.question_text }}</p>
-        
-        {% if question.image %}
-        <div class="question-image">
-            <img src="{{ question.image.url }}" alt="Հարցի նկար">
-        </div>
-        {% endif %}
-        
-        <form id="answer-form">
-            {% csrf_token %}
-            <div class="answer-options">
-                {% for answer in answers %}
-                <div class="answer-option">
-                    <input type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}">
-                    <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-                </div>
-                {% endfor %}
-            </div>
-            
-            <button type="submit" class="btn btn-primary submit-btn" id="submit-btn">Պատասխանել</button>
-        </form>
-        
-        <div id="result-feedback" class="result-feedback"></div>
-    </div>
+<div class="quiz-bg" style="position:fixed; z-index:1; top:0; left:0; width:100vw; height:100vh; overflow:hidden;">
+    <img src="{% static 'images/hero-bg.jpg' %}" style="width:100vw; height:100vh; object-fit:cover; opacity:0.5;">
+    <!-- Add other decorative background images (ara.jpg, shamiram.jpg) as needed, positioned via CSS -->
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const answerForm = document.getElementById('answer-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const resultFeedback = document.getElementById('result-feedback');
-    const timerElement = document.getElementById('timer');
-    
-    let timeLeft = 30;
-    let timerInterval;
-    
-    // Start timer
-    function startTimer() {
-        timerInterval = setInterval(function() {
-            timeLeft--;
-            timerElement.textContent = timeLeft;
-            
-            if (timeLeft <= 10) {
-                timerElement.classList.add('warning');
-            }
-            
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                submitAnswer(null);
-            }
-        }, 1000);
-    }
-    
-    startTimer();
-    
-    // Submit answer
-    function submitAnswer(answerId) {
-        clearInterval(timerInterval);
-        
-        // Disable submit button to prevent double submission
-        submitBtn.disabled = true;
-        
-        // If timer ran out and no answer selected
-        if (answerId === null) {
-            // Find any selected answer or default to first answer
-            const selectedRadio = document.querySelector('input[name="answer_id"]:checked');
-            if (selectedRadio) {
-                answerId = selectedRadio.value;
-            } else {
-                // Select the first answer if none selected
-                const firstAnswer = document.querySelector('input[name="answer_id"]');
-                if (firstAnswer) {
-                    firstAnswer.checked = true;
-                    answerId = firstAnswer.value;
-                }
-            }
-        }
-        
-        // If still no answer (unlikely), just redirect
-        if (!answerId) {
-            window.location.href = "{% url 'quiz:quiz_question' session.id %}";
-            return;
-        }
-        
-        // Send answer to server
-        fetch("{% url 'quiz:submit_answer' session.id %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: JSON.stringify({ answer_id: answerId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Show feedback
-            resultFeedback.innerHTML = `
-                <div class="feedback-header">
-                    <i class="fas fa-${data.correct ? 'check-circle' : 'times-circle'}"></i>
-                    ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}
-                </div>
-                <div class="feedback-explanation">
-                    ${data.explanation}
-                </div>
-                <div class="feedback-points">
-                    Միավորներ: ${data.points_earned}
-                </div>
-                <button class="btn btn-${data.correct ? 'success' : 'primary'} next-question-btn">
-                    Հաջորդը
-                </button>
-            `;
-            resultFeedback.classList.add(data.correct ? 'correct' : 'incorrect');
-            resultFeedback.classList.add('show');
-            
-            // Add event listener to next button
-            document.querySelector('.next-question-btn').addEventListener('click', function() {
-                window.location.href = "{% url 'quiz:quiz_question' session.id %}";
-            });
-            
-            // Disable all answer options
-            document.querySelectorAll('.answer-option input').forEach(input => {
-                input.disabled = true;
-            });
-            
-            // Highlight correct answer
-            document.querySelectorAll('.answer-option').forEach(option => {
-                const input = option.querySelector('input');
-                const answerData = Array.from(document.querySelectorAll('.answer-option'))
-                    .find(o => o.querySelector('input').value === input.value);
-                
-                if (input.checked && !data.correct) {
-                    option.querySelector('label').style.borderColor = '#e74c3c';
-                    option.querySelector('label').style.backgroundColor = '#fad7da';
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            window.location.href = "{% url 'quiz:quiz_question' session.id %}";
-        });
-    }
-    
-    // Form submission
-    answerForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const selectedRadio = document.querySelector('input[name="answer_id"]:checked');
-        if (selectedRadio) {
-            submitAnswer(selectedRadio.value);
-        } else {
-            alert('Խնդրում ենք ընտրել պատասխանը:');
-        }
-    });
-});
-</script>
+<div class="quiz-wrapper">
+    <div class="quiz-title">Իմացիր Քո Հմտությունները</div>
+    <div class="quiz-description">Ստուգեք և զարգացրեք ձեր գիտելիքները կիբեռանվտանգության վերաբերյալ</div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="quiz-question">{{ question.text }}</div>
+        <div class="quiz-options">
+            {% for choice in question.choices %}
+            <label>
+                <input type="radio" name="answer" value="{{ choice.id }}">
+                {{ choice.text }}
+            </label>
+            {% endfor %}
+        </div>
+        <button type="submit" class="quiz-submit-btn">Հաստատել</button>
+    </form>
+</div>
 {% endblock %}
