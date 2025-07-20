@@ -7,94 +7,93 @@
 
 {% block content %}
 <div class="quiz-container">
-    <!-- Գլխագիր -->
-    <div class="page-title">
+    <!-- Գլխավոր վերնագիր -->
+    <div class="main-header">
         <h1>Իմացիր Կիբեռը</h1>
-        <p>Ստուգեք և զարգացրեք ձեր կիբեռանվտանգության գիտելիքները</p>
+        <p class="subtitle">Ստուգեք և զարգացրեք ձեր կիբեռանվտանգության գիտելիքները</p>
     </div>
-    
-    <!-- Կերպարների ցուցադրում -->
-    <div class="characters-container">
-        <div class="character-card">
-            <img src="{% static 'img/ara.jpg' %}" alt="Արա Գեղեցիկ" class="character-image">
-            <div class="character-name">Արա Գեղեցիկ</div>
-            <div class="character-type">Կիբեռգիտակ</div>
+
+    <div class="main-content">
+        <!-- Քուիզի ընտրության բաժին -->
+        <div class="quiz-selection-section">
+            <div class="card">
+                <h2>Քուիզի ընտրություն</h2>
+                <form method="post" action="{% url 'quiz:start_quiz' %}" id="quiz-form">
+                    {% csrf_token %}
+                    
+                    <!-- Լսարանի ընտրություն -->
+                    <div class="form-section">
+                        <h3>Ընտրեք Ձեր Լսարանը</h3>
+                        <div class="option-list">
+                            {% for category in categories %}
+                            <div class="option-box">
+                                <input type="radio" name="category" id="category-{{ category.id }}" value="{{ category.id }}" {% if forloop.first %}checked{% endif %}>
+                                <label for="category-{{ category.id }}">
+                                    <span class="option-title">{{ category.get_category_type_display }}</span>
+                                    {% if category.professional_field %}
+                                        <span class="option-subtitle">{{ category.get_professional_field_display }}</span>
+                                    {% endif %}
+                                    {% if category.description %}
+                                        <span class="option-desc">{{ category.description|truncatechars:60 }}</span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Քուիզի տեսակի ընտրություն -->
+                    <div class="form-section">
+                        <h3>Ընտրեք Քուիզի Տեսակը</h3>
+                        <div class="option-list">
+                            {% for value, display in Question.QUESTION_TYPES %}
+                            <div class="option-box">
+                                <input type="radio" name="question_type" id="question-type-{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
+                                <label for="question-type-{{ value }}">
+                                    <span class="option-title">{{ display }}</span>
+                                    <span class="option-desc">
+                                        {% if value == 'classic' %}
+                                            Ուսուցողական հարցեր՝ կիբեռանվտանգության մասին
+                                        {% elif value == 'millionaire' %}
+                                            Խաղային հարցաշար՝ միլիոնատերի ոճով
+                                        {% endif %}
+                                    </span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="primary-btn">Սկսել Քուիզը</button>
+                    </div>
+                </form>
+            </div>
         </div>
         
-        <div class="character-card">
-            <img src="{% static 'img/shamiram.jpg' %}" alt="Շամիրամ" class="character-image">
-            <div class="character-name">Շամիրամ</div>
-            <div class="character-type">Կիբեռսովորող</div>
-        </div>
-    </div>
-    
-    <!-- Հիմնական ընտրության քարտեր -->
-    <div class="cards-container">
-        <!-- Ձախ քարտ - Ընտրության ձև -->
-        <div class="selection-card">
-            <h3>Քուիզի ընտրություն</h3>
-            
-            <form method="post" action="{% url 'quiz:start_quiz' %}" id="quiz-form">
-                {% csrf_token %}
-                
-                <!-- Լսարանի ընտրություն -->
-                <div class="options-group">
-                    <h4>Ընտրեք Ձեր Լսարանը</h4>
-                    
-                    {% for category in categories %}
-                    <div class="option-item">
-                        <input type="radio" name="category" id="category-{{ category.id }}" value="{{ category.id }}" {% if forloop.first %}checked{% endif %}>
-                        <label for="category-{{ category.id }}" class="option-card {% if forloop.first %}option-selected{% endif %}">
-                            <div class="option-title">
-                                {{ category.get_category_type_display }}
-                                {% if category.professional_field %}
-                                - {{ category.get_professional_field_display }}
-                                {% endif %}
-                            </div>
-                            {% if category.description %}
-                            <div class="option-description">{{ category.description|truncatechars:60 }}</div>
-                            {% endif %}
-                        </label>
-                    </div>
-                    {% endfor %}
+        <!-- Տեղեկատվական բաժին -->
+        <div class="info-section">
+            <!-- Կերպարներ -->
+            <div class="card characters-card">
+                <div class="character-box">
+                    <img src="{% static 'images/ara.jpg' %}" alt="Արա Գեղեցիկ" class="character-img">
+                    <h3>Արա Գեղեցիկ</h3>
+                    <span class="character-type good">Կիբեռգիտակ</span>
                 </div>
                 
-                <!-- Քուիզի տեսակի ընտրություն -->
-                <div class="options-group">
-                    <h4>Ընտրեք Քուիզի Տեսակը</h4>
-                    
-                    {% for value, display in Question.QUESTION_TYPES %}
-                    <div class="option-item">
-                        <input type="radio" name="question_type" id="question-type-{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
-                        <label for="question-type-{{ value }}" class="option-card {% if forloop.first %}option-selected{% endif %}">
-                            <div class="option-title">{{ display }}</div>
-                            <div class="option-description">
-                                {% if value == 'classic' %}
-                                Ուսուցողական հարցեր՝ կիբեռանվտանգության մասին
-                                {% elif value == 'millionaire' %}
-                                Խաղային հարցաշար՝ միլիոնատերի ոճով
-                                {% endif %}
-                            </div>
-                        </label>
-                    </div>
-                    {% endfor %}
-                </div>
+                <div class="vs-badge">VS</div>
                 
-                <!-- Կոճակներ -->
-                <div class="action-buttons">
-                    <button type="submit" class="btn-primary">Սկսել Քուիզը</button>
+                <div class="character-box">
+                    <img src="{% static 'images/shamiram.jpg' %}" alt="Շամիրամ" class="character-img">
+                    <h3>Շամիրամ</h3>
+                    <span class="character-type warning">Կիբեռսովորող</span>
                 </div>
-            </form>
-        </div>
-        
-        <!-- Աջ քարտ - Ինֆորմացիա -->
-        <div class="selection-card">
-            <h3>Տեղեկատվություն</h3>
+            </div>
             
             <!-- Ինչու մասնակցել -->
-            <div class="info-card">
-                <h4>Ինչու՞ մասնակցել</h4>
-                <ul>
+            <div class="card">
+                <h3>Ինչու՞ մասնակցել</h3>
+                <ul class="benefits-list">
                     <li>Ստուգել Ձեր գիտելիքները կիբեռանվտանգության մասին</li>
                     <li>Սովորել ֆիշինգի հարձակումները ճանաչելու միջոցներ</li>
                     <li>Բացահայտել Ձեր կիբեռգիտակցության մակարդակը</li>
@@ -102,53 +101,13 @@
                 </ul>
             </div>
             
-            <!-- Մոդուլների մասին -->
-            <div class="info-card">
-                <h4>Քուիզի մոդուլներ</h4>
-                
-                <div class="modules-container">
-                    <div class="module-card">
-                        <h4>Ուսուցողական</h4>
-                        <p>Կիբեռանվտանգության մասին ուսուցողական հարցաշար</p>
-                    </div>
-                    
-                    <div class="module-card">
-                        <h4>Միլիոնատեր</h4>
-                        <p>Ֆիշինգի թեմայով խաղային հարցաշար</p>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Լիդերբորդ հղում -->
-            <div class="action-buttons">
-                <a href="{% url 'quiz:leaderboard' %}" class="btn-primary">Դիտել լավագույն արդյունքները</a>
+            <div class="card action-card">
+                <a href="{% url 'quiz:leaderboard' %}" class="secondary-btn">
+                    <i class="fas fa-trophy"></i> Դիտել լավագույն արդյունքները
+                </a>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Ընտրանքի լոգիկա
-    const optionItems = document.querySelectorAll('.option-item');
-    
-    optionItems.forEach(item => {
-        const input = item.querySelector('input[type="radio"]');
-        const label = item.querySelector('label');
-        
-        label.addEventListener('click', function() {
-            // Հեռացնել բոլոր ընտրված կլասերը նույն խմբից
-            const name = input.getAttribute('name');
-            document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
-                const radioLabel = radio.nextElementSibling;
-                radioLabel.classList.remove('option-selected');
-            });
-            
-            // Ընտրել այս տարրը
-            input.checked = true;
-            label.classList.add('option-selected');
-        });
-    });
-});
-</script>
 {% endblock %}

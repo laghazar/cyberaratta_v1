@@ -1,75 +1,51 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load quiz_extras %}
 {% block title %}Ուսուցողական Քուիզ{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
-<link rel="stylesheet" href="{% static 'css/quiz-theme.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="armenian-pattern"></div>
-<div class="container py-4">
-    <div class="quiz-question-container fade-in">
-        <div class="quiz-header mb-4">
-            <h1 class="text-center armenian-ornament">Կիբեռանվտանգության Քուիզ</h1>
-            <div class="quiz-progress mt-4">
-                <div class="progress" style="height: 10px;">
-                    <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" 
-                        aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <span class="badge bg-primary px-3 py-2">Հարց {{ question_number }}/{{ total_questions }}</span>
-                    <span class="badge bg-success px-3 py-2">Միավորներ: {{ session.score }}</span>
-                </div>
-            </div>
+<div class="quiz-question-container">
+    <div class="quiz-progress">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" 
+                 aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        <div class="progress-text">
+            <span>Հարց {{ question_number }} / {{ total_questions }}</span>
+            <span>Միավորներ: {{ session.score }}</span>
+        </div>
+    </div>
+    
+    <div class="question-block">
+        <div class="question-number">{{ question_number }}</div>
+        <div class="quiz-timer" id="timer">30</div>
         
-        <div class="card question-block">
-            <div class="question-number">{{ question_number }}</div>
-            <div class="quiz-timer" id="timer">30</div>
+        <p class="question-text">{{ question.question_text }}</p>
+        
+        {% if question.image %}
+        <div class="question-image">
+            <img src="{{ question.image.url }}" alt="Հարցի նկար">
+        </div>
+        {% endif %}
+        
+        <form id="answer-form">
+            {% csrf_token %}
+            <div class="answer-options">
+                {% for answer in answers %}
+                <div class="answer-option">
+                    <input type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}">
+                    <label for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
+                </div>
+                {% endfor %}
+            </div>
             
-            <div class="card-body">
-                <h3 class="question-text mb-4">{{ question.question_text }}</h3>
-                
-                {% if question.image %}
-                <div class="question-image mb-4">
-                    <img src="{{ question.image.url }}" alt="Հարցի նկար" class="rounded shadow-sm">
-                </div>
-                {% endif %}
-                
-                <form id="answer-form">
-                    {% csrf_token %}
-                    <div class="answer-options">
-                        {% for answer in answers %}
-                        <div class="answer-option">
-                            <input type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}">
-                            <label for="answer_{{ answer.id }}" class="d-flex align-items-center">
-                                <span class="answer-icon me-3">{{ forloop.counter }}</span>
-                                <span class="answer-text">{{ answer.answer_text }}</span>
-                            </label>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary submit-btn mt-4" id="submit-btn">
-                        <i class="fas fa-check-circle me-2"></i> Պատասխանել
-                    </button>
-                </form>
-                
-                <div id="result-feedback" class="result-feedback mt-4"></div>
-            </div>
-        </div>
+            <button type="submit" class="btn btn-primary submit-btn" id="submit-btn">Պատասխանել</button>
+        </form>
         
-        <div class="quiz-info-card mt-4">
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Հուշում</h5>
-                </div>
-                <div class="card-body">
-                    <p class="mb-0">Ուշադիր կարդացեք հարցը և բոլոր տարբերակները: Մտածեք կիբեռանվտանգության սկզբունքների մասին և ընտրեք ամենաճշգրիտ պատասխանը:</p>
-                </div>
-            </div>
-        </div>
+        <div id="result-feedback" class="result-feedback"></div>
     </div>
 </div>
 
@@ -83,12 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let timeLeft = 30;
     let timerInterval;
     
-    // Անիմացիոն էֆեկտներ էլեմենտների համար
-    document.querySelectorAll('.answer-option').forEach((option, index) => {
-        option.style.animationDelay = `${index * 0.1}s`;
-        option.classList.add('fade-in');
-    });
-    
     // Start timer
     function startTimer() {
         timerInterval = setInterval(function() {
@@ -97,9 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (timeLeft <= 10) {
                 timerElement.classList.add('warning');
-                if (!timerElement.classList.contains('pulse')) {
-                    timerElement.classList.add('pulse');
-                }
             }
             
             if (timeLeft <= 0) {
@@ -151,39 +118,24 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            // Show feedback with beautiful animation
+            // Show feedback
             resultFeedback.innerHTML = `
-                <div class="card ${data.correct ? 'bg-success-subtle' : 'bg-danger-subtle'}">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="result-icon ${data.correct ? 'text-success' : 'text-danger'} me-3">
-                                <i class="fas fa-${data.correct ? 'check-circle fa-3x' : 'times-circle fa-3x'}"></i>
-                            </div>
-                            <div>
-                                <h4 class="mb-0 ${data.correct ? 'text-success' : 'text-danger'}">
-                                    ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}
-                                </h4>
-                                <div class="feedback-points mt-1">
-                                    <span class="badge ${data.correct ? 'bg-success' : 'bg-danger'} px-3 py-2">
-                                        +${data.points_earned} միավոր
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="feedback-explanation p-3 bg-white rounded">
-                            <h5><i class="fas fa-info-circle me-2"></i>Բացատրություն</h5>
-                            <p>${data.explanation}</p>
-                        </div>
-                        <button class="btn btn-${data.correct ? 'success' : 'primary'} next-question-btn mt-3 w-100">
-                            <i class="fas fa-arrow-right me-2"></i>Հաջորդ հարց
-                        </button>
-                    </div>
+                <div class="feedback-header">
+                    <i class="fas fa-${data.correct ? 'check-circle' : 'times-circle'}"></i>
+                    ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}
                 </div>
+                <div class="feedback-explanation">
+                    ${data.explanation}
+                </div>
+                <div class="feedback-points">
+                    Միավորներ: ${data.points_earned}
+                </div>
+                <button class="btn btn-${data.correct ? 'success' : 'primary'} next-question-btn">
+                    Հաջորդը
+                </button>
             `;
+            resultFeedback.classList.add(data.correct ? 'correct' : 'incorrect');
             resultFeedback.classList.add('show');
-            
-            // Add animation classes
-            resultFeedback.classList.add('fade-in');
             
             // Add event listener to next button
             document.querySelector('.next-question-btn').addEventListener('click', function() {
@@ -195,14 +147,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.disabled = true;
             });
             
-            // Highlight correct answer and user's choice
+            // Highlight correct answer
             document.querySelectorAll('.answer-option').forEach(option => {
                 const input = option.querySelector('input');
+                const answerData = Array.from(document.querySelectorAll('.answer-option'))
+                    .find(o => o.querySelector('input').value === input.value);
                 
                 if (input.checked && !data.correct) {
-                    option.querySelector('label').classList.add('incorrect-answer');
-                } else if (input.checked && data.correct) {
-                    option.querySelector('label').classList.add('correct-answer');
+                    option.querySelector('label').style.borderColor = '#e74c3c';
+                    option.querySelector('label').style.backgroundColor = '#fad7da';
                 }
             });
         })
@@ -219,17 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedRadio) {
             submitAnswer(selectedRadio.value);
         } else {
-            // Show elegant notification instead of alert
-            const notification = document.createElement('div');
-            notification.className = 'alert alert-warning alert-dismissible fade show';
-            notification.innerHTML = `
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                Խնդրում ենք ընտրել պատասխանը
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-            resultFeedback.innerHTML = '';
-            resultFeedback.appendChild(notification);
-            resultFeedback.classList.add('show');
+            alert('Խնդրում ենք ընտրել պատասխանը:');
         }
     });
 });
