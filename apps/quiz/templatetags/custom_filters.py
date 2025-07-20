@@ -3,16 +3,11 @@ from django import template
 register = template.Library()
 
 @register.filter
-def get_letter(value):
-    """
-    Number to letter converter: 1 -> A, 2 -> B, etc.
-    """
-    try:
-        value = int(value)
-        letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        if 1 <= value <= len(letters):
-            return letters[value - 1]
-        else:
-            return ""
-    except (ValueError, TypeError):
-        return ""
+def get_letter(index):
+    """Convert a number to a letter (1=A, 2=B, etc.)"""
+    return chr(64 + index) if 1 <= index <= 26 else str(index)
+
+@register.filter
+def multiply(value, arg):
+    """Multiply the value by the argument"""
+    return value * arg

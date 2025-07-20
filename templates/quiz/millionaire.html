@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load quiz-extras %}
+{% load quiz_extras %}
 {% block title %}Միլիոնատեր Քուիզ{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
-<link rel="stylesheet" href="{% static 'css/quiz-theme.css' %}">
-{% endblock %}
 
 {% block content %}
 <div class="millionaire-theme min-vh-100 py-3">
     <div class="container">
         <div class="millionaire-header mb-4 text-center">
-            <img src="{% static 'img/millionaire-logo.png' %}" alt="Միլիոնատեր" class="img-fluid mb-3" style="max-height: 120px;">
             <h1 class="text-warning">Ով է Ուզում Դառնալ Կիբեռ Միլիոնատեր</h1>
         </div>
         
@@ -33,8 +28,7 @@
                         
                         {% if question.image %}
                         <div class="question-image my-3">
-                            <img src="{{ question.image.url }}" alt="Հարցի նկար" class="img-fluid rounded" 
-                                 style="max-height: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                            <img src="{{ question.image.url }}" alt="Հարցի նկար" class="img-fluid rounded">
                         </div>
                         {% endif %}
                     </div>
@@ -44,7 +38,7 @@
                         <div class="millionaire-answers">
                             {% for answer in answers %}
                             <div class="millionaire-option fade-in" style="animation-delay: {{ forloop.counter|multiply:0.1 }}s">
-                                <input type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}">
+                                <input type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}" data-correct="{{ answer.is_correct|lower }}">
                                 <label for="answer_{{ answer.id }}" class="w-100 mb-0 d-flex align-items-center">
                                     <span class="millionaire-option-prefix">{{ forloop.counter|get_letter }}</span>
                                     <span class="ms-3">{{ answer.answer_text }}</span>
@@ -61,18 +55,6 @@
                     </form>
                     
                     <div id="result-feedback" class="result-feedback mt-4"></div>
-                    
-                    <div class="millionaire-lifelines mt-4 text-center">
-                        <button class="btn btn-outline-light mx-2" id="fifty-fifty" title="50/50">
-                            <i class="fas fa-balance-scale"></i> 50:50
-                        </button>
-                        <button class="btn btn-outline-light mx-2" id="audience-help" title="Հանդիսատեսի օգնություն">
-                            <i class="fas fa-users"></i>
-                        </button>
-                        <button class="btn btn-outline-light mx-2" id="call-friend" title="Զանգ ընկերոջը">
-                            <i class="fas fa-phone"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
             
@@ -109,12 +91,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = document.getElementById('submit-btn');
     const resultFeedback = document.getElementById('result-feedback');
     const timerElement = document.getElementById('timer');
-    const fiftyFiftyBtn = document.getElementById('fifty-fifty');
-    const audienceHelpBtn = document.getElementById('audience-help');
-    const callFriendBtn = document.getElementById('call-friend');
     
     let timeLeft = 30;
     let timerInterval;
+    
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
     
     // Start timer
     function startTimer() {
@@ -136,177 +132,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     startTimer();
     
-    // Sound effects
-    function playSound(type) {
-        const sound = new Audio();
-        if (type === 'correct') {
-            sound.src = "{% static 'sounds/correct.mp3' %}";
-        } else if (type === 'wrong') {
-            sound.src = "{% static 'sounds/wrong.mp3' %}";
-        } else if (type === 'suspense') {
-            sound.src = "{% static 'sounds/suspense.mp3' %}";
-        } else if (type === 'fifty') {
-            sound.src = "{% static 'sounds/fifty.mp3' %}";
-        } else if (type === 'audience') {
-            sound.src = "{% static 'sounds/audience.mp3' %}";
-        } else if (type === 'call') {
-            sound.src = "{% static 'sounds/call.mp3' %}";
-        }
-        sound.play().catch(e => console.log("Audio playback failed:", e));
-    }
-    
-    // Lifeline: 50/50
-    fiftyFiftyBtn.addEventListener('click', function() {
-        this.disabled = true;
-        this.classList.add('opacity-50');
-        playSound('fifty');
-        
-        // Get all answers and find the correct one
-        const options = document.querySelectorAll('.millionaire-option');
-        let correctOptionIndex = -1;
-        
-        options.forEach((option, index) => {
-            const input = option.querySelector('input');
-            if (input.dataset.correct === 'true') {
-                correctOptionIndex = index;
-            }
-        });
-        
-        // If we couldn't find correct answer through data attribute, make a server request
-        if (correctOptionIndex === -1) {
-            // For simplicity, let's just hide random answers
-            // In a real scenario, you should make a server request to get the correct answer
-            
-            // Generate random indices to hide (but keep the first one visible as a mock)
-            let hideIndices = [];
-            while (hideIndices.length < 2) {
-                const randIndex = Math.floor(Math.random() * options.length);
-                if (randIndex !== 0 && !hideIndices.includes(randIndex)) {
-                    hideIndices.push(randIndex);
-                }
-            }
-            
-            options.forEach((option, index) => {
-                if (hideIndices.includes(index)) {
-                    option.classList.add('d-none');
-                }
-            });
-        } else {
-            // Hide 2 incorrect options
-            let hiddenCount = 0;
-            let indices = Array.from(options).map((_, i) => i).filter(i => i !== correctOptionIndex);
-            
-            // Shuffle and take first 2
-            indices = indices.sort(() => Math.random() - 0.5).slice(0, 2);
-            
-            options.forEach((option, index) => {
-                if (indices.includes(index)) {
-                    option.classList.add('d-none');
-                }
-            });
-        }
-    });
-    
-    // Lifeline: Audience Help
-    audienceHelpBtn.addEventListener('click', function() {
-        this.disabled = true;
-        this.classList.add('opacity-50');
-        playSound('audience');
-        
-        // Create audience poll visualization
-        const audiencePoll = document.createElement('div');
-        audiencePoll.className = 'audience-poll p-3 bg-dark rounded mt-3 mb-4';
-        audiencePoll.innerHTML = `
-            <h6 class="text-center text-light mb-3">Հանդիսատեսի կարծիքը</h6>
-            <div class="audience-poll-bars">
-                <div class="audience-bar-container mb-2 d-flex align-items-center">
-                    <span class="me-2">A</span>
-                    <div class="progress flex-grow-1" style="height: 24px;">
-                        <div class="progress-bar bg-info" style="width: 45%;" role="progressbar">45%</div>
-                    </div>
-                </div>
-                <div class="audience-bar-container mb-2 d-flex align-items-center">
-                    <span class="me-2">B</span>
-                    <div class="progress flex-grow-1" style="height: 24px;">
-                        <div class="progress-bar bg-info" style="width: 20%;" role="progressbar">20%</div>
-                    </div>
-                </div>
-                <div class="audience-bar-container mb-2 d-flex align-items-center">
-                    <span class="me-2">C</span>
-                    <div class="progress flex-grow-1" style="height: 24px;">
-                        <div class="progress-bar bg-info" style="width: 25%;" role="progressbar">25%</div>
-                    </div>
-                </div>
-                <div class="audience-bar-container mb-2 d-flex align-items-center">
-                    <span class="me-2">D</span>
-                    <div class="progress flex-grow-1" style="height: 24px;">
-                        <div class="progress-bar bg-info" style="width: 10%;" role="progressbar">10%</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Insert after the options
-        document.querySelector('.millionaire-answers').after(audiencePoll);
-        
-        // Animate the bars
-        const progressBars = audiencePoll.querySelectorAll('.progress-bar');
-        progressBars.forEach(bar => {
-            const targetWidth = bar.style.width;
-            bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.transition = 'width 1s';
-                bar.style.width = targetWidth;
-            }, 100);
-        });
-    });
-    
-    // Lifeline: Call a Friend
-    callFriendBtn.addEventListener('click', function() {
-        this.disabled = true;
-        this.classList.add('opacity-50');
-        playSound('call');
-        
-        // Create call dialog
-        const callDialog = document.createElement('div');
-        callDialog.className = 'call-dialog p-3 bg-dark rounded mt-3 mb-4';
-        callDialog.innerHTML = `
-            <div class="call-animation text-center mb-3">
-                <i class="fas fa-phone fa-3x text-success fa-beat"></i>
-            </div>
-            <div class="friend-message p-3 bg-light text-dark rounded">
-                <p class="mb-0">
-                    <strong>Ընկերոջ պատասխան:</strong> Ես կարծում եմ պատասխանը B տարբերակն է։ 
-                    Կիբեռանվտանգության մեջ սա հիմնական կանոն է համարվում։
-                </p>
-            </div>
-        `;
-        
-        // Insert after the options
-        document.querySelector('.millionaire-answers').after(callDialog);
-    });
-    
     // Submit answer with dramatic effect
     function submitAnswer(answerId) {
         clearInterval(timerInterval);
         
-        // Disable submit button and lifelines
+        // Disable submit button
         submitBtn.disabled = true;
-        fiftyFiftyBtn.disabled = true;
-        audienceHelpBtn.disabled = true;
-        callFriendBtn.disabled = true;
         
         // If timer ran out and no answer selected
         if (answerId === null) {
             const selectedRadio = document.querySelector('input[name="answer_id"]:checked');
             if (selectedRadio) {
                 answerId = selectedRadio.value;
-            } else {
-                const firstAnswer = document.querySelector('input[name="answer_id"]');
-                if (firstAnswer) {
-                    firstAnswer.checked = true;
-                    answerId = firstAnswer.value;
-                }
             }
         }
         
@@ -316,87 +153,70 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Play suspense sound
-        playSound('suspense');
-        
-        // Show dramatic suspense animation
+        // Highlight selected answer
         const selectedOption = document.querySelector(`input[value="${answerId}"]`).closest('.millionaire-option');
         selectedOption.classList.add('selected-answer');
         
-        // Pulse animation on selected answer
-        const pulseInterval = setInterval(() => {
-            selectedOption.classList.toggle('pulse');
-        }, 500);
-        
-        // Dramatic pause before showing result
-        setTimeout(() => {
-            clearInterval(pulseInterval);
-            
-            // Send answer to server
-            fetch("{% url 'quiz:submit_answer' session.id %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ answer_id: answerId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Play sound based on result
-                playSound(data.correct ? 'correct' : 'wrong');
-                
-                // Show feedback with animation
-                resultFeedback.innerHTML = `
-                    <div class="card ${data.correct ? 'bg-success' : 'bg-danger'} text-white">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="result-icon me-3">
-                                    <i class="fas fa-${data.correct ? 'trophy fa-3x' : 'times-circle fa-3x'}"></i>
-                                </div>
-                                <div>
-                                    <h4 class="mb-0">
-                                        ${data.correct ? 'Ճիշտ պատասխան!' : 'Սխալ պատասխան!'}
-                                    </h4>
-                                    <div class="feedback-points mt-1">
-                                        <span class="badge bg-warning text-dark px-3 py-2">
-                                            ${data.correct ? '+' + data.points_earned + ' միավոր' : 'Միավորներ չեն ավելացել'}
-                                        </span>
-                                    </div>
+        // Send answer to server
+        fetch("{% url 'quiz:submit_answer' session.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({ answer_id: answerId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Show feedback with animation
+            resultFeedback.innerHTML = `
+                <div class="card ${data.correct ? 'bg-success' : 'bg-danger'} text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="result-icon me-3">
+                                <i class="fas fa-${data.correct ? 'trophy fa-3x' : 'times-circle fa-3x'}"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-0">
+                                    ${data.correct ? 'Ճիշտ պատասխան!' : 'Սխալ պատասխան!'}
+                                </h4>
+                                <div class="feedback-points mt-1">
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        ${data.correct ? '+' + data.points_earned + ' միավոր' : 'Միավորներ չեն ավելացել'}
+                                    </span>
                                 </div>
                             </div>
-                            <div class="feedback-explanation p-3 bg-dark rounded">
-                                <h5><i class="fas fa-info-circle me-2"></i>Բացատրություն</h5>
-                                <p>${data.explanation}</p>
-                            </div>
-                            <button class="btn btn-light next-question-btn mt-3 w-100">
-                                <i class="fas fa-arrow-right me-2"></i>${data.correct ? 'Հաջորդ հարց' : 'Շարունակել'}
-                            </button>
                         </div>
+                        <div class="feedback-explanation p-3 bg-dark rounded">
+                            <h5><i class="fas fa-info-circle me-2"></i>Բացատրություն</h5>
+                            <p>${data.explanation}</p>
+                        </div>
+                        <button class="btn btn-light next-question-btn mt-3 w-100">
+                            <i class="fas fa-arrow-right me-2"></i>${data.correct ? 'Հաջորդ հարց' : 'Շարունակել'}
+                        </button>
                     </div>
-                `;
-                resultFeedback.classList.add('show');
-                resultFeedback.classList.add('fade-in');
-                
-                // Add event listener to next button
-                document.querySelector('.next-question-btn').addEventListener('click', function() {
-                    window.location.href = "{% url 'quiz:quiz_question' session.id %}";
-                });
-                
-                // Disable all answer options
-                document.querySelectorAll('.millionaire-answer input').forEach(input => {
-                    input.disabled = true;
-                });
-                
-                // Highlight selected answer based on correctness
-                selectedOption.classList.remove('pulse');
-                selectedOption.classList.add(data.correct ? 'correct-answer' : 'incorrect-answer');
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                </div>
+            `;
+            resultFeedback.classList.add('show');
+            resultFeedback.classList.add('fade-in');
+            
+            // Add event listener to next button
+            document.querySelector('.next-question-btn').addEventListener('click', function() {
                 window.location.href = "{% url 'quiz:quiz_question' session.id %}";
             });
-        }, 3000); // 3 second dramatic pause
+            
+            // Disable all answer options
+            document.querySelectorAll('.millionaire-option input').forEach(input => {
+                input.disabled = true;
+            });
+            
+            // Highlight selected answer based on correctness
+            selectedOption.classList.add(data.correct ? 'correct-answer' : 'incorrect-answer');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            window.location.href = "{% url 'quiz:quiz_question' session.id %}";
+        });
     }
     
     // Form submission
@@ -406,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedRadio) {
             submitAnswer(selectedRadio.value);
         } else {
-            // Show elegant notification
+            // Show notification
             const notification = document.createElement('div');
             notification.className = 'alert alert-warning text-center my-3 fade-in';
             notification.innerHTML = `
@@ -416,14 +236,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!document.querySelector('.alert-warning')) {
                 document.querySelector('.millionaire-answers').after(notification);
-                
-                // Auto hide after 3 seconds
-                setTimeout(() => {
-                    notification.style.opacity = '0';
-                    setTimeout(() => notification.remove(), 500);
-                }, 3000);
             }
         }
+    });
+    
+    // Radio button functionality
+    document.querySelectorAll('.millionaire-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.millionaire-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            const radioInput = this.querySelector('input[type="radio"]');
+            radioInput.checked = true;
+        });
     });
 });
 </script>

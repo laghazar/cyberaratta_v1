@@ -2,17 +2,19 @@
 {% load custom_filters %}
 {% block content %}
 <div class="container">
-    <div class="progress">
+    <div class="progress mb-4">
         <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
     </div>
-    <h2>{{ question.question_text }}</h2>
+    <h2 class="mb-4">{{ question.question_text }}</h2>
     {% if question.image %}
-    <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid">
+    <div class="text-center mb-4">
+        <img src="{{ question.image.url }}" alt="Հարցի նկարը" class="img-fluid rounded shadow">
+    </div>
     {% endif %}
-    <div id="feedback"></div>
+    <div id="feedback" class="mb-4"></div>
     <form id="answer-form">
         {% for answer in answers %}
-        <button type="button" class="btn btn-outline-light answer-btn" data-answer-id="{{ answer.id }}" aria-label="Answer {{ forloop.counter|get_letter }}: {{ answer.answer_text }}">
+        <button type="button" class="btn btn-outline-light answer-btn w-100 text-start mb-3" data-answer-id="{{ answer.id }}" aria-label="Պատասխան {{ forloop.counter|get_letter }}: {{ answer.answer_text }}">
             <span class="answer-letter">{{ forloop.counter|get_letter }}</span>. {{ answer.answer_text }}
         </button>
         {% endfor %}
@@ -20,20 +22,53 @@
 </div>
 <script>
 $(document).ready(function() {
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
     $('.answer-btn').click(function() {
+        $('.answer-btn').prop('disabled', true);
+        $(this).addClass('active');
         const answerId = $(this).data('answer-id');
-        $.post('{% url 'quiz:submit_answer' session.id %}', {answer_id: answerId}, function(data) {
-            if (data.redirect === 'result') {
-                window.location.href = '{% url 'quiz:quiz_result' session.id %}';
-            } else {
+        $.ajax({
+            url: '{% url "quiz:submit_answer" session.id %}',
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            data: JSON.stringify({answer_id: answerId}),
+            contentType: 'application/json',
+            success: function(data) {
+                if (data.redirect === 'result') {
+                    window.location.href = '{% url "quiz:quiz_result" session.id %}';
+                } else {
+                    $('#feedback').html(`
+                        <div class="alert alert-${data.correct ? 'success' : 'danger'}">
+                            <h5>${data.correct ? '✓ Ճիշտ է!' : '✗ Սխալ է!'}</h5>
+                            <p>${data.explanation}</p>
+                            <p class="fw-bold">Ձեռք բերված միավորներ: ${data.points_earned}</p>
+                        </div>
+                    `);
+                    setTimeout(() => window.location.reload(), 3000);
+                }
+            }.bind(this),
+            error: function(xhr, status, error) {
                 $('#feedback').html(`
-                    <div class="alert alert-${data.correct ? 'success' : 'danger'}">
-                        ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}<br>
-                        ${data.explanation}<br>
-                        Ձեռք բերված միավորներ: ${data.points_earned}
+                    <div class="alert alert-warning">
+                        <h5>Սխալ։</h5>
+                        <p>Տեղի է ունեցել սխալ: Խնդրում ենք նորից փորձել:</p>
                     </div>
                 `);
-                setTimeout(() => window.location.reload(), 2000);
+                $('.answer-btn').prop('disabled', false);
             }
         });
     });

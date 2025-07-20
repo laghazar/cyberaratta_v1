@@ -2,35 +2,22 @@ from django import template
 
 register = template.Library()
 
-@register.filter(name='multiply')
-def multiply(value, arg):
-    """Բազմապատկում է տրված արժեքը որևէ արգումենտով"""
-    try:
-        return int(value) * int(arg)
-    except (ValueError, TypeError):
-        return value
-        
-@register.filter(name='get_letter')
-def get_letter(value):
-    """Վերադարձնում է թվին համապատասխան տառը (1->A, 2->B, ...)"""
-    try:
-        num = int(value)
-        return chr(64 + num) if 1 <= num <= 26 else str(num)
-    except (ValueError, TypeError):
-        return value
+@register.filter
+def get_letter(index):
+    """Convert a number to a letter (1=A, 2=B, etc.)"""
+    return chr(64 + index) if 1 <= index <= 26 else str(index)
 
-@register.filter(name='get_range')
-def get_range(value):
-    """Ստեղծում է range օբյեկտ տրված արժեքի համար"""
-    try:
-        return range(1, int(value) + 1)
-    except (ValueError, TypeError):
-        return range(0)
-        
-@register.filter(name='intdiv')
+@register.filter
+def multiply(value, arg):
+    """Multiply the value by the argument"""
+    return value * arg
+
+@register.filter
 def intdiv(value, arg):
-    """Կատարում է ամբողջթվային բաժանում"""
-    try:
-        return int(value) // int(arg)
-    except (ValueError, TypeError):
-        return value
+    """Integer division of value by arg"""
+    return value // arg
+
+@register.filter
+def get_range(value):
+    """Return a range from 1 to value"""
+    return range(1, value + 1)

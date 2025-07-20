@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <section class="quiz-hero">
     <h1>Կիբեռանվտանգության Քուիզ</h1>
@@ -8,20 +9,87 @@
     {% if error %}
     <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
-    <form method="post" action="{% url 'quiz:start_quiz' %}">
+    <form method="post" action="{% url 'quiz:start_quiz' %}" id="quiz-form">
         {% csrf_token %}
+        
+        <h3 class="mb-4">Ընտրեք կատեգորիան</h3>
         <div class="row">
             {% for category in categories %}
-            <div class="col-md-4">
-                <div class="category-card" tabindex="0">
+            <div class="col-md-4 mb-4">
+                <div class="category-card" data-category="{{ category.id }}" tabindex="0">
                     <h3>{{ category.name }}</h3>
                     <p>{{ category.description }}</p>
-                    <input type="radio" name="category" value="{{ category.id }}" style="display:none;">
+                    <input type="radio" name="category" value="{{ category.id }}" id="cat_{{ category.id }}" style="display:none;">
                 </div>
             </div>
             {% endfor %}
         </div>
-        <button type="submit" class="btn btn-primary">Սկսել Քուիզը</button>
+        
+        <h3 class="mb-4 mt-4">Ընտրեք հարցի տեսակը</h3>
+        <div class="row">
+            {% for value, display in Question.QUESTION_TYPES %}
+            <div class="col-md-6 mb-4">
+                <div class="question-type-card" data-type="{{ value }}">
+                    <h3>{{ display }}</h3>
+                    <input type="radio" name="question_type" value="{{ value }}" id="type_{{ value }}" style="display:none;">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-lg mt-4">Սկսել Քուիզը</button>
     </form>
 </div>
+
+<script>
+$(document).ready(function() {
+    // Կատեգորիաների ընտրություն
+    $('.category-card').click(function() {
+        $('.category-card').removeClass('active');
+        $(this).addClass('active');
+        $('#cat_' + $(this).data('category')).prop('checked', true);
+    });
+    
+    // Հարցերի տեսակի ընտրություն
+    $('.question-type-card').click(function() {
+        $('.question-type-card').removeClass('active');
+        $(this).addClass('active');
+        $('#type_' + $(this).data('type')).prop('checked', true);
+    });
+    
+    // Ստուգել որ ընտրություն կատարված է
+    $('#quiz-form').submit(function(e) {
+        if (!$('input[name="category"]:checked').length) {
+            e.preventDefault();
+            alert('Խնդրում ենք ընտրել կատեգորիան');
+        }
+        else if (!$('input[name="question_type"]:checked').length) {
+            e.preventDefault();
+            alert('Խնդրում ենք ընտրել հարցի տեսակը');
+        }
+    });
+});
+</script>
+
+<style>
+.category-card, .question-type-card {
+    border: 2px solid #3a5cc9;
+    background: rgba(30, 40, 80, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    height: 100%;
+    transition: all 0.3s;
+}
+
+.category-card:hover, .question-type-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(58, 92, 201, 0.5);
+}
+
+.category-card.active, .question-type-card.active {
+    border: 2px solid #ffcc00;
+    background: rgba(60, 70, 120, 0.8);
+}
+</style>
 {% endblock %}
