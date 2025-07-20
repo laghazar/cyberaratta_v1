@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
-from apps.reporting.views import report
 from .models import SiteStatistics, Character
 from apps.reporting.models import PhishingReport
 from apps.quiz.models import QuizResult, QuizAttempt
@@ -14,14 +13,13 @@ def home(request):
     ara_character = Character.objects.filter(character_type='ara').first()
     shamiram_character = Character.objects.filter(character_type='shamiram').first()
     
-    # Թարմացնել վիճակագրությունը update_statistics-ից
     updated_stats = update_statistics()
     
     context = {
         'stats': stats,
         'ara_character': ara_character,
         'shamiram_character': shamiram_character,
-        'updated_stats': updated_stats,  # Ավելացնել update_statistics-ի տվյալները
+        'updated_stats': updated_stats,
         'page_title': 'CyberAratta - Կիբեռանվտանգության Կրթական Հարթակ'
     }
     
@@ -30,8 +28,8 @@ def home(request):
 def update_statistics():
     stats = {
         'checked_urls': URLCheck.objects.count(),
-        'detected_threats': URLCheck.objects.filter(status='malicious').count(),  # Փոխարինել is_malicious-ը status-ով
+        'detected_threats': URLCheck.objects.filter(status='malicious').count(),
         'completed_quizzes': QuizAttempt.objects.count(),
-        'reports': report.objects.count(),
+        'reports': PhishingReport.objects.count(),
     }
     return stats

@@ -3,7 +3,7 @@ from django.contrib import messages
 from .models import PhishingReport
 from apps.core.utils import update_statistics
 
-def report(request):
+def PhishingReport(request):
    
     """Ֆիշինգի զեկուցման էջ"""
     if request.method == 'POST':
@@ -33,6 +33,6 @@ def report(request):
     })
     
 
-def report(request):
+def PhishingReport(request):
     stats = update_statistics()
     return render(request, 'reporting/report.html', {'stats': stats})
