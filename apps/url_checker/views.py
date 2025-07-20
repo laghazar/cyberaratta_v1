@@ -1,9 +1,8 @@
 import requests
-from django.db import models
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import URLCheck
+from .models import URLCheck, UrlCheckResult
 from django.conf import settings
 from apps.core.utils import update_statistics
 from .utils import check_url_virustotal, check_url_kaspersky
@@ -21,10 +20,16 @@ def check_url(request):
             vt_result = check_url_virustotal(input_text)
             kasp_result = check_url_kaspersky(input_text)
 
-            # Ընդհանուր գնահատական՝ ըստ ստուգիչների
-            if vt_result.get('malicious') or kasp_result.get('malicious'):
+            # Վերլուծություն ըստ ստացված արդյունքների
+            if vt_result.get('pending') or kasp_result.get('pending'):
+                url_check.status = 'pending'
+                url_check.analysis_result = "Հղումը սպասում է ձեռքով մշակման։ Արդյունքը կհայտնվի 3 աշխատանքային օրվա ընթացքում։"
+            elif vt_result.get('malicious') or kasp_result.get('malicious'):
                 url_check.status = 'malicious'
                 url_check.analysis_result = "Հղումը վտանգավոր է։ Խորհուրդ է տրվում խուսափել դրանից։"
+            elif vt_result.get('status') == 'suspicious' or kasp_result.get('status') == 'suspicious':
+                url_check.status = 'suspicious'
+                url_check.analysis_result = "Հղումը կասկածելի է։"
             else:
                 url_check.status = 'safe'
                 url_check.analysis_result = "Հղումը անվտանգ է։"
@@ -32,7 +37,6 @@ def check_url(request):
             url_check.source = 'VirusTotal + Kaspersky'
             url_check.save()
 
-            # Պահել ստուգման մանրամասները նոր մոդելում
             UrlCheckResult.objects.create(
                 url_check=url_check,
                 virustotal_result=vt_result,
@@ -41,7 +45,7 @@ def check_url(request):
 
         except Exception as e:
             url_check.status = 'pending'
-            url_check.analysis_result = "Հղումը սպասում է ձեռքով մշակման։ Արդյունքը կհայտնվի 3 աշխատանքային օրվա ընթացքում։"
+            url_check.analysis_result = f"Հղումը սպասում է ձեռքով մշակման։ Սերվերի սխալ՝ {str(e)}"
             url_check.save()
 
         update_statistics()
