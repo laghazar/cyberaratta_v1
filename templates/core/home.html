@@ -1,76 +1,34 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-{% block title %}CyberAratta - Գլխավոր{% endblock %}
-{% block extra_head %}
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-{% endblock %}
+{% block title %}Գլխավոր | CyberAratta{% endblock %}
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container-fluid p-0">
-        <div class="hero-content text-center">
-            <h1 class="hero-title">CyberAratta: Ձեր կիբեռպաշտպանությունը</h1>
-            <p class="hero-subtitle">Միացե՛ք մեզ՝ Ձեր անվտանգությունն ապահովելու համար</p>
-            <a href="#modules" class="btn btn-primary btn-lg">Իմացեք ավելին</a>
-        </div>
+<div class="hero-center-card">
+    <div class="hero-title">CyberAratta</div>
+    <div class="hero-desc">
+        Կիբեռանվտանգության կրթական պլատֆորմ<br>
+        Սովորիր, ստուգիր, զեկուցիր, հետևիր սպառնալիքներին
     </div>
-</section>
-
-<!-- Modules Section -->
-<section id="modules" class="modules-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Մեր մոդուլները</h2>
-        <div class="row justify-content-center">
-            <div class="col-md-3 col-12 module-card mb-4">
-                <a href="{% url 'quiz:home' %}">
-                    <img src="{% static 'images/quiz-icon.png' %}" alt="Quiz Icon" class="img-fluid">
-                    <h5>Իմացիր Կիբեռը</h5>
-                </a>
-            </div>
-            <div class="col-md-3 col-12 module-card mb-4">
-                <a href="{% url 'url_checker:check_url' %}">
-                    <img src="{% static 'images/url-checker-icon.png' %}" alt="URL Checker Icon" class="img-fluid">
-                    <h5>Ստուգիր Հղումը</h5>
-                </a>
-            </div>
-            <div class="col-md-3 col-12 module-card mb-4">
-                <a href="{% url 'reporting:report' %}">
-                    <img src="{% static 'images/reporting-icon.png' %}" alt="Reporting Icon" class="img-fluid">
-                    <h5>Զեկուցում</h5>
-                </a>
-            </div>
-            <div class="col-md-3 col-12 module-card mb-4">
-                <a href="{% url 'threat_map:map' %}">
-                    <img src="{% static 'images/threat-map-icon.png' %}" alt="Threat Map Icon" class="img-fluid">
-                    <h5>Սպառնալիքների Քարտեզ</h5>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Statistics Section -->
-<section class="stats-section py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-4">Վիճակագրություն</h2>
-        <div class="row justify-content-center">
-            <div class="col-md-3 col-12 module-card mb-4">
-                <h5>Հաշվված Հղումներ</h5>
-                <p>{{ stats.checked_urls }}</p>
-            </div>
-            <div class="col-md-3 col-12 module-card mb-4">
-                <h5>Հայտնաբերված Սպառնալիքներ</h5>
-                <p>{{ stats.detected_threats }}</p>
-            </div>
-            <div class="col-md-3 col-12 module-card mb-4">
-                <h5>Ավարտված Քուիզեր</h5>
-                <p>{{ stats.completed_quizzes }}</p>
-            </div>
-            <div class="col-md-3 col-12 module-card mb-4">
-                <h5>Զեկուցումներ</h5>
-                <p>{{ stats.reports }}</p>
-            </div>
-        </div>
-    </div>
-</section>
+</div>
+<div class="modules-row">
+    <a href="{% url 'quiz:home' %}" class="module-card text-decoration-none">
+        <img src="{% static 'images/quiz-icon.png' %}" class="module-icon" alt="Իմացիր Կիբեռը">
+        <div class="module-title">Իմացիր Կիբեռը</div>
+        <div class="module-desc">Խաղա վիկտորինաներ, ստուգիր գիտելիքներդ ֆիշինգի և սպառնալիքների մասին։</div>
+    </a>
+    <a href="{% url 'url_checker:check_url' %}" class="module-card text-decoration-none">
+        <img src="{% static 'images/url-checker-icon.png' %}" class="module-icon" alt="Ստուգիր Հղումը">
+        <div class="module-title">Ստուգիր Հղումը</div>
+        <div class="module-desc">Ստուգիր URL կամ էլ․ փոստ՝ ֆիշինգի կամ կիբեռ սպառնալիքի համար։</div>
+    </a>
+    <a href="{% url 'reporting:report' %}" class="module-card text-decoration-none">
+        <img src="{% static 'images/reporting-icon.png' %}" class="module-icon" alt="Զեկուցիր">
+        <div class="module-title">Զեկուցիր</div>
+        <div class="module-desc">Զեկուցիր կիբեռ խաբեության մասին, կիսվիր օրինակով, ստացիր խորհրդատվություն։</div>
+    </a>
+    <a href="{% url 'threat_map:map' %}" class="module-card text-decoration-none">
+        <img src="{% static 'images/threat-map-icon.png' %}" class="module-icon" alt="Քարտեզ">
+        <div class="module-title">Սպառնալիքների Քարտեզ</div>
+        <div class="module-desc">Դիտիր կիբեռ սպառնալիքների վիճակագրությունը Հայաստանում։</div>
+    </a>
+</div>
 {% endblock %}
