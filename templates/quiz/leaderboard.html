@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Լավագույն Արդյունքներ{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h1>Լավագույն Արդյունքներ</h1>
+            <p class="lead">Տեսեք ովքեր են առաջատարները կիբեռանվտանգության քուիզներում</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Լավագույն 10 արդյունքներ</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Քուիզի կատեգորիա</th>
+                                <th>Տեսակ</th>
+                                <th>Միավորներ</th>
+                                <th>Տոկոս</th>
+                                <th>Կերպար</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in top_results %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ result.session.category.name }}</td>
+                                <td>{{ result.session.get_question_type_display }}</td>
+                                <td>{{ result.final_score }}</td>
+                                <td>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-{{ result.percentage >= 70|yesno:'success,warning' }}" 
+                                             role="progressbar" style="width: {{ result.percentage }}%;" 
+                                             aria-valuenow="{{ result.percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small>{{ result.percentage }}%</small>
+                                </td>
+                                <td>
+                                    {% if result.character_result == 'ara' %}
+                                    <span class="badge bg-success">Արա Գեղեցիկ</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">Շամիրամ</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-3">Դեռևս արդյունքներ չկան</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'quiz:home' %}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Վերադառնալ Քուիզ
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

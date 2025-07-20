@@ -1,0 +1,214 @@
+:root {
+  /* Հիմնական գունային պալիտրա */
+  --primary-color: #3c6382;       /* Խորը կապույտ */
+  --secondary-color: #f19066;     /* Վառ նարնջագույն */
+  --accent-color: #82ccdd;        /* Բաց երկնագույն */
+  --success-color: #78e08f;       /* Մեղմ կանաչ */
+  --warning-color: #f6b93b;       /* Ոսկեգույն դեղին */
+  --danger-color: #e55039;        /* Վառ կարմիր */
+  --light-color: #f5f6fa;         /* Բաց մոխրագույն */
+  --dark-color: #2c3e50;          /* Մուգ կապույտ-մոխրագույն */
+  
+  /* Տեքստի գույներ */
+  --text-primary: #2c3e50;
+  --text-secondary: #57606f;
+  --text-light: #f5f6fa;
+  
+  /* Էլեմենտների գույներ */
+  --card-bg: #ffffff;
+  --body-bg: #f5f6fa;
+  --input-border: #dcdde1;
+  --input-focus: #3c6382;
+  
+  /* Հայկական մշակույթ արտացոլող գունային երանգներ */
+  --armenian-red: #dc3545;      /* Հայկական դրոշի կարմիրը */
+  --armenian-blue: #0d6efd;     /* Հայկական դրոշի կապույտը */
+  --armenian-orange: #fd7e14;   /* Ծիրանի գույն */
+  
+  /* Ստվերներ */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  
+  /* Անցումներ */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Չափերի համակարգ */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  --border-radius-round: 50%;
+}
+
+/* Գլոբալ ոճեր */
+body {
+  background-color: var(--body-bg);
+  color: var(--text-primary);
+  font-family: 'Noto Sans Armenian', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+/* Կոճակներ */
+.btn {
+  border-radius: var(--border-radius-md);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-color) 60%, #1e3c72);
+  color: var(--text-light);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color) 60%, #e15f41);
+  color: var(--text-light);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--success-color), var(--success-color) 60%, #38ada9);
+  color: var(--text-light);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, var(--warning-color), var(--warning-color) 60%, #fa983a);
+  color: var(--dark-color);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--danger-color), var(--danger-color) 60%, #eb2f06);
+  color: var(--text-light);
+}
+
+/* Քարտեր */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  border: none;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+}
+
+.card-header {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+}
+
+/* Հայկական մոտիվներով դեկորատիվ տարրեր */
+.armenian-pattern {
+  background-image: url('/static/img/armenian-pattern.png');
+  background-repeat: repeat;
+  opacity: 0.08;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Հայկական դեկորատիվ տարր */
+.armenian-ornament {
+  position: relative;
+}
+
+.armenian-ornament:before {
+  content: "";
+  background-image: url('/static/img/armenian-ornament.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  opacity: 0.5;
+}
+
+/* Հատուկ անիմացիաներ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+/* Միլիոնատերի քուիզի համար հատուկ ոճեր */
+.millionaire-theme {
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  color: #fff;
+}
+
+.millionaire-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.millionaire-option {
+  background: linear-gradient(135deg, rgba(41, 128, 185, 0.5), rgba(52, 152, 219, 0.3));
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-md);
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.8rem;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+}
+
+.millionaire-option:hover {
+  transform: translateX(10px);
+  background: linear-gradient(135deg, rgba(41, 128, 185, 0.7), rgba(52, 152, 219, 0.5));
+}
+
+.millionaire-option-prefix {
+  background-color: #3498db;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--border-radius-round);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 15px;
+}
