@@ -35,7 +35,7 @@ body.cyber-bg {
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--neon-green);
-    text-shadow: 0 0 12px var(--neon-green), 0 0 20px var(--neon-blue);
+    text-shadow: 0 0 12px var(--neon-green), 0 0 10 var(--neon-blue);
     margin-bottom: 1rem;
 }
 
