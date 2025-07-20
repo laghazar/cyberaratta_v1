@@ -10,46 +10,75 @@
         </div>
         <button type="submit" class="btn btn-primary">Ստուգել</button>
     </form>
-    <div id="result"></div>
 
-<div class="container">
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Հաշվված Հղումներ</h5>
-                    <p class="card-text">{{ stats.checked_urls }}</p>
+    <div id="result" class="mt-3"></div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Հաշվված Հղումներ</h5>
+                        <p class="card-text">{{ stats.checked_urls }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Հայտնաբերված Սպառնալիքներ</h5>
-                    <p class="card-text">{{ stats.detected_threats }}</p>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Հայտնաբերված Սպառնալիքներ</h5>
+                        <p class="card-text">{{ stats.detected_threats }}</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
 
     <script>
+        // CSRF Token-ը կվերցնենք cookies-ից
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
+            const csrftoken = getCookie('csrftoken');
+
             fetch("{% url 'url_checker:check_url' %}", {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    'X-CSRFToken': csrftoken
                 },
                 body: new FormData(this)
             })
             .then(response => response.json())
             .then(data => {
+                let alertClass = 'warning';
+                if (data.status === 'Անվտանգ') alertClass = 'success';
+                else if (data.status === 'Վտանգավոր') alertClass = 'danger';
+
                 document.getElementById('result').innerHTML = `
-                    <div class="alert alert-${data.status == 'Անվտանգ' ? 'success' : data.status == 'Վտանգավոր' ? 'danger' : 'warning'}">
-                        Կարգավիճակ: ${data.status}<br>
+                    <div class="alert alert-${alertClass}">
+                        <strong>Կարգավիճակ:</strong> ${data.status}<br>
                         ${data.result}
+                    </div>
+                `;
+            })
+            .catch(() => {
+                document.getElementById('result').innerHTML = `
+                    <div class="alert alert-danger">
+                        Սերվերի սխալ, փորձեք կրկին:
                     </div>
                 `;
             });

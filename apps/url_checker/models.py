@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 class URLCheck(models.Model):
     """URL/Էլ. փոստի ստուգման մոդել"""
@@ -23,3 +22,17 @@ class URLCheck(models.Model):
 
     def __str__(self):
         return f"{self.input_text} - {self.get_status_display()}"
+
+
+class UrlCheckResult(models.Model):
+    url_check = models.ForeignKey(URLCheck, on_delete=models.CASCADE, related_name='results')
+    virustotal_result = models.JSONField(null=True, blank=True, verbose_name="VirusTotal արդյունք")
+    kaspersky_result = models.JSONField(null=True, blank=True, verbose_name="Kaspersky արդյունք")
+    checked_at = models.DateTimeField(auto_now_add=True, verbose_name="Ստուգման ժամանակ")
+
+    class Meta:
+        verbose_name = "URL ստուգման արդյունք"
+        verbose_name_plural = "URL ստուգման արդյունքներ"
+
+    def __str__(self):
+        return f"Արդյունքներ {self.url_check.input_text} համար՝ {self.checked_at}"
