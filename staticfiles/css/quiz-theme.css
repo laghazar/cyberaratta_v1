@@ -1,194 +1,67 @@
-/* Millionaire Quiz Theme */
-.millionaire-theme {
-    background: linear-gradient(rgba(0, 0, 20, 0.85), rgba(0, 10, 40, 0.95));
-    min-height: 100vh;
-    color: #ffffff;
-    font-family: 'Roboto', Arial, 'Noto Sans Armenian', sans-serif;
+/* === Variables === */
+:root {
+    --neon-green: #10ffcb;
+    --neon-blue: #00d0ff;
+    --dark-bg: #181f2f;
+    --font-armenian: 'Noto Sans Armenian', 'Roboto', Arial, sans-serif;
 }
 
-.fade-in {
-    opacity: 0;
-    animation: fadeIn 0.5s forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.pulse {
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.millionaire-card {
-    background: rgba(20, 30, 70, 0.8);
-    border: 2px solid #3a5cc9;
-    box-shadow: 0 0 15px rgba(58, 92, 201, 0.5);
-}
-
-.millionaire-option {
-    background: rgba(30, 40, 80, 0.7);
-    border: 2px solid #4a6cd9;
-    border-radius: 8px;
-    margin-bottom: 12px;
+/* === Answer Buttons === */
+.answer-btn {
     position: relative;
-    overflow: hidden;
-    cursor: pointer;
+    padding: 10px 18px;
+    border: 2px solid var(--neon-blue);
+    background: rgba(30, 40, 80, 0.7);
+    color: #ffffff;
+    font-size: 1.1rem;
+    border-radius: 8px;
     transition: all 0.3s;
-    padding: 5px;
+    width: 100%;
+    max-width: 600px;
 }
 
-.millionaire-option:hover {
-    background: rgba(40, 50, 100, 0.8);
-    transform: translateX(5px);
+.answer-btn:hover {
+    background: var(--neon-blue);
+    color: #000000;
+    transform: translateX(3px);
 }
 
-.millionaire-option.selected {
+.answer-btn.active {
     border-color: #ffcc00;
     background: rgba(60, 70, 120, 0.8);
 }
 
-.millionaire-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-}
-
-.millionaire-option label {
-    padding: 12px 15px;
-    cursor: pointer;
-}
-
-.millionaire-option-prefix {
+.answer-letter {
     display: inline-block;
     width: 30px;
     height: 30px;
     line-height: 30px;
     text-align: center;
-    background: #3a5cc9;
+    background: var(--neon-blue);
     border-radius: 50%;
-    font-weight: bold;
+    margin-right: 10px;
+    font-weight: 600;
 }
 
-.millionaire-submit-btn {
-    background: linear-gradient(135deg, #3a5cc9, #2a3c99);
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 25px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
+.progress {
+    height: 18px;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
-.millionaire-submit-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(58, 92, 201, 0.7);
+.progress-bar {
+    background-color: var(--neon-green);
 }
 
-.millionaire-progress-panel {
-    background: rgba(20, 30, 70, 0.8);
-    border: 2px solid #3a5cc9;
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.millionaire-progress-item {
-    background: rgba(40, 50, 80, 0.5);
-    border-radius: 8px;
-}
-
-.millionaire-progress-item.current {
-    background: rgba(58, 92, 201, 0.7);
-    border-left: 5px solid #ffcc00;
-}
-
-.millionaire-progress-item.completed {
-    background: rgba(40, 100, 40, 0.5);
-}
-
-.millionaire-progress-item.milestone {
-    background: rgba(100, 50, 150, 0.6);
-    border: 1px solid #ffcc00;
-}
-
-.question-number-badge {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    line-height: 25px;
-    text-align: center;
-    background: #3a5cc9;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.selected-answer {
-    border: 2px solid #ffcc00;
-    box-shadow: 0 0 10px #ffcc00;
-}
-
-.correct-answer {
-    border: 2px solid #00cc66;
-    background: rgba(0, 204, 102, 0.2);
-}
-
-.incorrect-answer {
-    border: 2px solid #ff3333;
-    background: rgba(255, 51, 51, 0.2);
-}
-
-.quiz-timer {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffffff;
-    background: rgba(0, 0, 0, 0.5);
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-    border-radius: 50%;
-    border: 2px solid #3a5cc9;
-}
-
-.quiz-timer.warning {
-    color: #ffcc00;
-    border-color: #ffcc00;
-}
-
-.result-feedback {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s;
-}
-
-.result-feedback.show {
-    max-height: 500px;
-}
-
-/* Quiz Homepage Styles */
-.quiz-hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-    background-size: cover;
-    padding: 60px 0;
-    text-align: center;
-    color: #10ffcb;
-    text-shadow: 0 0 10px #10ffcb;
-}
-
-.quiz-hero h1 {
-    font-size: 3rem;
-    animation: glitch 2s linear infinite;
-}
-
-@keyframes glitch {
-    0% { text-shadow: 0 0 10px #10ffcb; }
-    50% { text-shadow: -2px 0 10px #ff00ff, 2px 0 10px #00ffff; }
-    100% { text-shadow: 0 0 10px #10ffcb; }
+/* === Responsive Design === */
+@media (max-width: 600px) {
+    .answer-btn {
+        font-size: 1rem;
+        padding: 8px 15px;
+    }
+    .answer-letter {
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        margin-right: 8px;
+    }
 }

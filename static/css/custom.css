@@ -1,334 +1,209 @@
 /* ===== CYBERARATTA PROFESSIONAL THEME ===== */
 
+/* === Variables === */
+:root {
+    --neon-green: #10ffcb;
+    --neon-blue: #00d0ff;
+    --dark-bg: #181f2f;
+    --font-armenian: 'Noto Sans Armenian', 'Roboto', Arial, sans-serif;
+}
+
 /* === Body & Base === */
 body.cyber-bg {
     background: url('/static/images/hero-bg.jpg') top center/cover no-repeat;
-    font-family: 'Roboto', Arial, 'Noto Sans Armenian', sans-serif;
+    background-attachment: fixed;
+    font-family: var(--font-armenian);
     color: #e2eafc;
     min-height: 100vh;
-    background-attachment: fixed;
+}
+
+/* === Hero Section === */
+.hero-center-card {
+    margin: 0 auto;
+    margin-top: 6vh;
+    margin-bottom: 4vh;
+    max-width: 600px;
+    background: rgba(24, 31, 47, 0.9);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px #10ffcb33;
+    padding: 40px 30px;
+    text-align: center;
+    border: 2px solid var(--neon-green);
+}
+
+.hero-center-card .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--neon-green);
+    text-shadow: 0 0 12px var(--neon-green), 0 0 20px var(--neon-blue);
+    margin-bottom: 1rem;
+}
+
+.hero-center-card .hero-desc {
+    font-size: 1.2rem;
+    color: #cafff9;
+    font-weight: 500;
 }
 
 /* === Navbar === */
 .cyber-navbar {
     background: linear-gradient(90deg, #262b3a 0%, #162447 100%);
-    box-shadow: 0 2px 12px rgba(16,255,203,0.10);
-    border-bottom: 2px solid #10ffcb;
+    box-shadow: 0 2px 12px rgba(16, 255, 203, 0.15);
+    border-bottom: 2px solid var(--neon-green);
+    padding: 12px 0;
 }
+
 .cyber-brand {
     font-weight: 700;
-    letter-spacing: 2px;
-    font-size: 1.6rem;
-    color: #10ffcb !important;
-    text-shadow: 0 2px 10px #10ffcb44;
+    font-size: 1.7rem;
+    color: var(--neon-green) !important;
+    text-shadow: 0 0 8px var(--neon-green), 0 0 15px var(--neon-blue);
+    letter-spacing: 1px;
+    padding: 10px 15px;
+    transition: transform 0.3s, text-shadow 0.3s;
 }
+
+.cyber-brand:hover {
+    transform: scale(1.03);
+    text-shadow: 0 0 12px var(--neon-green), 0 0 20px var(--neon-blue);
+}
+
 .cyber-link {
     color: #e2eafc !important;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px 12px;
+    margin: 0 5px;
+    transition: color 0.3s, text-shadow 0.3s;
     position: relative;
-    transition: color 0.2s;
 }
+
 .cyber-link:hover, .cyber-link.active {
-    color: #10ffcb !important;
-    text-shadow: 0 0 8px #10ffcb;
+    color: var(--neon-green) !important;
+    text-shadow: 0 0 10px var(--neon-green);
 }
+
 .cyber-link::after {
     content: "";
-    display: block;
+    position: absolute;
     width: 0;
     height: 2px;
-    background: #10ffcb;
-    transition: width 0.3s;
-    position: absolute;
-    left: 0;
+    background: var(--neon-green);
     bottom: -2px;
+    left: 0;
+    transition: width 0.3s;
 }
+
 .cyber-link:hover::after, .cyber-link.active::after {
     width: 100%;
 }
 
-/* === Main Content === */
-.cyber-content {
-    
+/* === Modules === */
+.modules-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 2rem auto;
+    max-width: 1200px;
+    flex-wrap: wrap;
+}
+
+.module-card {
+    flex: 1 1 220px;
+    max-width: 260px;
+    background: rgba(24, 31, 47, 0.98);
     border-radius: 16px;
-    box-shadow: 0 4px 32px #10ffcb22;
-    padding: 2rem;
-    min-height: 70vh;
+    box-shadow: 0 0 20px #10ffcb44;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    border: 2px solid var(--neon-green);
+}
+
+.module-card:hover {
+    box-shadow: 0 0 30px #10ffcb88;
+    transform: translateY(-5px);
+}
+
+.module-icon {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.module-title {
+    color: var(--neon-green);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.module-desc {
+    color: #b3f8f9;
+    font-size: 0.95rem;
+    font-weight: 400;
 }
 
 /* === Footer === */
 .cyber-footer {
     background: linear-gradient(90deg, #262b3a 0%, #162447 100%);
-    color: #10ffcb;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    border-top: 1px solid #10ffcb44;
+    color: var(--neon-green);
+    font-size: 0.95rem;
+    padding: 20px 0;
+    border-top: 1px solid var(--neon-green);
     box-shadow: 0 -2px 12px #10ffcb22;
-}
-
-/* === Alerts === */
-.cyber-alert {
-    border-radius: 8px;
-    border: 1.5px solid #10ffcb;
-    background: rgba(16,255,203,0.15);
-    color: #10ffcb;
-    font-weight: 500;
-    box-shadow: 0 2px 10px #10ffcb33;
 }
 
 /* === Buttons === */
 .btn-cyber {
-    background: linear-gradient(90deg, #10ffcb 0%, #0f1014 100%);
-    color: #181f2f;
+    background: var(--neon-green);
+    color: var(--dark-bg);
     border: none;
     border-radius: 8px;
-    font-weight: 700;
+    font-weight: 600;
+    padding: 10px 20px;
     box-shadow: 0 2px 12px #10ffcb88;
-    transition: background 0.2s, color 0.2s;
+    transition: all 0.3s;
 }
+
 .btn-cyber:hover {
-    background: linear-gradient(90deg, #181f2f 0%, #10ffcb 100%);
-    color: #10ffcb;
+    background: #0de6b3; /* Slightly darker neon green for hover */
+    color: var(--dark-bg);
+    box-shadow: 0 0 15px #10ffcb;
 }
 
-/* === Inputs === */
-input, textarea, select {
-    background: #252a38;
-    color: #e2eafc;
-    border: 1.5px solid #10ffcb44;
-    border-radius: 6px;
-}
-input:focus, textarea:focus, select:focus {
-    border-color: #10ffcb;
-    box-shadow: 0 0 6px #10ffcb66;
-}
-
-/* === Cards === */
-.card.cyber-card {
-    background: rgba(24, 31, 47, 0.97);
-    border: 1.5px solid #10ffcb44;
-    box-shadow: 0 6px 32px #10ffcb22;
-    border-radius: 16px;
-    color: #e2eafc;
-}
-
-/* === Scrollbar Styling === */
+/* === Scrollbar === */
 ::-webkit-scrollbar {
     width: 8px;
-    background: #181f2f;
+    background: var(--dark-bg);
 }
+
 ::-webkit-scrollbar-thumb {
-    background: #10ffcb88;
+    background: var(--neon-green);
     border-radius: 8px;
 }
 
-/* === HERO CENTER CARD === */
-.hero-center-card {
-    margin: 0 auto;
-    margin-top: 8vh;
-    margin-bottom: 6vh;
-    max-width: 560px;
-    background: rgba(0, 0, 0, 0.504); /* overlay չկա, նկարը պայծառ */
-    border-radius: 32px;
-    box-shadow: 0 8px 48px #10ffcb33;
-    padding: 48px 32px 38px 32px;
-    text-align: center;
-    position: relative;
-    z-index: 3;
-    border: 2.5px solid #10ffcb88;
-}
-.hero-center-card .hero-title {
-    font-size: 2.8rem;
-    font-weight: 900;
-    color: #10ffcb;
-    text-shadow: 0 4px 36px #10ffcb, 0 0 10px #222a;
-    margin-bottom: 1.2rem;
-}
-.hero-center-card .hero-desc {
-    font-size: 1.3rem;
-    color: #cafff9;
-    text-shadow: 0 2px 18px #10ffcb66, 0 0 10px #111a;
-    font-weight: 500;
-}
-
-/* === MODULES BAR STYLE === */
-.modules-row {
-    display: flex;
-    gap: 32px;
-    justify-content: center;
-    margin-bottom: 2rem;
-    flex-wrap: nowrap;
-}
-.module-card {
-    flex: 1 1 0;
-    min-width: 180px;
-    max-width: 290px;
-    background: rgba(24, 31, 47, 0.98);
-    border-radius: 22px;
-    box-shadow: 0 0 28px #10ffcb66;
-    padding: 24px 18px 18px 18px;
-    text-align: center;
-    transition: box-shadow 0.2s, transform 0.2s;
-    cursor: pointer;
-    border: 2px solid #10ffcb22;
-    margin: 0;
-}
-.module-card:hover {
-    box-shadow: 0 0 48px #10ffcb99;
-    border-color: #10ffcb;
-    transform: translateY(-8px) scale(1.04);
-}
-.module-icon {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 16px;
-    margin-bottom: 10px;
-    background: transparent;
-}
-.module-title {
-    color: #10ffcb;
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-.module-desc {
-    color: #b3f8f9;
-    font-size: 0.98rem;
-    font-weight: 500;
-}
-
-/* === RESPONSIVE DESIGN === */
+/* === Responsive Design === */
 @media (max-width: 1200px) {
-    .modules-row { gap: 16px; }
-    .module-card { min-width: 160px; max-width: 230px; padding: 20px 8px; }
-    .hero-center-card { padding: 28px 8px 24px 8px; max-width: 96vw; }
-    .hero-center-card .hero-title { font-size: 1.5rem; }
-    .hero-center-card .hero-desc { font-size: 1rem; }
+    .modules-row { gap: 15px; }
+    .module-card { max-width: 240px; }
+    .hero-center-card { max-width: 90vw; padding: 30px 20px; }
 }
+
 @media (max-width: 900px) {
     .modules-row { flex-wrap: wrap; }
-    .module-card { min-width: 48vw; max-width: 100vw; margin-bottom: 16px;}
-    .hero-center-card { margin-top: 4vh; margin-bottom: 4vh; }
+    .module-card { flex: 1 1 45%; max-width: 45vw; }
+    .hero-center-card { margin-top: 4vh; margin-bottom: 3vh; }
+    .hero-center-card .hero-title { font-size: 2rem; }
+    .hero-center-card .hero-desc { font-size: 1.1rem; }
 }
 
-
-/* Container for quiz content */
-.container {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 20px;
-    background-color: #1e1e2f; /* մուգ ֆոն, կարող ես փոխել */
-    border-radius: 10px;
-    color: #f0f0f0; /* բաց տեքստ մուգ ֆոնի վրա */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Հեադինգները */
-h1, h2, h3 {
-    margin-bottom: 20px;
-    font-weight: 600;
-    color: #fff;
-}
-
-/* Պարագրաֆը */
-p {
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-/* Հարցի տեքստ */
-.question-text {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 15px;
-}
-
-/* Պատասխանների ցուցակ */
-.answers-list {
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: 30px;
-}
-
-.answers-list li {
-    background-color: #2a2a3f;
-    margin-bottom: 12px;
-    padding: 15px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease;
-}
-
-.answers-list li:hover {
-    background-color: #3f51b5;
-    color: #fff;
-}
-
-/* Կոճակներ */
-.btn {
-    background-color: #3f51b5;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    font-size: 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-right: 15px;
-}
-
-.btn:hover {
-    background-color: #2c3e9e;
-}
-
-/* Կիսվելու կոճակները */
-.share-buttons {
-    margin-top: 25px;
-    text-align: center;
-}
-
-.share-buttons .btn {
-    width: 180px;
-}
-
-/* Պատկերներ արդյունք էջում */
-.result-character img {
-    max-width: 220px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
-
-/* Performance chart տիրույթ */
-.performance-chart {
-    max-width: 500px;
-    margin: 30px auto;
-}
-
-/* Responsive - փոքր էկրանների համար */
 @media (max-width: 600px) {
-    .container {
-        padding: 15px;
-        margin: 15px;
-    }
-
-    .answers-list li {
-        font-size: 16px;
-        padding: 12px 15px;
-    }
-
-    .btn {
-        font-size: 16px;
-        padding: 10px 25px;
-    }
-
-    .result-character img {
-        max-width: 150px;
-    }
-
-    .performance-chart {
-        max-width: 100%;
-    }
+    .module-card { flex: 1 1 100%; max-width: 90vw; }
+    .hero-center-card { padding: 20px 15px; }
+    .hero-center-card .hero-title { font-size: 1.8rem; }
+    .hero-center-card .hero-desc { font-size: 1rem; }
+    .cyber-brand { font-size: 1.5rem; padding: 8px 10px; }
+    .cyber-link { font-size: 0.95rem; padding: 8px 10px; margin: 0 3px; }
 }

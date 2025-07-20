@@ -1,27 +1,50 @@
+/* === Variables === */
+:root {
+    --neon-green: #10ffcb;
+    --neon-blue: #00d0ff;
+    --dark-bg: #181f2f;
+    --font-armenian: 'Noto Sans Armenian', 'Roboto', Arial, sans-serif;
+}
+
+/* === Quiz Hero === */
 .quiz-hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/static/images/cyber-bg.jpg');
-    background-size: cover;
-    padding: 60px 0;
+    padding: 80px 0;
     text-align: center;
     color: var(--neon-green);
-    text-shadow: 0 0 10px var(--neon-green);
+    text-shadow: 0 0 8px var(--neon-green);
 }
 
 .quiz-hero h1 {
-    font-size: 3rem;
+    font-size: 2.8rem;
     font-family: var(--font-armenian);
-    animation: glitch 2s linear infinite;
+  
 }
 
 .category-card {
     background: var(--dark-bg);
     border: 2px solid var(--neon-blue);
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
     transition: transform 0.3s, box-shadow 0.3s;
+    max-width: 300px;
+    margin: 15px auto;
 }
 
 .category-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px var(--neon-blue);
+    transform: scale(1.03);
+    box-shadow: 0 0 15px var(--neon-blue);
+}
+
+/* === Responsive Design === */
+@media (max-width: 600px) {
+    .quiz-hero {
+        padding: 60px 0;
+    }
+    .quiz-hero h1 {
+        font-size: 2rem;
+    }
+    .category-card {
+        padding: 12px;
+        max-width: 90vw;
+    }
 }
