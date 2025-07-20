@@ -1,113 +1,27 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block title %}Իմացիր Կիբեռը{% endblock %}
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/quiz-home.css' %}">
-{% endblock %}
-
 {% block content %}
-<div class="quiz-container">
-    <!-- Գլխավոր վերնագիր -->
-    <div class="main-header">
-        <h1>Իմացիր Կիբեռը</h1>
-        <p class="subtitle">Ստուգեք և զարգացրեք ձեր կիբեռանվտանգության գիտելիքները</p>
-    </div>
-
-    <div class="main-content">
-        <!-- Քուիզի ընտրության բաժին -->
-        <div class="quiz-selection-section">
-            <div class="card">
-                <h2>Քուիզի ընտրություն</h2>
-                <form method="post" action="{% url 'quiz:start_quiz' %}" id="quiz-form">
-                    {% csrf_token %}
-                    
-                    <!-- Լսարանի ընտրություն -->
-                    <div class="form-section">
-                        <h3>Ընտրեք Ձեր Լսարանը</h3>
-                        <div class="option-list">
-                            {% for category in categories %}
-                            <div class="option-box">
-                                <input type="radio" name="category" id="category-{{ category.id }}" value="{{ category.id }}" {% if forloop.first %}checked{% endif %}>
-                                <label for="category-{{ category.id }}">
-                                    <span class="option-title">{{ category.get_category_type_display }}</span>
-                                    {% if category.professional_field %}
-                                        <span class="option-subtitle">{{ category.get_professional_field_display }}</span>
-                                    {% endif %}
-                                    {% if category.description %}
-                                        <span class="option-desc">{{ category.description|truncatechars:60 }}</span>
-                                    {% endif %}
-                                </label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <!-- Քուիզի տեսակի ընտրություն -->
-                    <div class="form-section">
-                        <h3>Ընտրեք Քուիզի Տեսակը</h3>
-                        <div class="option-list">
-                            {% for value, display in Question.QUESTION_TYPES %}
-                            <div class="option-box">
-                                <input type="radio" name="question_type" id="question-type-{{ value }}" value="{{ value }}" {% if forloop.first %}checked{% endif %}>
-                                <label for="question-type-{{ value }}">
-                                    <span class="option-title">{{ display }}</span>
-                                    <span class="option-desc">
-                                        {% if value == 'classic' %}
-                                            Ուսուցողական հարցեր՝ կիբեռանվտանգության մասին
-                                        {% elif value == 'millionaire' %}
-                                            Խաղային հարցաշար՝ միլիոնատերի ոճով
-                                        {% endif %}
-                                    </span>
-                                </label>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="primary-btn">Սկսել Քուիզը</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <!-- Տեղեկատվական բաժին -->
-        <div class="info-section">
-            <!-- Կերպարներ -->
-            <div class="card characters-card">
-                <div class="character-box">
-                    <img src="{% static 'images/ara.jpg' %}" alt="Արա Գեղեցիկ" class="character-img">
-                    <h3>Արա Գեղեցիկ</h3>
-                    <span class="character-type good">Կիբեռգիտակ</span>
-                </div>
-                
-                <div class="vs-badge">VS</div>
-                
-                <div class="character-box">
-                    <img src="{% static 'images/shamiram.jpg' %}" alt="Շամիրամ" class="character-img">
-                    <h3>Շամիրամ</h3>
-                    <span class="character-type warning">Կիբեռսովորող</span>
+<section class="quiz-hero">
+    <h1>Կիբեռանվտանգության Քուիզ</h1>
+    <p>Ընտրեք կատեգորիա և ստուգեք Ձեր գիտելիքները</p>
+</section>
+<div class="container">
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <form method="post" action="{% url 'quiz:start_quiz' %}">
+        {% csrf_token %}
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-4">
+                <div class="category-card" tabindex="0">
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ category.description }}</p>
+                    <input type="radio" name="category" value="{{ category.id }}" style="display:none;">
                 </div>
             </div>
-            
-            <!-- Ինչու մասնակցել -->
-            <div class="card">
-                <h3>Ինչու՞ մասնակցել</h3>
-                <ul class="benefits-list">
-                    <li>Ստուգել Ձեր գիտելիքները կիբեռանվտանգության մասին</li>
-                    <li>Սովորել ֆիշինգի հարձակումները ճանաչելու միջոցներ</li>
-                    <li>Բացահայտել Ձեր կիբեռգիտակցության մակարդակը</li>
-                    <li>Ստանալ անհատական խորհուրդներ</li>
-                </ul>
-            </div>
-            
-            <!-- Լիդերբորդ հղում -->
-            <div class="card action-card">
-                <a href="{% url 'quiz:leaderboard' %}" class="secondary-btn">
-                    <i class="fas fa-trophy"></i> Դիտել լավագույն արդյունքները
-                </a>
-            </div>
+            {% endfor %}
         </div>
-    </div>
+        <button type="submit" class="btn btn-primary">Սկսել Քուիզը</button>
+    </form>
 </div>
 {% endblock %}

@@ -1,24 +1,42 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load custom_filters %}
 {% block content %}
-<div class="quiz-bg" style="position:fixed; z-index:1; top:0; left:0; width:100vw; height:100vh; overflow:hidden;">
-    <img src="{% static 'images/hero-bg.jpg' %}" style="width:100vw; height:100vh; object-fit:cover; opacity:0.5;">
-    <!-- Add other decorative background images (ara.jpg, shamiram.jpg) as needed, positioned via CSS -->
-</div>
-<div class="quiz-wrapper">
-    <div class="quiz-title">Իմացիր Քո Հմտությունները</div>
-    <div class="quiz-description">Ստուգեք և զարգացրեք ձեր գիտելիքները կիբեռանվտանգության վերաբերյալ</div>
-    <form method="post">
-        {% csrf_token %}
-        <div class="quiz-question">{{ question.text }}</div>
-        <div class="quiz-options">
-            {% for choice in question.choices %}
-            <label>
-                <input type="radio" name="answer" value="{{ choice.id }}">
-                {{ choice.text }}
-            </label>
-            {% endfor %}
-        </div>
-        <button type="submit" class="quiz-submit-btn">Հաստատել</button>
+<div class="container">
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
+    </div>
+    <h2>{{ question.question_text }}</h2>
+    {% if question.image %}
+    <img src="{{ question.image.url }}" alt="Question Image" class="img-fluid">
+    {% endif %}
+    <div id="feedback"></div>
+    <form id="answer-form">
+        {% for answer in answers %}
+        <button type="button" class="btn btn-outline-light answer-btn" data-answer-id="{{ answer.id }}" aria-label="Answer {{ forloop.counter|get_letter }}: {{ answer.answer_text }}">
+            <span class="answer-letter">{{ forloop.counter|get_letter }}</span>. {{ answer.answer_text }}
+        </button>
+        {% endfor %}
     </form>
 </div>
+<script>
+$(document).ready(function() {
+    $('.answer-btn').click(function() {
+        const answerId = $(this).data('answer-id');
+        $.post('{% url 'quiz:submit_answer' session.id %}', {answer_id: answerId}, function(data) {
+            if (data.redirect === 'result') {
+                window.location.href = '{% url 'quiz:quiz_result' session.id %}';
+            } else {
+                $('#feedback').html(`
+                    <div class="alert alert-${data.correct ? 'success' : 'danger'}">
+                        ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}<br>
+                        ${data.explanation}<br>
+                        Ձեռք բերված միավորներ: ${data.points_earned}
+                    </div>
+                `);
+                setTimeout(() => window.location.reload(), 2000);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

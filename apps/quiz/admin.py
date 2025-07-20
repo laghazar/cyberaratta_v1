@@ -32,3 +32,5 @@ class QuizSessionAdmin(admin.ModelAdmin):
 class QuizResultAdmin(admin.ModelAdmin):
     list_display = ['session', 'final_score', 'percentage', 'character_result']
     list_filter = ['character_result']
+    
+    

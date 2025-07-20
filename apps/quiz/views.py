@@ -32,13 +32,11 @@ def start_quiz(request):
         request.session['quiz_session_id'] = session.id
         return redirect('quiz:quiz_question', session.id)
     
-    # This should never execute as we're using the home page for selection now
     return redirect('quiz:home')
 
 def quiz_question(request, session_id):
     session = get_object_or_404(QuizSession, id=session_id)
     
-    # If session is completed, redirect to results
     if session.is_completed:
         return redirect('quiz:quiz_result', session.id)
     
@@ -50,7 +48,6 @@ def quiz_question(request, session_id):
     
     total_questions = questions.count()
     
-    # If we've gone through all questions, mark as completed and redirect to results
     if session.current_question >= total_questions:
         session.is_completed = True
         session.save()
@@ -58,11 +55,10 @@ def quiz_question(request, session_id):
     
     question = questions[session.current_question]
     answers = list(question.answers.all())
-    random.shuffle(answers)  # Shuffle answers for more variety
+    random.shuffle(answers)
     
     progress = int((session.current_question + 1) / total_questions * 100)
     
-    # Use the appropriate template based on question type
     template_name = f'quiz/{session.question_type}.html'
     
     return render(request, template_name, {
@@ -78,7 +74,6 @@ def quiz_question(request, session_id):
 def submit_answer(request, session_id):
     session = get_object_or_404(QuizSession, id=session_id)
     
-    # If session is completed, return error
     if session.is_completed:
         return JsonResponse({'error': 'Quiz already completed'}, status=400)
     
@@ -90,7 +85,6 @@ def submit_answer(request, session_id):
     
     total_questions = questions.count()
     
-    # If we've gone through all questions, mark as completed
     if session.current_question >= total_questions:
         session.is_completed = True
         session.save()
@@ -98,7 +92,6 @@ def submit_answer(request, session_id):
     
     question = questions[session.current_question]
     
-    # Parse data from request
     data = request.POST or request.body
     if isinstance(data, bytes):
         import json
@@ -110,11 +103,8 @@ def submit_answer(request, session_id):
     
     answer = get_object_or_404(Answer, id=answer_id)
     correct = answer.is_correct
-    
-    # Calculate points based on answer correctness and difficulty
     points_earned = question.points if correct else 0
     
-    # Record the quiz attempt
     QuizAttempt.objects.create(
         session=session,
         question=question,
@@ -122,12 +112,10 @@ def submit_answer(request, session_id):
         is_correct=correct
     )
     
-    # Update session score and move to next question
     session.score += points_earned
     session.current_question += 1
     session.save()
     
-    # Check if this was the last question
     if session.current_question >= total_questions:
         session.is_completed = True
         session.save()
@@ -140,28 +128,26 @@ def submit_answer(request, session_id):
 
 def quiz_result(request, session_id):
     session = get_object_or_404(QuizSession, id=session_id)
+
+    attempts = QuizAttempt.objects.filter(session=session)
+    correct_count = attempts.filter(is_correct=True).count()
+    incorrect_count = attempts.filter(is_correct=False).count()
+
     questions = Question.objects.filter(
         category=session.category, 
         question_type=session.question_type, 
         is_active=True
     )
-    
-    # Calculate total possible score
-    total_possible_score = sum(question.points for question in questions)
-    
-    # Calculate percentage
+
+    total_possible_score = sum(q.points for q in questions)
     percentage = int((session.score / total_possible_score) * 100) if total_possible_score else 0
-    
-    # Determine character result based on score
-    character_result = "ara" if percentage >= 70 else "shamiram"
-    
-    # Customize feedback based on result
-    if character_result == "ara":
+    character_result = 'ara' if percentage >= 70 else 'shamiram'
+
+    if character_result == 'ara':
         feedback_message = "Շնորհավորում ենք! Դուք Արա Գեղեցիկի կողմնակից եք: Դուք ունեք կիբեռանվտանգության բարձր գիտելիքներ և կարող եք հաջողությամբ պաշտպանվել կիբեռսպառնալիքներից։"
     else:
         feedback_message = "Դուք Շամիրամի կողմնակից եք: Պահպանեք զգոնությունը և շարունակեք զարգացնել ձեր կիբեռանվտանգության հմտությունները։ Ուսումնասիրեք մեր նյութերը ավելի շատ գիտելիքների համար։"
-    
-    # Create or get result
+
     result, created = QuizResult.objects.get_or_create(
         session=session,
         defaults={
@@ -171,13 +157,15 @@ def quiz_result(request, session_id):
             'feedback_message': feedback_message
         }
     )
-    
+
     return render(request, 'quiz/result.html', {
         'result': result,
         'session': session,
         'total_possible_score': total_possible_score,
+        'correct_count': correct_count,
+        'incorrect_count': incorrect_count,
     })
-    
+
 def leaderboard(request):
     results = QuizResult.objects.filter(is_visible=True).order_by('-percentage', '-final_score')[:10]
     return render(request, 'quiz/leaderboard.html', {'results': results})
