@@ -1,96 +1,290 @@
 
 {% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="hy">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-</head>
 
 {% block title %}
 Կիբեռանվտանգության զեկուցման ֆորմա
 {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reporting.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row g-4">
-        <!-- Ձախ կողմում՝ Ֆորմա -->
-        <div class="col-lg-6">
-            <div class="section-header text-center mb-4">
-                <h2 class="hero-title">Լրացրեք դիմումը, կիսվեք ձեզ հանդիպած դեպքերով, օգնեք այլ մարդկանց</h2>
-            </div>
-            <div class="card hero-center-card">
-                <div class="card-body">
-                    <h4 class="hero-title">Դիմումի լրացման ֆորմա</h4>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="category" class="form-label">Կատեգորիա</label>
-                            <select id="category" name="category" class="form-select">
-                                {% for choice in categories %}
-                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Նկարագրություն</label>
-                            <textarea id="description" name="description" class="form-control" rows="4"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="suspicious_url" class="form-label">Կասկածելի URL</label>
-                            <input type="url" id="suspicious_url" name="suspicious_url" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="suspicious_email" class="form-label">Կասկածելի էլ. փոստ</label>
-                            <input type="email" id="suspicious_email" name="suspicious_email" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="contact_info" class="form-label">Հետադարձ կապի տվյալներ</label>
-                            <input type="text" id="contact_info" name="contact_info" class="form-control">
-                        </div>
-                        <div class="form-check mb-3">
-                            <input type="checkbox" id="is_anonymous" name="is_anonymous" class="form-check-input">
-                            <label for="is_anonymous" class="form-check-label">Անանուն</label>
-                        </div>
-                        <button type="submit" class="btn btn-cyber w-100">Ուղարկել</button>
-                    </form>
-                </div>
-            </div>
+<div class="reporting-container">
+    <div class="container">
+        <!-- Header Section -->
+        <div class="reporting-header">
+            <h1>Ֆիշինգի դեմ պայքար</h1>
+            <p class="lead text-white-50">Լրացրեք դիմումը, կիսվեք ձեզ հանդիպած դեպքերով, օգնեք այլ մարդկանց</p>
         </div>
 
-        <!-- Աջ կողմում՝ Ում դիմել -->
-        <div class="col-lg-6">
-            <div class="section-header text-center mb-4">
-                <h2 class="hero-title">Ում դիմել</h2>
-            </div>
-            <div class="row row-cols-1 g-3">
-                {% for contact in contacts %}
-                <div class="col">
-                    <div class="card module-card">
-                        <div class="card-body">
-                            <h5 class="module-title">{{ contact.name }}</h5>
-                            <p class="module-desc">{{ contact.description }}</p>
-                            {% if contact.phone %}
-                            <p><strong>Հեռախոս:</strong> {{ contact.phone }}</p>
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-custom{% elif message.tags == 'error' %}alert-error{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Փակել"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Left Column - Report Form -->
+            <div class="col-lg-7">
+                <div class="reporting-form-card card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-shield-alt me-2"></i>Դիմումի լրացման ֆորմա</h4>
+                        <small class="text-white-50">Բոլոր անհրաժեշտ դաշտերը նշված են * նշանով</small>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="reportForm">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.category.id_for_label }}" class="form-label">
+                                        {{ form.category.label }}
+                                    </label>
+                                    {{ form.category }}
+                                    {% if form.category.help_text %}
+                                        <div class="form-text">{{ form.category.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.category.errors %}
+                                        <div class="text-danger small">{{ form.category.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Սպառնալիքի մակարդակ</label>
+                                    <div class="form-control bg-secondary text-white-50" style="border: none;">
+                                        <small>Ավտոմատ գնահատում</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.description.id_for_label }}" class="form-label">
+                                    {{ form.description.label }}
+                                </label>
+                                {{ form.description }}
+                                {% if form.description.help_text %}
+                                    <div class="form-text">{{ form.description.help_text }}</div>
+                                {% endif %}
+                                {% if form.description.errors %}
+                                    <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.platform_source.id_for_label }}" class="form-label">
+                                    {{ form.platform_source.label }}
+                                </label>
+                                {{ form.platform_source }}
+                                {% if form.platform_source.help_text %}
+                                    <div class="form-text">{{ form.platform_source.help_text }}</div>
+                                {% endif %}
+                                {% if form.platform_source.errors %}
+                                    <div class="text-danger small">{{ form.platform_source.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.suspicious_url.id_for_label }}" class="form-label">
+                                        {{ form.suspicious_url.label }}
+                                    </label>
+                                    {{ form.suspicious_url }}
+                                    {% if form.suspicious_url.help_text %}
+                                        <div class="form-text">{{ form.suspicious_url.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.suspicious_url.errors %}
+                                        <div class="text-danger small">{{ form.suspicious_url.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.suspicious_email.id_for_label }}" class="form-label">
+                                        {{ form.suspicious_email.label }}
+                                    </label>
+                                    {{ form.suspicious_email }}
+                                    {% if form.suspicious_email.help_text %}
+                                        <div class="form-text">{{ form.suspicious_email.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.suspicious_email.errors %}
+                                        <div class="text-danger small">{{ form.suspicious_email.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.contact_info.id_for_label }}" class="form-label">
+                                    {{ form.contact_info.label }}
+                                </label>
+                                {{ form.contact_info }}
+                                {% if form.contact_info.help_text %}
+                                    <div class="form-text">{{ form.contact_info.help_text }}</div>
+                                {% endif %}
+                                {% if form.contact_info.errors %}
+                                    <div class="text-danger small">{{ form.contact_info.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-check mb-4">
+                                {{ form.is_anonymous }}
+                                <label for="{{ form.is_anonymous.id_for_label }}" class="form-check-label">
+                                    {{ form.is_anonymous.label }}
+                                </label>
+                                {% if form.is_anonymous.help_text %}
+                                    <div class="form-text">{{ form.is_anonymous.help_text }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-error">
+                                    {{ form.non_field_errors.0 }}
+                                </div>
                             {% endif %}
-                            {% if contact.email %}
-                            <p><strong>Էլ. փոստ:</strong> <a href="mailto:{{ contact.email }}">{{ contact.email }}</a></p>
-                            {% endif %}
-                            {% if contact.website %}
-                            <p><strong>Կայք:</strong> <a href="{{ contact.website }}" target="_blank">{{ contact.website }}</a></p>
-                            {% endif %}
-                        </div>
+                            
+                            <button type="submit" class="btn btn-submit-report w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Ուղարկել զեկուցումը
+                            </button>
+                        </form>
                     </div>
                 </div>
-                {% endfor %}
+            </div>
+
+            <!-- Right Column - Contact Information -->
+            <div class="col-lg-5">
+                <div class="contacts-section">
+                    <div class="contacts-header">
+                        <h4><i class="fas fa-phone-alt me-2"></i>Ում դիմել</h4>
+                        <small class="text-white-50">Արտակարգ իրավիճակների և լրացուցիչ օգնության համար</small>
+                    </div>
+                    <div class="p-3">
+                        {% if contacts %}
+                            <div class="row row-cols-1 g-3">
+                                {% for contact in contacts %}
+                                <div class="col">
+                                    <div class="contact-card card">
+                                        <div class="card-body">
+                                            {% if contact.is_emergency %}
+                                                <div class="emergency-badge">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>Արտակարգ
+                                                </div>
+                                            {% endif %}
+                                            <h5 class="contact-title">{{ contact.name }}</h5>
+                                            {% if contact.description %}
+                                                <p class="contact-desc">{{ contact.description }}</p>
+                                            {% endif %}
+                                            
+                                            <!-- Contact Guidelines -->
+                                            {% if contact.guideline %}
+                                            <div class="guideline-section mb-3">
+                                                <h6 class="text-info"><i class="fas fa-info-circle me-1"></i>Դիմելու ուղեցույց</h6>
+                                                
+                                                {% if contact.guideline.when_to_contact %}
+                                                <div class="guideline-item">
+                                                    <strong class="text-warning">Երբ դիմել:</strong>
+                                                    <p class="small text-white-50">{{ contact.guideline.when_to_contact }}</p>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if contact.guideline.required_documents %}
+                                                <div class="guideline-item">
+                                                    <strong class="text-warning">Անհրաժեշտ փաստաթղթեր:</strong>
+                                                    <p class="small text-white-50">{{ contact.guideline.required_documents }}</p>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if contact.guideline.response_time %}
+                                                <div class="guideline-item">
+                                                    <strong class="text-warning">Պատասխանի ժամկետ:</strong>
+                                                    <span class="badge bg-info">{{ contact.guideline.response_time }}</span>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if contact.guideline.additional_info %}
+                                                <div class="guideline-item">
+                                                    <strong class="text-warning">Լրացուցիչ տեղեկություններ:</strong>
+                                                    <p class="small text-white-50">{{ contact.guideline.additional_info }}</p>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            {% endif %}
+                                            {% if contact.phone %}
+                                                <div class="contact-info">
+                                                    <strong><i class="fas fa-phone me-1"></i>Հեռախոս:</strong> 
+                                                    <a href="tel:{{ contact.phone }}">{{ contact.phone }}</a>
+                                                </div>
+                                            {% endif %}
+                                            {% if contact.email %}
+                                                <div class="contact-info">
+                                                    <strong><i class="fas fa-envelope me-1"></i>Էլ. փոստ:</strong> 
+                                                    <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+                                                </div>
+                                            {% endif %}
+                                            {% if contact.website %}
+                                                <div class="contact-info">
+                                                    <strong><i class="fas fa-globe me-1"></i>Կայք:</strong> 
+                                                    <a href="{{ contact.website }}" target="_blank" rel="noopener">{{ contact.website }}</a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center text-white-50 py-4">
+                                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                                <p>Կոնտակտային տեղեկություններ չեն գտնվել</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Category Statistics -->
+                {% if category_stats %}
+                <div class="contacts-section mt-4">
+                    <div class="contacts-header">
+                        <h4><i class="fas fa-chart-pie me-2"></i>Կատեգորիաներ ըստ զեկուցումների</h4>
+                    </div>
+                    <div class="p-3">
+                        {% for stat in category_stats %}
+                        <div class="d-flex justify-content-between align-items-center mb-2 category-{{ stat.category }}">
+                            <span class="text-white">{{ stat.category|title }}</span>
+                            <span class="badge bg-primary">{{ stat.count }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reportForm');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function() {
+        submitButton.classList.add('submitting');
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Ուղարկվում է...';
+        submitButton.disabled = true;
+    });
+    
+    // Auto-resize textarea
+    const textarea = form.querySelector('textarea');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    }
+});
+</script>
+
+<script src="{% static 'js/reporting.js' %}"></script>
 {% endblock %}

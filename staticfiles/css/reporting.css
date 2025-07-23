@@ -1,0 +1,349 @@
+/* Reporting Module Styles */
+
+.reporting-container {
+    background: 
+        linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(26, 31, 46, 0.95) 50%, rgba(15, 20, 35, 0.95) 100%),
+        url('/static/images/hero-bg.jpg') top center/cover no-repeat fixed;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.reporting-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    background: linear-gradient(45deg, #00ff88, #00ccff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.reporting-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.reporting-form-card {
+    background: rgba(20, 25, 35, 0.9);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.reporting-form-card:hover {
+    border-color: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 12px 40px rgba(0, 255, 136, 0.2);
+}
+
+.reporting-form-card .card-header {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 255, 0.1));
+    border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+}
+
+.reporting-form-card .card-header h4 {
+    color: #00ff88;
+    margin: 0;
+    font-weight: 600;
+}
+
+.form-label {
+    color: #00ff88;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: #00ff88;
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
+    color: #ffffff;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-check-input:checked {
+    background-color: #00ff88;
+    border-color: #00ff88;
+}
+
+.form-check-label {
+    color: #ffffff;
+}
+
+.form-text {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+}
+
+.btn-submit-report {
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    border: none;
+    color: #000;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-submit-report:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+    color: #000;
+}
+
+.contacts-section {
+    background: rgba(20, 25, 35, 0.85);
+    border: 1px solid rgba(0, 204, 255, 0.25);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 204, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.contacts-header {
+    background: linear-gradient(135deg, rgba(0, 204, 255, 0.1), rgba(0, 255, 136, 0.1));
+    border-bottom: 1px solid rgba(0, 204, 255, 0.2);
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+}
+
+.contacts-header h4 {
+    color: #00ccff;
+    margin: 0;
+    font-weight: 600;
+}
+
+.contact-card {
+    background: rgba(0, 5, 15, 0.6);
+    border: 1px solid rgba(0, 204, 255, 0.25);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.contact-card:hover {
+    border-color: rgba(0, 204, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 204, 255, 0.2);
+}
+
+.contact-card .card-body {
+    padding: 1.25rem;
+}
+
+.contact-title {
+    color: #00ccff;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.contact-desc {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.contact-info {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.25rem;
+}
+
+.contact-info strong {
+    color: #00ccff;
+}
+
+.contact-info a {
+    color: #00ff88;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #00ccff;
+}
+
+.emergency-badge {
+    background: linear-gradient(135deg, #ff0055, #ff3366);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.stats-section {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stats-title {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00ff88;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+}
+
+.alert-custom {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 10px;
+    color: #00ff88;
+}
+
+.alert-error {
+    background: rgba(255, 0, 85, 0.1);
+    border: 1px solid rgba(255, 0, 85, 0.3);
+    border-radius: 10px;
+    color: #ff0055;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .reporting-header h1 {
+        font-size: 2rem;
+    }
+    
+    .reporting-form-card,
+    .contacts-section {
+        margin-bottom: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .reporting-container {
+        padding: 1rem 0;
+    }
+    
+    .reporting-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animation for form submission */
+@keyframes submitPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-submit-report.submitting {
+    animation: submitPulse 0.6s ease-in-out;
+    pointer-events: none;
+}
+
+/* Category-specific styling */
+.category-banking { border-left: 4px solid #4CAF50; }
+.category-social_media { border-left: 4px solid #2196F3; }
+.category-sms { border-left: 4px solid #FF9800; }
+.category-email { border-left: 4px solid #9C27B0; }
+.category-cryptocurrency { border-left: 4px solid #FFD700; }
+.category-online_shopping { border-left: 4px solid #E91E63; }
+.category-government { border-left: 4px solid #795548; }
+.category-other { border-left: 4px solid #607D8B; }
+
+/* Guidelines Section */
+.guideline-section {
+    background: rgba(0, 204, 255, 0.1);
+    border: 1px solid rgba(0, 204, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.guideline-item {
+    margin-bottom: 0.75rem;
+}
+
+.guideline-item:last-child {
+    margin-bottom: 0;
+}
+
+.guideline-item strong {
+    color: #00ccff;
+    font-size: 0.9rem;
+}
+
+.guideline-item p {
+    margin: 0.25rem 0 0 0;
+    line-height: 1.4;
+}
+
+.guideline-item .badge {
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+/* Platform Source Field Styling */
+.platform-field {
+    position: relative;
+}
+
+.platform-field::after {
+    content: attr(data-category);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    pointer-events: none;
+}

@@ -1,98 +1,192 @@
+
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}Վիկտորինա - CyberAratta{% endblock %}
+
+{% block page_title %}🧠 Կիբեռանվտանգության Վիկտորինա{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Փորձարկեք Ձեր գիտելիքները կիբեռանվտանգության վերաբերյալ</p>
+{% endblock %}
+
 {% block content %}
-<section class="quiz-hero">
-    <div class="hero-center-card">
-    <h1>Կիբեռանվտանգության վիկտորինա</h1>
-     <div class="hero-title">
-        <h2>Փորձարկեք Ձեր գիտելիքները կիբեռանվտանգության վերաբերյալ</h2>
-    </div>
-</section>
 <div class="container">
     {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
+    <div class="alert alert-error alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Փակել"></button>
+    </div>
     {% endif %}
+    
     <form method="post" action="{% url 'quiz:start_quiz' %}" id="quiz-form">
         {% csrf_token %}
         
-        <h3 class="mb-4">Ընտրեք կատեգորիան</h3>
-        <div class="row">
-            {% for category in categories %}
-            <div class="col-md-4 mb-4">
-                <div class="category-card" data-category="{{ category.id }}" tabindex="0">
-                    <h3>{{ category.name }}</h3>
-                    <p>{{ category.description }}</p>
-                    <input type="radio" name="category" value="{{ category.id }}" id="cat_{{ category.id }}" style="display:none;">
+        <!-- Category Selection -->
+        <div class="cyber-card mb-4">
+            <div class="cyber-card-header">
+                <h4><i class="fas fa-list me-2"></i>Ընտրեք Կատեգորիան</h4>
+            </div>
+            <div class="cyber-card-body">
+                <div class="row">
+                    {% for category in categories %}
+                    <div class="col-md-4 mb-3">
+                        <div class="quiz-category-card h-100" data-category="{{ category.id }}" tabindex="0">
+                            <div class="card-body text-center p-4">
+                                {% if category.category_type == 'school' %}
+                                    <i class="fas fa-school fa-3x text-primary mb-3"></i>
+                                {% elif category.category_type == 'student' %}
+                                    <i class="fas fa-user-graduate fa-3x text-info mb-3"></i>
+                                {% else %}
+                                    <i class="fas fa-briefcase fa-3x text-success mb-3"></i>
+                                {% endif %}
+                                <h5 class="card-title mb-3">{{ category.name }}</h5>
+                                <p class="card-text text-muted">{{ category.description|default:"Ընտրեք այս կատեգորիան" }}</p>
+                                <input type="radio" name="category" value="{{ category.id }}" id="cat_{{ category.id }}" style="display:none;">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
         </div>
         
-        <h3 class="mb-4 mt-4">Ընտրեք հարցի տեսակը</h3>
-        <div class="row">
-            {% for value, display in Question.QUESTION_TYPES %}
-            <div class="col-md-6 mb-4">
-                <div class="question-type-card" data-type="{{ value }}">
-                    <h3>{{ display }}</h3>
-                    <input type="radio" name="question_type" value="{{ value }}" id="type_{{ value }}" style="display:none;">
+        <!-- Question Type Selection -->
+        <div class="cyber-card mb-4">
+            <div class="cyber-card-header">
+                <h4><i class="fas fa-question-circle me-2"></i>Ընտրեք Հարցի Տեսակը</h4>
+            </div>
+            <div class="cyber-card-body">
+                <div class="row">
+                    {% for value, display in Question.QUESTION_TYPES %}
+                    <div class="col-md-6 mb-3">
+                        <div class="quiz-type-card h-100" data-type="{{ value }}">
+                            <div class="card-body text-center p-4">
+                                {% if value == 'classic' %}
+                                    <i class="fas fa-tasks fa-3x text-success mb-3"></i>
+                                    <h5 class="card-title mb-3">{{ display }}</h5>
+                                    <p class="card-text text-muted">Ուսուցողական քուիզ ծանուցումներով և բացատրություններով</p>
+                                {% else %}
+                                    <i class="fas fa-crown fa-3x text-warning mb-3"></i>
+                                    <h5 class="card-title mb-3">{{ display }}</h5>
+                                    <p class="card-text text-muted">Խաղային ձևաչափ ժամանակի սահմանափակմամբ</p>
+                                {% endif %}
+                                <input type="radio" name="question_type" value="{{ value }}" id="type_{{ value }}" style="display:none;">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
         </div>
         
-        <button type="submit" class="btn btn-primary btn-lg mt-4">Սկսել Քուիզը</button>
+        <div class="text-center">
+            <button type="submit" class="btn btn-cyber btn-lg px-5">
+                <i class="fas fa-play me-2"></i>Սկսել Վիկտորինա
+            </button>
+            <a href="{% url 'quiz:leaderboard' %}" class="btn btn-outline-primary btn-lg px-5 ms-3">
+                <i class="fas fa-trophy me-2"></i>Լավագույն Արդյունքներ
+            </a>
+        </div>
     </form>
 </div>
 
 <script>
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Quiz page loaded, initializing selection handlers...');
+    
     // Կատեգորիաների ընտրություն
-    $('.category-card').click(function() {
-        $('.category-card').removeClass('active');
-        $(this).addClass('active');
-        $('#cat_' + $(this).data('category')).prop('checked', true);
+    const categoryCards = document.querySelectorAll('.quiz-category-card');
+    console.log('Found', categoryCards.length, 'category cards');
+    
+    categoryCards.forEach((card, index) => {
+        card.addEventListener('click', function() {
+            console.log('Category card clicked:', this.dataset.category);
+            
+            // Remove active class from all cards
+            categoryCards.forEach(c => c.classList.remove('active'));
+            // Add active class to clicked card
+            this.classList.add('active');
+            
+            // Check the radio button
+            const categoryId = this.dataset.category;
+            const radioButton = document.getElementById('cat_' + categoryId);
+            if (radioButton) {
+                radioButton.checked = true;
+                console.log('Radio button checked for category:', categoryId);
+            } else {
+                console.error('Radio button not found for category:', categoryId);
+            }
+        });
     });
     
     // Հարցերի տեսակի ընտրություն
-    $('.question-type-card').click(function() {
-        $('.question-type-card').removeClass('active');
-        $(this).addClass('active');
-        $('#type_' + $(this).data('type')).prop('checked', true);
+    const typeCards = document.querySelectorAll('.quiz-type-card');
+    console.log('Found', typeCards.length, 'type cards');
+    
+    typeCards.forEach(card => {
+        card.addEventListener('click', function() {
+            console.log('Type card clicked:', this.dataset.type);
+            
+            // Remove active class from all cards
+            typeCards.forEach(c => c.classList.remove('active'));
+            // Add active class to clicked card
+            this.classList.add('active');
+            
+            // Check the radio button
+            const typeValue = this.dataset.type;
+            const radioButton = document.getElementById('type_' + typeValue);
+            if (radioButton) {
+                radioButton.checked = true;
+                console.log('Radio button checked for type:', typeValue);
+            } else {
+                console.error('Radio button not found for type:', typeValue);
+            }
+        });
     });
     
-    // Ստուգել որ ընտրություն կատարված է
-    $('#quiz-form').submit(function(e) {
-        if (!$('input[name="category"]:checked').length) {
-            e.preventDefault();
-            alert('Խնդրում ենք ընտրել կատեգորիան');
-        }
-        else if (!$('input[name="question_type"]:checked').length) {
-            e.preventDefault();
-            alert('Խնդրում ենք ընտրել հարցի տեսակը');
-        }
+    // Keyboard navigation
+    const allCards = document.querySelectorAll('.quiz-category-card, .quiz-type-card');
+    allCards.forEach(card => {
+        card.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
     });
+    
+    // Form submission validation
+    const quizForm = document.getElementById('quiz-form');
+    if (quizForm) {
+        quizForm.addEventListener('submit', function(e) {
+            const categoryChecked = document.querySelector('input[name="category"]:checked');
+            const typeChecked = document.querySelector('input[name="question_type"]:checked');
+            
+            console.log('Form submitted. Category checked:', !!categoryChecked, 'Type checked:', !!typeChecked);
+            
+            if (!categoryChecked) {
+                e.preventDefault();
+                alert('Խնդրում ենք ընտրել կատեգորիան');
+                return false;
+            }
+            
+            if (!typeChecked) {
+                e.preventDefault();
+                alert('Խնդրում ենք ընտրել հարցի տեսակը');
+                return false;
+            }
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Բեռնվում է...';
+            submitBtn.disabled = true;
+        });
+    } else {
+        console.error('Quiz form not found!');
+    }
 });
 </script>
-
-<style>
-.category-card, .question-type-card {
-    border: 2px solid #3a5cc9;
-    background: rgba(30, 40, 80, 0.7);
-    padding: 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    height: 100%;
-    transition: all 0.3s;
-}
-
-.category-card:hover, .question-type-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(58, 92, 201, 0.5);
-}
-
-.category-card.active, .question-type-card.active {
-    border: 2px solid #ffcc00;
-    background: rgba(60, 70, 120, 0.8);
-}
-</style>
 {% endblock %}

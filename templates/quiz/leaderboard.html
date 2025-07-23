@@ -1,34 +1,125 @@
 {% extends 'base.html' %}
+
+{% block title %}Լավագույն Արդյունքներ - CyberAratta{% endblock %}
+
+{% block page_title %}🏆 Լավագույն Արդյունքներ{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Ամենաջան մասնակիցների նվաճումները</p>
+{% endblock %}
+
 {% block content %}
 <div class="container">
-    <h1>Լավագույն Արդյունքներ</h1>
-    <table class="leaderboard-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Քուիզի կատեգորիա</th>
-                <th>Տես zaczակ</th>
-                <th>Միավորներ</th>
-                <th>Տոկոս</th>
-                <th>Կերպար</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for result in results %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ result.session.category.name }}</td>
-                <td>{{ result.session.get_question_type_display }}</td>
-                <td>{{ result.final_score }}</td>
-                <td>{{ result.percentage }}%</td>
-                <td>{{ result.get_character_result_display }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">Դեռևս արդյունքներ չկան</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="cyber-card">
+        <div class="cyber-card-header">
+            <h4><i class="fas fa-trophy me-2"></i>Թոփ 10 Արդյունքներ</h4>
+        </div>
+        <div class="cyber-card-body">
+            {% if results %}
+            <div class="table-responsive">
+                <table class="table table-cyber">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Քուիզի կատեգորիա</th>
+                            <th>Տեսակ</th>
+                            <th class="text-center">Միավորներ</th>
+                            <th class="text-center">Տոկոս</th>
+                            <th class="text-center">Կերպար</th>
+                            <th class="text-center">Ամսաթիվ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr class="{% if forloop.counter <= 3 %}table-highlight-{{ forloop.counter }}{% endif %}">
+                            <td class="text-center">
+                                {% if forloop.counter == 1 %}
+                                    <i class="fas fa-crown text-warning fa-lg"></i>
+                                {% elif forloop.counter == 2 %}
+                                    <i class="fas fa-medal text-secondary fa-lg"></i>
+                                {% elif forloop.counter == 3 %}
+                                    <i class="fas fa-award text-warning fa-lg"></i>
+                                {% else %}
+                                    {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ result.session.category.name }}</span>
+                            </td>
+                            <td>{{ result.session.get_question_type_display }}</td>
+                            <td class="text-center">
+                                <strong class="text-success">{{ result.final_score }}</strong>
+                            </td>
+                            <td class="text-center">
+                                <div class="progress" style="height: 20px; width: 80px;">
+                                    <div class="progress-bar {% if result.percentage >= 70 %}bg-success{% elif result.percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ result.percentage }}%">
+                                        {{ result.percentage|floatformat:0 }}%
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if result.character_result == 'ara' %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-shield-alt me-1"></i>{{ result.get_character_result_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-user-circle me-1"></i>{{ result.get_character_result_display }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center text-muted">
+                                <small>{{ result.created_at|date:"d/m/Y" }}</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Դեռևս արդյունքներ չկան</h5>
+                <p class="text-muted">Եղեք առաջինները, ովքեր կսկսեն վիկտորինան!</p>
+                <a href="{% url 'quiz:home' %}" class="btn btn-cyber mt-3">
+                    <i class="fas fa-play me-2"></i>Սկսել Վիկտորինա
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<style>
+.table-cyber {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.table-cyber th {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: rgba(0, 255, 136, 0.3);
+    color: var(--neon-green);
+    font-weight: 600;
+}
+
+.table-cyber td {
+    border-color: rgba(255, 255, 255, 0.1);
+    vertical-align: middle;
+}
+
+.table-highlight-1 {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+}
+
+.table-highlight-2 {
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent);
+}
+
+.table-highlight-3 {
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent);
+}
+</style>
 {% endblock %}

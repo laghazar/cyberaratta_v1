@@ -1,67 +1,584 @@
 {% extends 'base.html' %}
-{% block title %}Ստուգիր Հղումը{% endblock %}
+
+{% block title %}URL Ստուգիչ - CyberAratta{% endblock %}
+
+{% block page_title %}🔗 URL Ստուգիչ{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Ստուգեք կայքերի և էլ. փոստի անվտանգությունը վայրկյանների ընթացքում</p>
+{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
 {% block content %}
-    <h1>Ստուգիր Հղումը կամ Էլ. փոստը</h1>
-    <form method="post" action="{% url 'url_checker:check_url' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="input_text">URL կամ Էլ. փոստ:</label>
-            <input type="text" name="input_text" class="form-control" required>
+<div class="container">
+    <div class="row">
+        <!-- URL Checker Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="cyber-card h-100">
+                <div class="cyber-card-header">
+                    <h4><i class="fas fa-link me-2"></i>URL Ստուգիչ</h4>
+                    <p class="mb-0 text-muted">Ստուգեք կայքերի անվտանգությունը</p>
+                </div>
+                <div class="cyber-card-body">
+                    <form method="post" action="{% url 'url_checker:check_url' %}" id="urlCheckForm">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="url_input" class="form-label">
+                                <i class="fas fa-globe me-2"></i>Կայքի Հասցե (URL)
+                            </label>
+                            <input type="url" name="input_text" id="url_input" class="form-control" 
+                                   placeholder="https://example.com" required>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Մուտքագրեք ստուգվող կայքի ամբողջական հասցեն
+                            </div>
+                        </div>
+                        
+                        <!-- Security Sources Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-shield-alt me-2"></i>Ընտրեք Անվտանգության Աղբյուրները
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-inline bg-light p-3 rounded border">
+                                        <input class="form-check-input" type="checkbox" name="sources" value="virustotal" id="vt_check" checked>
+                                        <label class="form-check-label w-100" for="vt_check">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-virus text-primary me-2"></i>
+                                                <div>
+                                                    <strong>VirusTotal</strong>
+                                                    <small class="d-block text-muted">70+ անվտանգության movement</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-inline bg-light p-3 rounded border">
+                                        <input class="form-check-input" type="checkbox" name="sources" value="kaspersky" id="kasp_check" checked>
+                                        <label class="form-check-label w-100" for="kasp_check">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-shield-virus text-success me-2"></i>
+                                                <div>
+                                                    <strong>Kaspersky OpenTIP</strong>
+                                                    <small class="d-block text-muted">Կիբեր-սպառնալիքների բազա</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-inline bg-light p-3 rounded border opacity-75">
+                                        <input class="form-check-input" type="checkbox" name="sources" value="safebrowsing" id="safe_check" disabled>
+                                        <label class="form-check-label w-100" for="safe_check">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fab fa-google text-warning me-2"></i>
+                                                <div>
+                                                    <strong>Google Safe Browsing</strong>
+                                                    <small class="d-block text-muted">Շուտով հասանելի</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-inline bg-light p-3 rounded border opacity-75">
+                                        <input class="form-check-input" type="checkbox" name="sources" value="urlvoid" id="void_check" disabled>
+                                        <label class="form-check-label w-100" for="void_check">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-search text-info me-2"></i>
+                                                <div>
+                                                    <strong>URLVoid</strong>
+                                                    <small class="d-block text-muted">Շուտով հասանելի</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Ավելի շատ աղբյուր = ավելի ճշգրիտ արդյունք
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-cyber btn-lg w-100">
+                                <i class="fas fa-shield-alt me-2"></i>Ստուգել URL-ը
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="urlResult" class="mt-4"></div>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Ստուգել</button>
-    </form>
 
-    <div id="result" class="mt-3"></div>
+        <!-- Email Checker Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="cyber-card h-100">
+                <div class="cyber-card-header">
+                    <h4><i class="fas fa-envelope me-2"></i>Էլ. փոստի Ստուգիչ</h4>
+                    <p class="mb-0 text-muted">Ստուգեք էլ. փոստերի ֆիշինգային ու վտանգավոր բնույթը</p>
+                </div>
+                <div class="cyber-card-body">
+                    <form method="post" id="emailCheckForm">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="email_input" class="form-label">
+                                <i class="fas fa-at me-2"></i>Էլ. փոստի Հասցե
+                            </label>
+                            <input type="email" name="email_text" id="email_input" class="form-control" 
+                                   placeholder="example@domain.com" required>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Մուտքագրեք ստուգվող էլ. փոստի հասցեն
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-cyber btn-lg w-100">
+                                <i class="fas fa-search me-2"></i>Ստուգել Էլ. փոստը
+                            </button>
+                        </div>
+                    </form>
 
-    <script>
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.startsWith(name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+                    <div id="emailResult" class="mt-4">
+                        <div class="alert alert-info">
+                            <i class="fas fa-cog me-2"></i>
+                            Էլ. փոստի ստուգիչը շուտով կլինի հասանելի։ Մենք աշխատում ենք նոր ինտեգրացիաների վրա։
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Checks Section -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-12">
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h4><i class="fas fa-history me-2"></i>Վերջին Ստուգումները</h4>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3"><i class="fas fa-link me-2"></i>URL Ստուգումներ</h6>
+                            <div id="recentUrls" class="text-center text-muted">
+                                <i class="fas fa-clock fa-2x mb-3"></i>
+                                <p>Ստուգեք առաջին URL-ը և այն կհայտնվի այստեղ</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3"><i class="fas fa-envelope me-2"></i>Էլ. փոստի Ստուգումներ</h6>
+                            <div id="recentEmails" class="text-center text-muted">
+                                <i class="fas fa-clock fa-2x mb-3"></i>
+                                <p>Էլ. փոստի ստուգումները շուտով կլինեն հասանելի</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
-            return cookieValue;
+        }
+    }
+    return cookieValue;
+}
+
+// URL Checker Form Handler
+document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const csrftoken = getCookie('csrftoken');
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    // Check if at least one source is selected
+    const selectedSources = this.querySelectorAll('input[name="sources"]:checked');
+    if (selectedSources.length === 0) {
+        alert('Խնդրում ենք ընտրել առնվազն մեկ անվտանգության աղբյուր');
+        return;
+    }
+    
+    // Show loading state with selected sources count
+    submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>Ստուգվում է ${selectedSources.length} աղբյուրով...`;
+    submitBtn.disabled = true;
+
+    fetch("{% url 'url_checker:check_url' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: new FormData(this)
+    })
+    .then(response => response.json())
+    .then(data => {
+        let alertClass = 'alert-warning';
+        let iconClass = 'fa-question-circle';
+        let statusColor = 'text-warning';
+        let confidenceText = '';
+        
+        // Status based styling
+        if (data.status === 'safe') {
+            alertClass = 'alert-custom';
+            iconClass = 'fa-shield-alt';
+            statusColor = 'text-success';
+        } else if (data.status === 'malicious') {
+            alertClass = 'alert-error';
+            iconClass = 'fa-exclamation-triangle';
+            statusColor = 'text-danger';
+        } else if (data.status === 'suspicious') {
+            alertClass = 'alert-warning';
+            iconClass = 'fa-exclamation-circle';
+            statusColor = 'text-warning';
+        } else if (data.status === 'pending') {
+            alertClass = 'alert-info';
+            iconClass = 'fa-clock';
+            statusColor = 'text-info';
         }
 
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const csrftoken = getCookie('csrftoken');
+        // Confidence level indication
+        switch(data.confidence) {
+            case 'high':
+                confidenceText = '<span class="badge bg-success ms-2">Բարձր վստահություն</span>';
+                break;
+            case 'medium':
+                confidenceText = '<span class="badge bg-warning ms-2">Միջին վստահություն</span>';
+                break;
+            case 'low':
+                confidenceText = '<span class="badge bg-secondary ms-2">Ցածր վստահություն</span>';
+                break;
+        }
 
-            fetch("{% url 'url_checker:check_url' %}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-                body: new FormData(this)
-            })
-            .then(response => response.json())
-            .then(data => {
-                let alertClass = 'warning';
-                if (data.status === 'Անվտանգ') alertClass = 'success';
-                else if (data.status === 'Վտանգավոր') alertClass = 'danger';
-                else if (data.status === 'Կասկածելի') alertClass = 'warning';
-                else if (data.status === 'Սպասում է ձեռքով մշակման') alertClass = 'secondary';
+        // Sources used display
+        let sourcesDisplay = '';
+        if (data.sources_used && data.sources_used.length > 0) {
+            sourcesDisplay = `
+                <div class="mt-2 pt-2 border-top">
+                    <small class="text-muted">
+                        <i class="fas fa-satellite-dish me-1"></i>
+                        <strong>Օգտագործված աղբյուրներ:</strong> 
+                        ${data.sources_used.map(source => {
+                            if (source === 'virustotal') return '<span class="badge bg-primary me-1">VirusTotal</span>';
+                            if (source === 'kaspersky') return '<span class="badge bg-success me-1">Kaspersky</span>';
+                            if (source === 'trusted_domain') return '<span class="badge bg-info me-1">Վստահելի Ցուցակ</span>';
+                            return `<span class="badge bg-secondary me-1">${source}</span>`;
+                        }).join('')}
+                    </small>
+                </div>
+            `;
+        }
 
-                document.getElementById('result').innerHTML = `
-                    <div class="alert alert-${alertClass}">
-                        <strong>Կարգավիճակ:</strong> ${data.status}<br>
-                        ${data.result}
+        document.getElementById('urlResult').innerHTML = `
+            <div class="result-container">
+                <div class="sources-info mb-3">
+                    ${sourcesDisplay}
+                </div>
+                ${data.result || 'Չկա լրացուցիչ տեղեկություն'}
+            </div>
+        `;
+        
+        // Create pie chart if canvas exists
+        setTimeout(() => {
+            const canvas = document.getElementById('securityChart');
+            if (canvas && data.source_statistics) {
+                const ctx = canvas.getContext('2d');
+                const stats = data.source_statistics;
+                
+                // Use actual statistics from the response
+                const safeCount = stats.safe_sources || 0;
+                const maliciousCount = stats.malicious_sources || 0;
+                const suspiciousCount = stats.suspicious_sources || 0;
+                const pendingCount = stats.pending_sources || 0;
+                
+                // Only show chart if there's data
+                if (safeCount + maliciousCount + suspiciousCount + pendingCount > 0) {
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Անվտանգ', 'Վտանգավոր', 'Կասկածելի', 'Սպասում'],
+                            datasets: [{
+                                data: [safeCount, maliciousCount, suspiciousCount, pendingCount],
+                                backgroundColor: [
+                                    '#198754', // success - green
+                                    '#dc3545', // danger - red
+                                    '#ffc107', // warning - yellow
+                                    '#0dcaf0'  // info - cyan
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#ffffff',
+                                hoverBorderWidth: 3,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        usePointStyle: true,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = Math.round((value / total) * 100);
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '50%',
+                            elements: {
+                                arc: {
+                                    borderRadius: 3
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    // Hide chart container if no data
+                    canvas.closest('.card').style.display = 'none';
+                }
+            }
+        }, 100);
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('urlResult').innerHTML = `
+            <div class="alert alert-error alert-dismissible fade show" role="alert">
+                <i class="fas fa-times-circle me-2"></i>
+                Սխալ է տեղի ունեցել URL-ի ստուգման ժամանակ: Խնդրում ենք կրկին փորձել:
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Փակել"></button>
+            </div>
+        `;
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+});
+
+// Email Checker Form Handler (Placeholder for future integration)
+document.getElementById('emailCheckForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    const emailInput = this.querySelector('#email_input').value;
+    
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Ստուգվում է...';
+    submitBtn.disabled = true;
+
+    // Simulate processing for now
+    setTimeout(() => {
+        document.getElementById('emailResult').innerHTML = `
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+                    <div>
+                        <h6 class="alert-heading mb-1">Էլ. փոստի Ստուգում</h6>
+                        <p class="mb-1"><strong>Հասցե:</strong> ${emailInput}</p>
+                        <p class="mb-0"><strong>Կարգավիճակ:</strong> Էլ. փոստի ստուգիչը մշակման փուլում է։ Շուտով կավելացվեն նոր ինտեգրացիաներ ֆիշինգային և վտանգավոր էլ. փոստերի հայտնաբերման համար։</p>
                     </div>
-                `;
-            })
-            .catch(() => {
-                document.getElementById('result').innerHTML = `
-                    <div class="alert alert-danger">
-                        Սերվերի սխալ, փորձեք կրկին:
-                    </div>
-                `;
-            });
-        });
-    </script>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Փակել"></button>
+            </div>
+        `;
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 2000);
+});
+</script>
+
+<style>
+/* URL Analysis Result Styles */
+.url-analysis-result {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.url-analysis-result .card {
+    transition: all 0.3s ease;
+}
+
+.url-analysis-result .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+.url-analysis-result .progress {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.url-analysis-result .progress-bar {
+    transition: width 0.6s ease;
+}
+
+.url-analysis-result .badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.url-analysis-result .alert {
+    border-radius: 12px;
+}
+
+.url-analysis-result .accordion-button {
+    font-weight: 500;
+    border-radius: 8px !important;
+}
+
+.url-analysis-result .accordion-button:not(.collapsed) {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.url-analysis-result code {
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+/* Source Selection Styles */
+.form-check-inline {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.form-check-inline:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.form-check-inline input[type="checkbox"]:checked + label {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+.form-check-inline.opacity-75 {
+    cursor: not-allowed;
+}
+
+.sources-info {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+/* Light theme colors */
+.bg-light-success {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}
+
+.bg-light-danger {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.bg-light-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.bg-light-info {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Result container */
+.result-container {
+    margin-top: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Animation for result appearance */
+.result-container {
+    animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Source badges animation */
+.sources-info .badge {
+    animation: fadeInScale 0.3s ease-out;
+    animation-fill-mode: both;
+}
+
+.sources-info .badge:nth-child(1) { animation-delay: 0.1s; }
+.sources-info .badge:nth-child(2) { animation-delay: 0.2s; }
+.sources-info .badge:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .url-analysis-result .card-body {
+        padding: 1rem 0.75rem;
+    }
+    
+    .url-analysis-result .alert {
+        padding: 1rem;
+    }
+    
+    .url-analysis-result h5 {
+        font-size: 1.1rem;
+    }
+    
+    .url-analysis-result h6 {
+        font-size: 1rem;
+    }
+    
+    .form-check-inline {
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
 {% endblock %}

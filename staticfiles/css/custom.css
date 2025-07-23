@@ -2,62 +2,84 @@
 
 /* === Variables === */
 :root {
-    --neon-green: #10ffcb;
-    --neon-blue: #00d0ff;
-    --dark-bg: #181f2f;
+    --neon-green: #00ff88;
+    --neon-blue: #00ccff;
+    --dark-bg: #0a0e1a;
+    --darker-bg: #1a1f2e;
+    --card-bg: rgba(20, 25, 35, 0.85);
     --font-armenian: 'Noto Sans Armenian', 'Roboto', Arial, sans-serif;
 }
 
 /* === Body & Base === */
-body.cyber-bg {
-    background: url('/static/images/hero-bg.jpg') top center/cover no-repeat;
-    background-attachment: fixed;
+body {
+    background: 
+        linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(26, 31, 46, 0.95) 50%, rgba(15, 20, 35, 0.95) 100%);
     font-family: var(--font-armenian);
-    color: #e2eafc;
+    color: #ffffff;
     min-height: 100vh;
 }
 
+body.cyber-bg {
+    background: 
+        linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(26, 31, 46, 0.95) 50%, rgba(15, 20, 35, 0.95) 100%);
+    font-family: var(--font-armenian);
+    color: #ffffff;
+    min-height: 100vh;
+}
 
-/* Hero Section Card Styling for Main Page */
-.hero-center-card.main-hero {
-    max-width: 600px; /* Սահմանափակում է քարտի լայնությունը */
-    width: 100%; /* Թույլ է տալիս քարտին զբաղեցնել հասանելի տարածքը */
-    margin: 0 auto; /* Կենտրոնացնում է քարտը */
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(16, 255, 203, 0.2);
-    background: rgba(24, 31, 47, 0.9);
-    border: 2px solid var(--neon-green);
+/* === Hero Section === */
+.hero-center-card {
+    margin: 0 auto;
+    margin-top: 6vh;
+    margin-bottom: 4vh;
+    max-width: 100%;
+    width: 100%;
+    background: rgba(20, 25, 35, 0.9);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     padding: 40px 30px;
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.hero-center-card:hover {
+    border-color: rgba(0, 255, 136, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 255, 136, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .hero-center-card .hero-title {
     font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--neon-green);
-    text-shadow: 0 0 12px var(--neon-green), 0 0 10 var(--neon-blue);
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
     margin-bottom: 1rem;
 }
 
 .hero-center-card .hero-desc {
     font-size: 1.2rem;
-    color: #cafff9;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
 }
 
 /* === Navbar === */
 .cyber-navbar {
-    background: linear-gradient(90deg, #262b3a 0%, #162447 100%);
-    box-shadow: 0 2px 12px rgba(16, 255, 203, 0.15);
-    border-bottom: 2px solid var(--neon-green);
+    background: linear-gradient(135deg, rgba(10, 14, 26, 0.95), rgba(26, 31, 46, 0.95));
+    box-shadow: 0 2px 20px rgba(0, 255, 136, 0.2);
+    border-bottom: 1px solid rgba(0, 255, 136, 0.3);
     padding: 12px 0;
+    backdrop-filter: blur(15px);
 }
 
 .cyber-brand {
     font-weight: 700;
     font-size: 1.7rem;
     color: var(--neon-green) !important;
-    text-shadow: 0 0 8px var(--neon-green), 0 0 15px var(--neon-blue);
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
     letter-spacing: 1px;
     padding: 10px 15px;
     transition: transform 0.3s, text-shadow 0.3s;
@@ -65,11 +87,11 @@ body.cyber-bg {
 
 .cyber-brand:hover {
     transform: scale(1.03);
-    text-shadow: 0 0 12px var(--neon-green), 0 0 20px var(--neon-blue);
+    text-shadow: 0 0 20px var(--neon-green), 0 0 30px var(--neon-blue);
 }
 
 .cyber-link {
-    color: #e2eafc !important;
+    color: rgba(255, 255, 255, 0.8) !important;
     font-size: 1rem;
     font-weight: 500;
     padding: 10px 12px;
@@ -109,19 +131,21 @@ body.cyber-bg {
 }
 
 .module-card {
-    flex: 1 1 auto; /* Թույլ է տալիս ավելի լայն լինել */
-    max-width: 100%; /* Հեռացնում է լայնության սահմանափակումը */
-    background: rgba(24, 31, 47, 0.98);
-    border-radius: 16px;
-    box-shadow: 0 0 20px #10ffcb44;
+    flex: 1 1 220px;
+    max-width: 260px;
+    background: rgba(20, 25, 35, 0.9);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     padding: 20px;
     text-align: center;
-    transition: all 0.3s;
-    border: 2px solid var(--neon-green);
+    transition: all 0.3s ease;
 }
 
 .module-card:hover {
-    box-shadow: 0 0 30px #10ffcb88;
+    border-color: rgba(0, 255, 136, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 255, 136, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     transform: translateY(-5px);
 }
 
@@ -140,37 +164,58 @@ body.cyber-bg {
 }
 
 .module-desc {
-    color: #b3f8f9;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.95rem;
     font-weight: 400;
 }
 
 /* === Footer === */
 .cyber-footer {
-    background: linear-gradient(90deg, #262b3a 0%, #162447 100%);
-    color: var(--neon-green);
+    background: linear-gradient(135deg, rgba(10, 14, 26, 0.95), rgba(26, 31, 46, 0.95));
+    color: rgba(255, 255, 255, 0.9);
     font-size: 0.95rem;
     padding: 20px 0;
-    border-top: 1px solid var(--neon-green);
-    box-shadow: 0 -2px 12px #10ffcb22;
+    border-top: 1px solid rgba(0, 255, 136, 0.25);
+    box-shadow: 0 -2px 20px rgba(0, 255, 136, 0.15);
+    backdrop-filter: blur(15px);
 }
 
 /* === Buttons === */
 .btn-cyber {
-    background: var(--neon-green);
-    color: var(--dark-bg);
+    background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+    color: #000;
     border: none;
-    border-radius: 8px;
+    border-radius: 25px;
     font-weight: 600;
-    padding: 10px 20px;
-    box-shadow: 0 2px 12px #10ffcb88;
-    transition: all 0.3s;
+    padding: 0.75rem 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
 }
 
 .btn-cyber:hover {
-    background: #0de6b3; /* Slightly darker neon green for hover */
-    color: var(--dark-bg);
-    box-shadow: 0 0 15px #10ffcb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+    color: #000;
+}
+
+.btn-cyber-outline {
+    background: transparent;
+    color: var(--neon-green);
+    border: 2px solid var(--neon-green);
+    border-radius: 25px;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-outline:hover {
+    background: var(--neon-green);
+    color: #000;
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+    transform: translateY(-2px);
 }
 
 /* === Scrollbar === */
@@ -208,62 +253,200 @@ body.cyber-bg {
     .cyber-link { font-size: 0.95rem; padding: 8px 10px; margin: 0 3px; }
 }
 
-/* General container styling */
-.container {
-    max-width: 1200px;
+/* ===== UNIFIED PAGE LAYOUT ===== */
+
+/* Fixed Navigation */
+.navbar.fixed-top {
+    background: linear-gradient(135deg, rgba(10, 14, 26, 0.98), rgba(26, 31, 46, 0.98)) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+    z-index: 1030;
 }
 
-/* Card styling */
-.card {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.navbar.fixed-top .cyber-brand {
+    font-size: 1.8rem;
+    color: var(--neon-green);
+    text-shadow: 0 0 20px var(--neon-green);
+    font-weight: 800;
 }
 
-.card-title {
-    font-weight: bold;
-    color: #0d6efd;
+.navbar.fixed-top .nav-link.active {
+    color: var(--neon-green) !important;
+    background: rgba(0, 255, 136, 0.12);
+    border-radius: 8px;
+    text-shadow: 0 0 15px var(--neon-green);
 }
 
-.card-body {
-    padding: 20px;
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 255, 0.1));
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+    margin-bottom: 2rem;
 }
 
-.card-text {
-    color: #6c757d;
+.cyber-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    margin-bottom: 0.5rem;
 }
 
-/* Button styling */
-.btn-success {
-    background-color: #198754;
-    border-color: #198754;
+/* Page Content */
+.page-content {
+    min-height: 60vh;
+    padding: 0 1rem;
 }
 
-.btn-success:hover {
-    background-color: #157347;
-    border-color: #157347;
+/* Cards */
+.cyber-card {
+    background: rgba(20, 25, 35, 0.9);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
 }
 
-/* Responsive adjustments */
+.cyber-card:hover {
+    border-color: rgba(0, 255, 136, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 255, 136, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transform: translateY(-5px);
+}
+
+.cyber-card-header {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.12), rgba(0, 204, 255, 0.12));
+    border-bottom: 1px solid rgba(0, 255, 136, 0.25);
+    padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
+}
+
+.cyber-card-body {
+    padding: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Forms */
+.form-cyber {
+    background: rgba(20, 25, 35, 0.9);
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    border-radius: 15px;
+    padding: 2rem;
+    backdrop-filter: blur(15px);
+}
+
+.form-control.cyber-input, .form-control, .form-select {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus, .form-control.cyber-input:focus {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: var(--neon-green);
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 136, 0.25);
+    color: #ffffff;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-label.cyber-label, .form-label {
+    color: var(--neon-green);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Footer */
+.cyber-footer {
+    background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+    border-top: 1px solid rgba(0, 255, 136, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.cyber-footer .cyber-text {
+    color: var(--neon-green);
+    font-weight: 700;
+}
+
+.social-links a {
+    color: var(--neon-blue);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green);
+}
+
+/* Alerts */
+.alert-cyber, .alert-custom {
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: var(--neon-green);
+    border-radius: 10px;
+}
+
+.alert-danger-cyber, .alert-error {
+    background: rgba(255, 16, 16, 0.1);
+    border: 1px solid rgba(255, 16, 16, 0.3);
+    color: #ff6b6b;
+    border-radius: 10px;
+}
+
+/* Loading Animation */
+.loading-cyber, .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 255, 136, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--neon-green);
+    animation: spin-cyber 1s ease-in-out infinite;
+}
+
+@keyframes spin-cyber {
+    to { transform: rotate(360deg); }
+}
+
+/* Statistics Section */
+.stat-item h4 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsive Enhancements */
 @media (max-width: 768px) {
-    .card {
-        margin-top: 20px;
+    .cyber-title {
+        font-size: 2rem;
+    }
+    
+    .page-header {
+        padding: 1.5rem 0;
+    }
+    
+    .cyber-card {
+        margin: 0 1rem 1.5rem;
+    }
+    
+    .stat-item h4 {
+        font-size: 1.5rem;
     }
 }
-
-.section-header {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.section-header .hero-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--neon-green);
-    text-shadow: 0 0 8px var(--neon-green), 0 0 12px var(--neon-blue);
-    margin-bottom: 0.5rem;
-    border-bottom: 2px solid var(--neon-green);
-    display: inline-block;
-    padding-bottom: 5px;
-}
-

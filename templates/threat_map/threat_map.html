@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Սպառնալիքների Քարտեզ - CyberAratta{% endblock %}
+
+{% block page_title %}🗺️ Հայաստանի Կիբեր Սպառնալիքների Քարտեզ{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Իրական ժամանակում կիբեր սպառնալիքների մոնիտորինգ և վերլուծություն</p>
+{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Control Panel -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="cyber-card">
+                <div class="cyber-card-body text-center">
+                    <button id="refresh-btn" class="btn btn-cyber me-3">
+                        <span class="loading-spinner" style="display: none;"></span>
+                        <i class="fas fa-sync-alt me-2"></i>Թարմացնել տվյալները
+                    </button>
+                    <a href="{% url 'reporting:report' %}" class="btn btn-cyber-outline">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Հայտնել Սպառնալիքի Մասին
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+            </button>
+    <!-- Statistics Dashboard -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card text-center">
+                <div class="cyber-card-body">
+                    <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                    <h3 id="total-threats" class="stat-number">0</h3>
+                    <p class="mb-0">Ընդհանուր Սպառնալիքներ</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card text-center">
+                <div class="cyber-card-body">
+                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                    <h3 id="active-threats" class="stat-number">0</h3>
+                    <p class="mb-0">Գործուն Սպառնալիքներ</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card text-center">
+                <div class="cyber-card-body">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <h3 id="resolved-threats" class="stat-number">0</h3>
+                    <p class="mb-0">Լուծված Սպառնալիքներ</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="cyber-card text-center">
+                <div class="cyber-card-body">
+                    <i class="fas fa-link fa-2x text-warning mb-2"></i>
+                    <h3 id="phishing-urls" class="stat-number">0</h3>
+                    <p class="mb-0">Ֆիշինգ Հղումներ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="row">
+        <!-- Left Column: Threat Data -->
+        <div class="col-lg-8">
+            <!-- Active Threats -->
+            <div class="cyber-card mb-4">
+                <div class="cyber-card-header">
+                    <h4><i class="fas fa-exclamation-triangle me-2"></i>Գործուն Սպառնալիքներ</h4>
+                </div>
+                <div class="cyber-card-body">
+                    <div id="threats-list">
+                        <div class="text-center">
+                            <div class="loading-spinner"></div>
+                            <p>Բեռնվում են տվյալները...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phishing URLs -->
+                    <div class="threat-section">
+                        <div class="threat-section-header">
+                            <h3 class="threat-section-title">
+                                🎣 Ֆիշինգ հղումներ
+                            </h3>
+                        </div>
+                        <div class="threat-section-body">
+                            <div id="phishing-urls-list">
+                                <div class="text-center">
+                                    <div class="loading-spinner"></div>
+                                    <p>Բեռնվում են տվյալները...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h4 class="chart-title">Վտանգների բաշխում ըստ ծանրության</h4>
+                            <canvas id="severity-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h4 class="chart-title">Վտանգների կատեգորիաներ</h4>
+                            <canvas id="category-chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="chart-container">
+                            <h4 class="chart-title">Վտանգների ժամանակային գրաֆիկ</h4>
+                            <canvas id="timeline-chart" width="400" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Map and Statistics -->
+            <div class="col-lg-4">
+                <!-- Armenia Map -->
+                <div class="map-container">
+                    <div class="map-header">
+                        <h3 class="map-title">🗺️ Հայաստանի քարտեզ</h3>
+                        <p class="map-subtitle">Վտանգների աշխարհագրական բաշխում</p>
+                    </div>
+                    <div class="armenia-map">
+                        <div class="map-placeholder">
+                            <div>
+                                <h4>🇦🇲</h4>
+                                <p>Հայաստանի Հանրապետություն</p>
+                                <p>Կիբեր վտանգների մոնիտորինգ</p>
+                            </div>
+                            
+                            <!-- Threat Indicators -->
+                            <div class="threat-indicator high" style="top: 30%; left: 45%;"></div>
+                            <div class="threat-indicator medium" style="top: 60%; left: 40%;"></div>
+                            <div class="threat-indicator low" style="top: 40%; left: 60%;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Legend -->
+                    <div class="threat-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ff0055;"></div>
+                            <span>Բարձր վտանգ</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ff9800;"></div>
+                            <span>Միջին վտանգ</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #4caf50;"></div>
+                            <span>Ցածր վտանգ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Statistics from Reports -->
+                <div class="threat-section mt-4">
+                    <div class="threat-section-header">
+                        <h3 class="threat-section-title">
+                            📊 Վերջին հաշվետվություններ
+                        </h3>
+                    </div>
+                    <div class="threat-section-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="stat-card small">
+                                    <span class="stat-number">{{ total_reports }}</span>
+                                    <div class="stat-label">Ընդհանուր հաշվետվություններ</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-card small">
+                                    <span class="stat-number">{{ today_reports }}</span>
+                                    <div class="stat-label">Այսօր</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h5 style="color: #00ccff;">Պլատֆորմների բաշխում:</h5>
+                            <div class="platform-stats">
+                                {% for platform, count in platform_stats.items %}
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="platform-badge">{{ platform }}</span>
+                                    <span class="text-white">{{ count }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Guidelines -->
+                <div class="threat-section mt-4">
+                    <div class="threat-section-header">
+                        <h3 class="threat-section-title">
+                            📞 Կապ կազմակերպությունների հետ
+                        </h3>
+                    </div>
+                    <div class="threat-section-body">
+                        {% for guideline in contact_guidelines %}
+                        <div class="threat-item">
+                            <h6 style="color: #00ccff;">{{ guideline.organization }}</h6>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">{{ guideline.description }}</p>
+                            <div class="threat-meta">
+                                <span class="threat-badge" style="background: rgba(0, 204, 255, 0.2); color: #00ccff;">
+                                    {{ guideline.contact_info }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSRF Token for AJAX requests -->
+{% csrf_token %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/threat_map.js' %}"></script>
+{% endblock %}

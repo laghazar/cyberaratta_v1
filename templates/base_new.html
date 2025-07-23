@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CyberAratta{% endblock %}</title>
+    
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'css/quiz-patterns.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quiz-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quiz-home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+    <link rel="stylesheet" href="{% static 'css/threat-map.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Page specific CSS -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/ara.jpg' %}">
+    
+    <!-- Meta tags -->
+    <meta name="description" content="CyberAratta - Հայաստանի Կիբեր Անվտանգության Պլատֆորմ">
+    <meta name="keywords" content="cyber security, Armenia, phishing, malware, security education">
+    <meta name="author" content="CyberAratta Team">
+</head>
+<body class="cyber-bg">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg cyber-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand cyber-brand" href="{% url 'core:home' %}" data-text="🛡️ CyberAratta">
+                🛡️ CyberAratta
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Բացել նավիգացիան">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link cyber-link {% if request.resolver_match.namespace == 'quiz' %}active{% endif %}" href="{% url 'quiz:home' %}">
+                            <i class="fas fa-question-circle"></i> Քուիզ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cyber-link {% if request.resolver_match.namespace == 'reporting' %}active{% endif %}" href="{% url 'reporting:report' %}">
+                            <i class="fas fa-exclamation-triangle"></i> Հաշվետվություն
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cyber-link {% if request.resolver_match.namespace == 'threat_map' %}active{% endif %}" href="{% url 'threat_map:threat_map' %}">
+                            <i class="fas fa-map-marked-alt"></i> Վտանգների Քարտեզ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link cyber-link {% if request.resolver_match.namespace == 'url_checker' %}active{% endif %}" href="{% url 'url_checker:check_url' %}">
+                            <i class="fas fa-shield-alt"></i> URL Ստուգիչ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="padding-top: 80px; min-height: 100vh;">
+        <!-- Page Header -->
+        {% block page_header %}
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-header text-center">
+                        <h1 class="cyber-title">{% block page_title %}{{ page_title }}{% endblock %}</h1>
+                        {% block page_subtitle %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+        
+        <!-- Page Content -->
+        <div class="page-content">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="cyber-footer py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="cyber-text">🛡️ CyberAratta</h5>
+                    <p class="text-muted">Հայաստանի Կիբեր Անվտանգության Կրթական Պլատֆորմ</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links">
+                        <a href="#" class="cyber-link me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="cyber-link me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="cyber-link me-3"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="cyber-link"><i class="fab fa-github"></i></a>
+                    </div>
+                    <p class="text-muted mt-2">© 2025 CyberAratta. Բոլոր իրավունքները պաշտպանված են:</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <!-- Page specific JS -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Global JavaScript -->
+    <script>
+        // Add loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add cyber effects
+            const cyberElements = document.querySelectorAll('.cyber-title, .cyber-brand');
+            cyberElements.forEach(el => {
+                el.addEventListener('mouseenter', function() {
+                    this.style.textShadow = '0 0 20px #00ff88, 0 0 40px #00ff88';
+                });
+                el.addEventListener('mouseleave', function() {
+                    this.style.textShadow = '0 0 10px rgba(0, 255, 136, 0.5)';
+                });
+            });
+
+            // Add active navigation highlight
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') && currentPath.includes(link.getAttribute('href').split('/')[1])) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

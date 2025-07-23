@@ -1,37 +1,143 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Գլխավոր{% endblock %}
+
+{% block title %}CyberAratta - Գլխավոր{% endblock %}
+
+{% block page_title %}🛡️ Բարի գալուստ CyberAratta{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Ստուգեք Ձեր կիբեռանվտանգության գիտելիքները և պաշտպանվեք առցանց սպառնալիքներից</p>
+{% endblock %}
+
 {% block content %}
-<section class="hero-section">
-    <div class="hero-center-card">
-        <h1 class="hero-title" data-text="Բարի գալուստ Կիբեռարատտա">Բարի գալուստ CyberAratta</h1>
-        <p class="hero-desc">Ստուգեք Ձեր կիբեռանվտանգության գիտելիքները և պաշտպանվեք առցանց սպառնալիքներից</p>
+<!-- Main Hero Section -->
+<div class="row justify-content-center mb-5">
+    <div class="col-md-10">
+        <div class="cyber-card text-center p-5">
+            <h2 class="mb-4">🔐 Ձեր Կիբեռանվտանգության Պարտները</h2>
+            <p class="lead mb-4">CyberAratta-ն Հայաստանի առաջին ինտերակտիվ կիբեռանվտանգության հարթակն է, որը նպատակ ունի բարձրացնել քաղաքացիների կիբեռգրամոտությունը և պաշտպանել նրանց առցանց սպառնալիքներից:</p>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                    <h5>Անվտանգություն</h5>
+                    <p>Իրական ժամանակում պաշտպանություն</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-graduation-cap fa-3x text-success mb-3"></i>
+                    <h5>Կրթություն</h5>
+                    <p>Ինտերակտիվ ուսուցում</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h5>Համայնք</h5>
+                    <p>Համատեղ պայքար</p>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
-<section class="modules-row">
-    <div class="module-card">
-        <img src="{% static 'images/quiz-icon.png' %}" alt="Վիկտորինա" class="module-icon">
-        <h3 class="module-title">Վիկտորինա</h3>
-        <p class="module-desc">Փորձարկեք Ձեր գիտելիքները կիբեռանվտանգության վերաբերյալ:</p>
-        <a href="{% url 'quiz:home' %}" class="btn btn-cyber">Իմանալ Ավելին</a>
+</div>
+
+<!-- Platform Modules -->
+<div class="row">
+    <!-- Quiz Module -->
+    <div class="col-lg-6 col-md-6 mb-4">
+        <div class="cyber-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-question-circle fa-4x text-primary mb-3"></i>
+                <h4 class="card-title">🧠 Վիկտորինա</h4>
+                <p class="card-text">Փորձարկեք Ձեր գիտելիքները կիբեռանվտանգության վերաբերյալ և բարելավեք Ձեր հմտությունները ինտերակտիվ հարցերի միջոցով:</p>
+                <div class="mt-auto">
+                    <a href="{% url 'quiz:home' %}" class="btn btn-cyber btn-lg">
+                        <i class="fas fa-play me-2"></i>Սկսել Վիկտորինա
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="module-card">
-        <img src="{% static 'images/reporting-icon.png' %}" alt="Հաշվետվություն" class="module-icon">
-        <h3 class="module-title">Հաշվետվություն</h3>
-        <p class="module-desc">Հայտնեք կիբեռսպառնալիքների մասին:Իմացեք ավելին ՀՀ-ում կիբեռսպառնալիքների զոհ դառնալու դեպքում որ մարմիններին և ինչպես պետք է դիմել:</p>
-        <a href="{% url 'reporting:report' %}" class="btn btn-cyber">Իմանալ Ավելին</a>
+
+    <!-- Reporting Module -->
+    <div class="col-lg-6 col-md-6 mb-4">
+        <div class="cyber-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-4x text-warning mb-3"></i>
+                <h4 class="card-title">📊 Հաշվետվություն</h4>
+                <p class="card-text">Հայտնեք կիբեռսպառնալիքների մասին: Իմացեք ավելին ՀՀ-ում կիբեռսպառնալիքների զոհ դառնալու դեպքում որ մարմիններին և ինչպես պետք է դիմել:</p>
+                <div class="mt-auto">
+                    <a href="{% url 'reporting:report' %}" class="btn btn-cyber btn-lg">
+                        <i class="fas fa-file-alt me-2"></i>Ստեղծել Հաշվետվություն
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="module-card">
-        <img src="{% static 'images/threat-map-icon.png' %}" alt="Սպառնալիքների Քարտեզ" class="module-icon">
-        <h3 class="module-title">Սպառնալիքների Քարտեզ</h3>
-        <p class="module-desc">Դիտեք կիբեռսպառնալիքները իրական ժամանակում։ Եղեք զգոն և տեղեկացված, հայտնեք սպառնալիքների մասին:</p>
-        <a href="{% url 'threat_map:map' %}" class="btn btn-cyber">Իմանալ Ավելին</a>
+
+    <!-- Threat Map Module -->
+    <div class="col-lg-6 col-md-6 mb-4">
+        <div class="cyber-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-globe fa-4x text-danger mb-3"></i>
+                <h4 class="card-title">🗺️ Սպառնալիքների Քարտեզ</h4>
+                <p class="card-text">Դիտեք կիբեռսպառնալիքները իրական ժամանակում: Եղեք զգոն և տեղեկացված, հայտնեք սպառնալիքների մասին:</p>
+                <div class="mt-auto">
+                    <a href="{% url 'threat_map:threat_map' %}" class="btn btn-cyber btn-lg">
+                        <i class="fas fa-map me-2"></i>Դիտել Քարտեզը
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="module-card">
-        <img src="{% static 'images/url-checker-icon.png' %}" alt="URL Ստուգիչ" class="module-icon">
-        <h3 class="module-title">URL Ստուգիչ</h3>
-        <p class="module-desc">Ստուգեք կայքերի և էլ. փոստի անվտանգությունը: Կիսվեք կասկածելի հղումներով և վայրկյանների ընթացքում ստացեք տեղեկություններ անվտանգության մասին:</p>    
-        <a href="{% url 'url_checker:check_url' %}" class="btn btn-cyber">Իմանալ Ավելին</a>
+
+    <!-- URL Checker Module -->
+    <div class="col-lg-6 col-md-6 mb-4">
+        <div class="cyber-card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-link fa-4x text-info mb-3"></i>
+                <h4 class="card-title">🔗 URL Ստուգիչ</h4>
+                <p class="card-text">Ստուգեք կայքերի և էլ. փոստի անվտանգությունը: Կիսվեք կասկածելի հղումներով և վայրկյանների ընթացքում ստացեք տեղեկություններ անվտանգության մասին:</p>
+                <div class="mt-auto">
+                    <a href="{% url 'url_checker:check_url' %}" class="btn btn-cyber btn-lg">
+                        <i class="fas fa-search me-2"></i>Ստուգել URL
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+</div>
+
+<!-- Statistics Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="cyber-card">
+            <div class="card-body text-center">
+                <h3 class="mb-4">📈 Հարթակի Վիճակագրություն</h3>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <h4 class="text-primary">{{ total_users|default:1000 }}+</h4>
+                            <p>Գործուն Օգտվողներ</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <h4 class="text-success">{{ total_threats|default:500 }}+</h4>
+                            <p>Հայտնաբերված Սպառնալիքներ</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <h4 class="text-warning">{{ total_urls_checked|default:2500 }}+</h4>
+                            <p>Ստուգված URL-ներ</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <h4 class="text-info">{{ total_quizzes|default:750 }}+</h4>
+                            <p>Լրացված Վիկտորինաներ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

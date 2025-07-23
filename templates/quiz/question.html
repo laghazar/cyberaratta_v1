@@ -13,37 +13,101 @@
     {% endif %}
     <form id="answer-form">
         {% csrf_token %}
+        <input type="hidden" id="selected-answer-id" name="answer_id" value="">
         {% for answer in answers %}
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="answer_id" id="answer_{{ answer.id }}" value="{{ answer.id }}">
-                <label class="form-check-label" for="answer_{{ answer.id }}">{{ answer.answer_text }}</label>
-            </div>
+            <button type="button" class="btn btn-outline-light answer-choice-btn w-100 text-start mb-3" 
+                    data-answer-id="{{ answer.id }}" onclick="selectAnswerButton({{ answer.id }})">
+                <span class="answer-prefix">{{ forloop.counter|upper }}</span>. {{ answer.answer_text }}
+            </button>
         {% endfor %}
         <button type="submit" class="btn btn-primary mt-3">Հաստատել</button>
     </form>
     <div id="result"></div>
     <script>
+        console.log('Question page loaded');
+        
+        // Function to select answer button
+        function selectAnswerButton(answerId) {
+            console.log('selectAnswerButton called with ID:', answerId);
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.answer-choice-btn').forEach(btn => {
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline-light');
+            });
+            
+            // Add active class to selected button
+            const selectedButton = document.querySelector(`[data-answer-id="${answerId}"]`);
+            if (selectedButton) {
+                selectedButton.classList.remove('btn-outline-light');
+                selectedButton.classList.add('btn-success');
+                
+                // Set hidden input value
+                document.getElementById('selected-answer-id').value = answerId;
+                console.log('Answer selected:', answerId);
+            } else {
+                console.error('Button not found for ID:', answerId);
+            }
+        }
+        
+        // Make function global so onclick can access it
+        window.selectAnswerButton = selectAnswerButton;
+        
         document.getElementById('answer-form').addEventListener('submit', function(e) {
+            console.log('=== FORM SUBMITTED ===');
             e.preventDefault();
+            
+            const selectedAnswerId = document.getElementById('selected-answer-id').value;
+            console.log('Selected answer ID:', selectedAnswerId);
+            
+            if (!selectedAnswerId) {
+                console.error('No answer selected!');
+                alert('Խնդրում ենք ընտրել պատասխան');
+                return;
+            }
+            
             fetch("{% url 'quiz:submit_answer' session.id %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ answer_id: document.querySelector('input[name="answer_id"]:checked').value })
+                body: JSON.stringify({ answer_id: selectedAnswerId })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('Response data:', data);
+                
+                // Disable all buttons
+                document.querySelectorAll('.answer-choice-btn').forEach(btn => {
+                    btn.disabled = true;
+                });
+                document.querySelector('button[type="submit"]').disabled = true;
+                
                 document.getElementById('result').innerHTML = `
                     <div class="alert alert-${data.correct ? 'success' : 'danger'}">
-                        ${data.correct ? 'Ճիշտ է!' : 'Սխալ է!'}<br>
+                        ${data.correct ? '✓ Ճիշտ է!' : '✗ Սխալ է!'}<br>
                         Բացատրություն: ${data.explanation}<br>
                         Միավորներ: ${data.points_earned}
                     </div>
                 `;
                 setTimeout(() => window.location.href = "{% url 'quiz:quiz_question' session.id %}", 2000);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('Սխալ տեղի ունեցավ');
             });
+        });
+        
+        // Add event listeners to all answer buttons
+        const answerButtons = document.querySelectorAll('.answer-choice-btn');
+        console.log('Found answer buttons:', answerButtons.length);
+        
+        answerButtons.forEach(function(button, index) {
+            console.log(`Answer button ${index + 1}:`, button.dataset.answerId);
         });
     </script>
 {% endblock %}

@@ -13,7 +13,7 @@ SECRET_KEY = config('SECRET_KEY', default='your-secret-key-here')
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cyberaratta.am']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'cyberaratta.am', 'testserver']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Զեկուցումների վահանակ
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reporting.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="reporting-container">
+    <div class="container">
+        <div class="reporting-header">
+            <h1>Զեկուցումների վահանակ</h1>
+            <p class="lead text-white-50">Բոլոր ֆիշինգի զեկուցումները մեկ տեղում</p>
+        </div>
+
+        <div class="stats-section">
+            <h3 class="stats-title">Ընդհանուր տվյալներ</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">{{ total_reports }}</span>
+                    <span class="stat-label">Ընդհանուր<br>զեկուցումներ</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ page_obj.paginator.count }}</span>
+                    <span class="stat-label">Ընթացիկ<br>ցուցադրված</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="reporting-form-card card">
+            <div class="card-header">
+                <h4><i class="fas fa-list me-2"></i>Զեկուցումների ցանկ</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Կատեգորիա</th>
+                                <th>Նկարագրություն</th>
+                                <th>URL</th>
+                                <th>Էլ. փոստ</th>
+                                <th>Կարգավիճակ</th>
+                                <th>Ամսաթիվ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in page_obj %}
+                            <tr class="category-{{ report.category }}">
+                                <td>{{ report.id }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ report.get_category_display }}</span>
+                                </td>
+                                <td>
+                                    {% if report.description|length > 50 %}
+                                        {{ report.description|slice:":50" }}...
+                                    {% else %}
+                                        {{ report.description }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if report.suspicious_url %}
+                                        <a href="{{ report.suspicious_url }}" target="_blank" class="text-warning">
+                                            {% if report.suspicious_url|length > 30 %}
+                                                {{ report.suspicious_url|slice:":30" }}...
+                                            {% else %}
+                                                {{ report.suspicious_url }}
+                                            {% endif %}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if report.suspicious_email %}
+                                        <a href="mailto:{{ report.suspicious_email }}" class="text-info">{{ report.suspicious_email }}</a>
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if report.status == 'pending' %}
+                                        <span class="badge bg-warning">{{ report.get_status_display }}</span>
+                                    {% elif report.status == 'investigating' %}
+                                        <span class="badge bg-info">{{ report.get_status_display }}</span>
+                                    {% elif report.status == 'resolved' %}
+                                        <span class="badge bg-success">{{ report.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ report.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ report.created_at|date:"d/m/Y H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Զեկուցումներ չեն գտնվել</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Էջերի նավիգացիա">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    &laquo; Նախորդ
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    Հաջորդ &raquo;
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'reporting:report' %}" class="btn btn-submit-report">
+                <i class="fas fa-plus me-2"></i>Նոր զեկուցում ավելացնել
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

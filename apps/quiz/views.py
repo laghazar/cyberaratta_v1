@@ -153,5 +153,9 @@ def quiz_result(request, session_id):
     })
 
 def leaderboard(request):
-    results = QuizResult.objects.filter(is_visible=True).order_by('-percentage', '-final_score')[:10]
+    results = QuizResult.objects.filter(
+        is_visible=True
+    ).select_related(
+        'session', 'session__category'
+    ).order_by('-percentage', '-final_score', '-session__started_at')[:10]
     return render(request, 'quiz/leaderboard.html', {'results': results})

@@ -65,10 +65,17 @@ class QuizResult(models.Model):
     percentage = models.FloatField()
     character_result = models.CharField(max_length=20, choices=CHARACTER_RESULT_CHOICES)
     feedback_message = models.TextField(blank=True)
+    is_visible = models.BooleanField(default=True)  # For leaderboard visibility
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     def get_character_result_display(self):
         return dict(self.CHARACTER_RESULT_CHOICES).get(self.character_result, "")
+    
     def __str__(self):
         return f"{self.session} - {self.character_result}"
+    
+    class Meta:
+        ordering = ['-percentage', '-final_score', '-created_at']
 
 class QuizAttempt(models.Model):
     session = models.ForeignKey(QuizSession, on_delete=models.CASCADE)
