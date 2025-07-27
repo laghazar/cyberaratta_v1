@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}📌 Տեխնիկական առաջադրանք - Կիբեռ սպառնալիքների LIVE քարտեզ{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+      crossorigin=""/>
+<link rel="stylesheet" href="{% static 'css/live-map.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="live-map-container">
+    <!-- Header -->
+    <div class="live-map-header">
+        <div class="container">
+            <h1 class="map-title">
+                🇦🇲 Հայաստանի դեմ ուղղված կիբեռ սպառնալիքներ
+                <span class="live-indicator">🔴 LIVE</span>
+            </h1>
+            <p class="map-subtitle">
+                Իրական ժամանակում կիբեռհարձակումների աշխարհագրական ցուցադրում
+            </p>
+        </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="map-wrapper">
+        <div id="cyber-threat-map" class="threat-map"></div>
+        
+        <!-- Map Controls -->
+        <div class="map-controls">
+            <div class="control-panel">
+                <h3>🎛️ Կառավարում</h3>
+                <div class="control-group">
+                    <label class="control-label">
+                        <input type="checkbox" id="showAttackLines" checked>
+                        <span>Ցույց տալ հարձակման գծեր</span>
+                    </label>
+                    <label class="control-label">
+                        <input type="checkbox" id="showSourceMarkers" checked>
+                        <span>Ցույց տալ աղբյուր երկրները</span>
+                    </label>
+                    <label class="control-label">
+                        <input type="checkbox" id="autoRefresh" checked>
+                        <span>Ավտոմատ թարմացում (30վ)</span>
+                    </label>
+                </div>
+                
+                <div class="refresh-controls">
+                    <button id="manualRefresh" class="btn-refresh">
+                        🔄 Թարմացնել հիմա
+                    </button>
+                    <div class="next-refresh">
+                        Հաջորդ թարմացումը: <span id="nextRefreshTime">30վ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="stats-panel">
+            <h3>📊 Վիճակագրություն</h3>
+            <div class="stat-item">
+                <span class="stat-label">Ընդհանուր հարձակումներ:</span>
+                <span class="stat-value" id="totalAttacks">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Վերջին 5 րոպեում:</span>
+                <span class="stat-value" id="recentAttacks">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Ակտիվ աղբյուր երկրներ:</span>
+                <span class="stat-value" id="sourceCountries">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Վտանգավորություն:</span>
+                <span class="threat-level" id="threatLevel">ՑԱԾՐ</span>
+            </div>
+        </div>
+
+        <!-- Attack Log -->
+        <div class="attack-log">
+            <h3>📋 Վերջին հարձակումներ</h3>
+            <div class="log-container" id="attackLogContainer">
+                <div class="log-item loading">
+                    ⏳ Տվյալների բեռնում...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="map-legend">
+        <h4>🗺️ Ծանուցակներ</h4>
+        <div class="legend-items">
+            <div class="legend-item">
+                <span class="legend-icon armenia-marker">🇦🇲</span>
+                <span>Հայաստան (թիրախ)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon source-marker">🔴</span>
+                <span>Աղբյուր երկիր</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon attack-line">━━━━</span>
+                <span>Հարձակման ուղղություն</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon high-threat">⚡</span>
+                <span>Բարձր վտանգավորություն</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h3>🌐 Տվյալների բեռնում...</h3>
+        <p>Ստացվում են վերջին կիբեռ սպառնալիքների տվյալները</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+        crossorigin=""></script>
+<script src="{% static 'js/live-threat-map.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Initializing Live Threat Map...');
+    
+    // Initialize the live threat map
+    window.threatMap = new LiveThreatMap('cyber-threat-map');
+    window.threatMap.initialize().catch(error => {
+        console.error('❌ Failed to initialize threat map:', error);
+        alert('Չհաջողվեց բեռնել սպառնալիքների քարտեզը');
+    });
+});
+
+// Add CSS animations for attack lines and markers
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes markerPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.7; }
+    }
+    
+    .attack-line-animated {
+        animation: attackLineDash 3s linear infinite;
+    }
+    
+    @keyframes attackLineDash {
+        0% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: -30; }
+    }
+    
+    .custom-source-marker {
+        z-index: 1000;
+    }
+    
+    .armenia-marker-custom {
+        z-index: 1001;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

@@ -3,12 +3,115 @@
 {% load static %}
 
 {% block title %}
-Կիբեռանվտանգության զեկուցման ֆորմա
+Զեղծարարության դեպքերի դիմում
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/reporting.css' %}">
+<link rel="stylesheet" href="{% static 'css/reporting.css' %}?v=2025{{ request.GET.v|default:'1' }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Select2 CSS - Local -->
+<link href="{% static 'css/select2/select2.min.css' %}?v=2025{{ request.GET.v|default:'1' }}" rel="stylesheet" />
+<style>
+    /* Custom Select2 dark theme - FORCE OVERRIDE */
+    .select2-container--default .select2-selection--single {
+        background-color: #2a2a2a !important;
+        border: 2px solid #00a99d !important;
+        color: #ffffff !important;
+        border-radius: 8px !important;
+        height: 50px !important;
+        padding: 8px 12px !important;
+        font-size: 16px !important;
+        box-shadow: none !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #ffffff !important;
+        line-height: 32px !important;
+        padding-left: 8px !important;
+        font-size: 16px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 16px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 15px !important;
+        right: 12px !important;
+        width: 20px !important;
+        height: 20px !important;
+    }
+    
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #ffffff transparent transparent transparent !important;
+        border-style: solid !important;
+        border-width: 6px 4px 0 4px !important;
+    }
+    
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+        border-color: transparent transparent #ffffff transparent !important;
+        border-width: 0 4px 6px 4px !important;
+    }
+    
+    .select2-dropdown {
+        background-color: #2a2a2a !important;
+        border: 2px solid #00a99d !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0, 169, 157, 0.3) !important;
+    }
+    
+    .select2-container--default .select2-results__option {
+        background-color: #2a2a2a !important;
+        color: #ffffff !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important;
+        border-bottom: 1px solid rgba(0, 169, 157, 0.2) !important;
+    }
+    
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #00a99d !important;
+        color: #ffffff !important;
+    }
+    
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: #00d4c4 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
+    }
+    
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        background-color: #1a1a1a !important;
+        border: 1px solid #00a99d !important;
+        color: #ffffff !important;
+        border-radius: 6px !important;
+        padding: 8px 12px !important;
+        font-size: 16px !important;
+    }
+    
+    .select2-container {
+        width: 100% !important;
+        z-index: 9999 !important;
+        font-family: inherit !important;
+    }
+    
+    /* Hide default Bootstrap select styling */
+    #id_platform_source.form-select {
+        display: none !important;
+    }
+    
+    /* Force Select2 to be visible */
+    .select2-container .select2-selection--single {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Ensure proper stacking */
+    .select2-dropdown {
+        z-index: 10000 !important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -16,15 +119,19 @@
     <div class="container">
         <!-- Header Section -->
         <div class="reporting-header">
-            <h1>Ֆիշինգի դեմ պայքար</h1>
+            <h1>Զեղծարարության դեմ պայքար</h1>
             <p class="lead text-white-50">Լրացրեք դիմումը, կիսվեք ձեզ հանդիպած դեպքերով, օգնեք այլ մարդկանց</p>
         </div>
 
         <!-- Messages -->
         {% if messages %}
             {% for message in messages %}
-                <div class="alert {% if message.tags == 'success' %}alert-custom{% elif message.tags == 'error' %}alert-error{% endif %} alert-dismissible fade show" role="alert">
-                    {{ message }}
+                <div class="alert {% if message.tags == 'success safe' or message.tags == 'success' %}alert-custom{% elif message.tags == 'error safe' or message.tags == 'error' %}alert-error{% endif %} alert-dismissible fade show" role="alert">
+                    {% if 'safe' in message.tags %}
+                        {{ message|safe }}
+                    {% else %}
+                        {{ message }}
+                    {% endif %}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Փակել"></button>
                 </div>
             {% endfor %}
@@ -35,11 +142,15 @@
             <div class="col-lg-7">
                 <div class="reporting-form-card card">
                     <div class="card-header">
-                        <h4><i class="fas fa-shield-alt me-2"></i>Դիմումի լրացման ֆորմա</h4>
+                        <h4><i class="fas fa-shield-alt me-2"></i>Դիմումի ձև</h4>
                         <small class="text-white-50">Բոլոր անհրաժեշտ դաշտերը նշված են * նշանով</small>
+                        <!-- Debug Button for localStorage -->
+                        <button type="button" class="btn btn-sm btn-outline-warning float-end" onclick="clearLocalStorageAndReload()" style="font-size: 12px;">
+                            🧹 Clear Cache
+                        </button>
                     </div>
                     <div class="card-body">
-                        <form method="POST" id="reportForm">
+                        <form method="POST" id="reportForm" enctype="multipart/form-data">
                             {% csrf_token %}
                             
                             <div class="row">
@@ -55,12 +166,7 @@
                                         <div class="text-danger small">{{ form.category.errors.0 }}</div>
                                     {% endif %}
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Սպառնալիքի մակարդակ</label>
-                                    <div class="form-control bg-secondary text-white-50" style="border: none;">
-                                        <small>Ավտոմատ գնահատում</small>
-                                    </div>
-                                </div>
+                        
                             </div>
                             
                             <div class="mb-3">
@@ -80,12 +186,33 @@
                                 <label for="{{ form.platform_source.id_for_label }}" class="form-label">
                                     {{ form.platform_source.label }}
                                 </label>
-                                {{ form.platform_source }}
+                                <div class="position-relative">
+                                    {{ form.platform_source }}
+                                </div>
                                 {% if form.platform_source.help_text %}
                                     <div class="form-text">{{ form.platform_source.help_text }}</div>
                                 {% endif %}
                                 {% if form.platform_source.errors %}
                                     <div class="text-danger small">{{ form.platform_source.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Other platform source input (hidden by default) -->
+                            <div class="mb-3" id="other-platform-div" style="display: none; opacity: 0; transition: all 0.3s ease;">
+                                <label for="{{ form.platform_source_other.id_for_label }}" class="form-label">
+                                    <i class="fas fa-edit me-1"></i>{{ form.platform_source_other.label }} <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="fas fa-plus text-muted"></i>
+                                    </span>
+                                    {{ form.platform_source_other }}
+                                </div>
+                                {% if form.platform_source_other.help_text %}
+                                    <div class="form-text">{{ form.platform_source_other.help_text }}</div>
+                                {% endif %}
+                                {% if form.platform_source_other.errors %}
+                                    <div class="text-danger small">{{ form.platform_source_other.errors.0 }}</div>
                                 {% endif %}
                             </div>
                             
@@ -129,17 +256,111 @@
                                 {% endif %}
                             </div>
                             
-                            <div class="form-check mb-4">
-                                {{ form.is_anonymous }}
-                                <label for="{{ form.is_anonymous.id_for_label }}" class="form-check-label">
-                                    {{ form.is_anonymous.label }}
-                                </label>
-                                {% if form.is_anonymous.help_text %}
-                                    <div class="form-text">{{ form.is_anonymous.help_text }}</div>
+                            <!-- Has Damage Checkbox -->
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.has_damage }}
+                                    <label class="form-check-label" for="{{ form.has_damage.id_for_label }}">
+                                        {{ form.has_damage.label }}
+                                    </label>
+                                </div>
+                                {% if form.has_damage.help_text %}
+                                    <div class="form-text">{{ form.has_damage.help_text }}</div>
+                                {% endif %}
+                                {% if form.has_damage.errors %}
+                                    <div class="text-danger small">{{ form.has_damage.errors.0 }}</div>
                                 {% endif %}
                             </div>
                             
-                            {% if form.non_field_errors %}
+                            <!-- Damage Types Field (hidden by default) -->
+                            <div class="mb-3" id="damage-types-section" style="display: none;">
+                                <label for="{{ form.damage_types.id_for_label }}" class="form-label">
+                                    {{ form.damage_types.label }}
+                                </label>
+                                <div class="damage-types-dropdown-container">
+                                    <!-- Overlay for dropdown -->
+                                    <div class="dropdown-overlay" id="dropdownOverlay"></div>
+                                    <!-- Custom dropdown for damage types -->
+                                    <div class="damage-types-custom-dropdown" id="damageTypesDropdown">
+                                        <div class="dropdown-header" id="damageTypesHeader">
+                                            <span class="dropdown-placeholder">Ընտրել վնասի տեսակները</span>
+                                            <span class="dropdown-selected" id="selectedDamageTypes" style="display: none;"></span>
+                                            <i class="dropdown-arrow fas fa-chevron-down"></i>
+                                        </div>
+                                        <div class="dropdown-content" id="damageTypesContent" style="display: none;">
+                                            <!-- Categories with checkboxes will be loaded here -->
+                                        </div>
+                                    </div>
+                                    <!-- Hidden original field -->
+                                    <div style="display: none;">
+                                        {{ form.damage_types }}
+                                    </div>
+                                </div>
+                                {% if form.damage_types.help_text %}
+                                    <div class="form-text">{{ form.damage_types.help_text }}</div>
+                                {% endif %}
+                                {% if form.damage_types.errors %}
+                                    <div class="text-danger small">{{ form.damage_types.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Damage Details Field (hidden by default) -->
+                            <div class="mb-3" id="damage-details-section" style="display: none;">
+                                <label for="{{ form.damage_details.id_for_label }}" class="form-label">
+                                    {{ form.damage_details.label }}
+                                </label>
+                                {{ form.damage_details }}
+                                {% if form.damage_details.help_text %}
+                                    <div class="form-text">{{ form.damage_details.help_text }}</div>
+                                {% endif %}
+                                {% if form.damage_details.errors %}
+                                    <div class="text-danger small">{{ form.damage_details.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+            <!-- Evidence Files Section -->
+            <div class="evidence-section mb-4">
+                <h5 class="evidence-title mb-3">
+                    <i class="fas fa-paperclip me-2"></i>Ապացույցներ (ոչ պարտադիր)
+                </h5>
+                <p class="evidence-description">
+                    Կարող եք կցել ապացույցներ՝ նկարներ, փաստաթղթեր, վիդեո կամ ձայնագրություններ, որոնք կօգնեն ավելի լավ հասկանալ դեպքը:
+                </p>
+                
+                <!-- Universal File Upload Section -->
+                <div class="universal-file-upload mt-4">
+                    <div class="upload-area" id="universalFileUpload">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">
+                            <h5 class="upload-title">Կցել ֆայլ</h5>
+                            <p class="upload-description">
+                                Քաշեք և գցեք ֆայլերը այստեղ կամ սեղմեք ընտրելու համար
+                            </p>
+                            <div class="file-types">
+                                <span class="file-type-badge">Նկարներ</span>
+                                <span class="file-type-badge">Փաստաթղթեր</span>
+                                <span class="file-type-badge">Վիդեո</span>
+                                <span class="file-type-badge">Ձայն</span>
+                            </div>
+                        </div>
+                        <input type="file" id="universalFileInput" name="evidence_files_multiple" 
+                               accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff,.pdf,.doc,.docx,.txt,.rtf,.odt,.mp4,.avi,.mov,.wmv,.flv,.webm,.mkv,.mp3,.wav,.ogg,.m4a,.aac,.flac,.zip,.rar,.7z"
+                               multiple style="display: none;">
+                    </div>
+                    
+                    <!-- File List -->
+                    <div class="uploaded-files-list" id="uploadedFilesList" style="display: none;">
+                        <h6 class="files-list-title">Ընտրված ֆայլեր</h6>
+                        <div class="files-container" id="filesContainer"></div>
+                        <div class="total-size-info" id="totalSizeInfo">
+                            <span class="total-size">Ընդհանուր ծավալ: <span id="totalSizeValue">0 MB</span></span>
+                            <span class="max-size">Առավելագույն: 100 MB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>                            {% if form.non_field_errors %}
                                 <div class="alert alert-error">
                                     {{ form.non_field_errors.0 }}
                                 </div>
@@ -263,9 +484,68 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Select2 JavaScript - Local -->
+<script src="{% static 'js/select2/select2.min.js' %}?v=2025{{ request.GET.v|default:'1' }}"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// Clear localStorage for fresh start
+console.log('🧹 CLEARING localStorage for fresh start...');
+const draftKeys = Object.keys(localStorage).filter(key => 
+    key.includes('report') || key.includes('draft') || key.includes('platform')
+);
+console.log('🧹 Found draft keys:', draftKeys);
+draftKeys.forEach(key => {
+    console.log('🧹 Removing key:', key);
+    localStorage.removeItem(key);
+});
+
+$(document).ready(function() {
+    console.log('🔧 ULTIMATE DEBUG: Document ready fired');
+    console.log('🔧 ULTIMATE DEBUG: jQuery version:', $.fn.jquery);
+    console.log('🔧 ULTIMATE DEBUG: Select2 available:', typeof $.fn.select2);
+    console.log('🔧 ULTIMATE DEBUG: Page URL:', window.location.href);
+    
+    // Check ALL select elements
+    console.log('🔧 ULTIMATE DEBUG: All select elements count:', $('select').length);
+    $('select').each(function(index) {
+        console.log('🔧 ULTIMATE DEBUG: Select element', index, ':', this.id, this.className);
+    });
+    
+    // Check if element exists
+    const platformElement = $('#id_platform_source');
+    console.log('🔧 ULTIMATE DEBUG: Platform element found:', platformElement.length);
+    console.log('🔧 ULTIMATE DEBUG: Platform element:', platformElement[0]);
+    
+    if (platformElement.length > 0) {
+        console.log('🔧 ULTIMATE DEBUG: Element classes:', platformElement[0].className);
+        console.log('🔧 ULTIMATE DEBUG: Element attributes:', platformElement[0].attributes);
+        console.log('🔧 ULTIMATE DEBUG: Element options count:', platformElement.find('option').length);
+        console.log('🔧 ULTIMATE DEBUG: First 3 options:', platformElement.find('option').slice(0, 3).map(function() { return $(this).text(); }).get());
+        
+        // Reset element value to ensure clean state
+        platformElement.val('').trigger('change');
+        console.log('🔧 ULTIMATE DEBUG: Reset element value to empty');
+    }
+    
+    if (platformElement.length === 0) {
+        console.error('❌ ULTIMATE ERROR: Platform select element not found!');
+        console.log('🔧 ULTIMATE DEBUG: Looking for alternative selectors...');
+        console.log('🔧 ULTIMATE DEBUG: .select2-platform elements:', $('.select2-platform').length);
+        console.log('🔧 ULTIMATE DEBUG: .form-select elements:', $('.form-select').length);
+        console.log('🔧 ULTIMATE DEBUG: [name="platform_source"] elements:', $('[name="platform_source"]').length);
+        return;
+    }
+    
+    if (typeof $.fn.select2 === 'undefined') {
+        console.error('❌ ULTIMATE ERROR: Select2 library not loaded!');
+        console.log('🔧 ULTIMATE DEBUG: Available jQuery plugins:', Object.keys($.fn).slice(0, 10));
+        return;
+    }
+    
+    // Form submission handling
     const form = document.getElementById('reportForm');
     const submitButton = form.querySelector('button[type="submit"]');
     
@@ -283,7 +563,650 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.height = this.scrollHeight + 'px';
         });
     }
+    
+    // Handle damage checkbox functionality
+    const hasDamageCheckbox = document.getElementById('id_has_damage');
+    const damageTypesSection = document.getElementById('damage-types-section');
+    const damageDetailsSection = document.getElementById('damage-details-section');
+    
+    if (hasDamageCheckbox && damageTypesSection && damageDetailsSection) {
+        console.log('🔧 DAMAGE DEBUG: Setting up damage checkbox functionality');
+        
+        function toggleDamageSections() {
+            const isChecked = hasDamageCheckbox.checked;
+            console.log('🔧 DAMAGE DEBUG: Checkbox checked:', isChecked);
+            
+            if (isChecked) {
+                damageTypesSection.style.display = 'block';
+                damageDetailsSection.style.display = 'block';
+                setTimeout(() => {
+                    damageTypesSection.style.opacity = '1';
+                    damageDetailsSection.style.opacity = '1';
+                }, 10);
+            } else {
+                damageTypesSection.style.opacity = '0';
+                damageDetailsSection.style.opacity = '0';
+                setTimeout(() => {
+                    damageTypesSection.style.display = 'none';
+                    damageDetailsSection.style.display = 'none';
+                }, 300);
+                
+                // Clear all damage type selections when unchecked
+                const damageTypesSelect = $('#id_damage_types');
+                if (damageTypesSelect.length > 0) {
+                    // Clear Select2 selection
+                    damageTypesSelect.val(null).trigger('change');
+                }
+                
+                // Clear damage details textarea
+                const damageDetailsTextarea = damageDetailsSection.querySelector('textarea');
+                if (damageDetailsTextarea) {
+                    damageDetailsTextarea.value = '';
+                }
+            }
+        }
+        
+        // Set initial state
+        toggleDamageSections();
+        
+        // Add event listener
+        hasDamageCheckbox.addEventListener('change', toggleDamageSections);
+    }
+    
+    // Initialize Select2 for platform dropdown with delay
+    setTimeout(function() {
+        try {
+            console.log('🔧 ULTIMATE DEBUG: Attempting Select2 initialization with delay...');
+            console.log('🔧 ULTIMATE DEBUG: Element before init:', platformElement[0]);
+            
+            // Ensure element is clean before initialization
+            if (platformElement.hasClass('select2-hidden-accessible')) {
+                console.log('🔧 ULTIMATE DEBUG: Destroying existing Select2...');
+                platformElement.select2('destroy');
+            }
+            
+            const select2Options = {
+                placeholder: 'Ընտրել աղբյուրը',
+                allowClear: true,
+                width: '100%',
+                minimumResultsForSearch: 5,
+                dropdownParent: $('body'), // Try using body as parent
+                theme: 'default'
+            };
+            
+            console.log('🔧 ULTIMATE DEBUG: Select2 options:', select2Options);
+            
+            platformElement.select2(select2Options);
+            
+            console.log('✅ ULTIMATE SUCCESS: Platform Select2 initialized successfully');
+            console.log('🔧 ULTIMATE DEBUG: Element after init:', platformElement[0]);
+            console.log('🔧 ULTIMATE DEBUG: Select2 container:', $('.select2-container').length);
+            
+            // Initialize Custom Damage Types Dropdown instead of Select2
+            const damageTypesElement = $('#id_damage_types');
+            console.log('🔧 DAMAGE DEBUG: Starting custom damage types dropdown initialization...');
+            
+            if (damageTypesElement.length > 0) {
+                try {
+                    // Destroy existing Select2 if present
+                    if (damageTypesElement.hasClass('select2-hidden-accessible')) {
+                        console.log('🔧 DAMAGE DEBUG: Destroying existing damage types Select2...');
+                        damageTypesElement.select2('destroy');
+                    }
+                    
+                    // Initialize custom dropdown
+                    initializeCustomDamageTypesDropdown();
+                    console.log('✅ DAMAGE SUCCESS: Custom Damage Types dropdown initialized successfully');
+                    
+                } catch (damageError) {
+                    console.error('❌ DAMAGE ERROR: Custom Damage Types dropdown initialization failed:', damageError);
+                }
+            } else {
+                console.log('⚠️ DAMAGE WARNING: Damage types element not found');
+            }
+            
+            // Force trigger to ensure it's working
+            setTimeout(function() {
+                console.log('🔧 ULTIMATE DEBUG: Testing dropdown functionality...');
+                const hasClass = platformElement.hasClass('select2-hidden-accessible');
+                console.log('🔧 ULTIMATE DEBUG: Has Select2 class:', hasClass);
+                
+                if (hasClass) {
+                    console.log('🎉 ULTIMATE SUCCESS: Select2 dropdown is working!');
+                } else {
+                    console.log('⚠️ ULTIMATE WARNING: Select2 class not detected, but trying...');
+                }
+            }, 500);
+            
+        } catch (error) {
+            console.error('❌ ULTIMATE ERROR: Select2 initialization failed:', error);
+            console.error('❌ ULTIMATE ERROR: Error details:', error.message);
+            console.error('❌ ULTIMATE ERROR: Stack trace:', error.stack);
+            
+            // Try to apply basic styling as fallback
+            platformElement.css({
+                'background-color': '#2a2a2a',
+                'border': '2px solid #00a99d',
+                'color': '#ffffff',
+                'border-radius': '8px',
+                'padding': '10px',
+                'font-size': '16px',
+                'height': '50px'
+            });
+        }
+    }, 1000); // 1 second delay
+    
+    // Handle "Այլ" selection for showing/hiding manual input
+    $('#id_platform_source').on('select2:select', function (e) {
+        console.log('🔧 ULTIMATE DEBUG: Select2 select event fired');
+        var data = e.params.data;
+        const otherPlatformDiv = document.getElementById('other-platform-div');
+        const otherPlatformInput = document.getElementById('id_platform_source_other');
+        
+        if (data.text === 'Այլ') {
+            if (otherPlatformDiv && otherPlatformInput) {
+                otherPlatformDiv.style.display = 'block';
+                setTimeout(() => {
+                    otherPlatformDiv.style.opacity = '1';
+                }, 10);
+                otherPlatformInput.required = true;
+                otherPlatformInput.focus();
+            }
+        } else {
+            if (otherPlatformDiv && otherPlatformInput) {
+                otherPlatformDiv.style.opacity = '0';
+                setTimeout(() => {
+                    otherPlatformDiv.style.display = 'none';
+                }, 300);
+                otherPlatformInput.required = false;
+                otherPlatformInput.value = '';
+            }
+        }
+    });
+    
+    // Handle clearing selection
+    $('#id_platform_source').on('select2:clear', function (e) {
+        const otherPlatformDiv = document.getElementById('other-platform-div');
+        const otherPlatformInput = document.getElementById('id_platform_source_other');
+        
+        if (otherPlatformDiv && otherPlatformInput) {
+            otherPlatformDiv.style.display = 'none';
+            otherPlatformInput.required = false;
+            otherPlatformInput.value = '';
+        }
+    });
+    
+    // Handle regular dropdown change for non-Select2 fallback
+    $('#id_platform_source').change(function() {
+        console.log('🔧 ULTIMATE DEBUG: Regular change event fired');
+        const selectedText = this.options[this.selectedIndex].text;
+        const otherPlatformDiv = document.getElementById('other-platform-div');
+        const otherPlatformInput = document.getElementById('id_platform_source_other');
+        
+        if (selectedText === 'Այլ') {
+            if (otherPlatformDiv && otherPlatformInput) {
+                otherPlatformDiv.style.display = 'block';
+                setTimeout(() => {
+                    otherPlatformDiv.style.opacity = '1';
+                }, 10);
+                otherPlatformInput.required = true;
+                otherPlatformInput.focus();
+            }
+        } else {
+            if (otherPlatformDiv && otherPlatformInput) {
+                otherPlatformDiv.style.opacity = '0';
+                setTimeout(() => {
+                    otherPlatformDiv.style.display = 'none';
+                }, 300);
+                otherPlatformInput.required = false;
+                otherPlatformInput.value = '';
+            }
+        }
+    });
+    
+    // Check initial state on page load
+    const initialSelectedText = $('#id_platform_source option:selected').text();
+    console.log('🔧 ULTIMATE DEBUG: Initial selected text:', initialSelectedText);
+    if (initialSelectedText === 'Այլ') {
+        const otherPlatformDiv = document.getElementById('other-platform-div');
+        const otherPlatformInput = document.getElementById('id_platform_source_other');
+        if (otherPlatformDiv && otherPlatformInput) {
+            otherPlatformDiv.style.display = 'block';
+            otherPlatformInput.required = true;
+        }
+    }
+    
+    // Final verification with more detailed checking
+    setTimeout(function() {
+        console.log('🔧 ULTIMATE DEBUG: 3-second verification check...');
+        const hasSelect2 = $('#id_platform_source').hasClass('select2-hidden-accessible');
+        const containerCount = $('.select2-container').length;
+        const selectCount = $('select').length;
+        
+        console.log('🔧 ULTIMATE DEBUG: Select2 applied:', hasSelect2);
+        console.log('🔧 ULTIMATE DEBUG: Select2 containers:', containerCount);
+        console.log('🔧 ULTIMATE DEBUG: Total select elements:', selectCount);
+        console.log('🔧 ULTIMATE DEBUG: Platform element visible:', platformElement.is(':visible'));
+        console.log('🔧 ULTIMATE DEBUG: Platform element CSS display:', platformElement.css('display'));
+        
+        // Log all elements with select2 classes
+        $('.select2-container').each(function(index) {
+            console.log('🔧 ULTIMATE DEBUG: Select2 container', index, ':', this);
+        });
+        
+        if (!hasSelect2) {
+            console.error('❌ ULTIMATE CRITICAL: Select2 not applied after 3 seconds!');
+            console.log('🔧 ULTIMATE DEBUG: Final element state:', platformElement[0]);
+            console.log('🔧 ULTIMATE DEBUG: Final element HTML:', platformElement[0].outerHTML);
+        } else {
+            console.log('✅ ULTIMATE SUCCESS: Select2 working correctly');
+            console.log('🔧 ULTIMATE DEBUG: Select2 container HTML:', $('.select2-container')[0].outerHTML);
+        }
+    }, 3000);
 });
+
+// Function to clear localStorage and reload
+function clearLocalStorageAndReload() {
+    console.log('🧹 Manual localStorage clear requested');
+    const allKeys = Object.keys(localStorage);
+    console.log('🧹 All localStorage keys:', allKeys);
+    localStorage.clear();
+    console.log('🧹 localStorage cleared, reloading page...');
+    location.reload();
+}
+
+// Custom Damage Types Dropdown Function
+function initializeCustomDamageTypesDropdown() {
+    const originalSelect = document.getElementById('id_damage_types');
+    const dropdownContainer = document.getElementById('damageTypesDropdown');
+    const dropdownHeader = document.getElementById('damageTypesHeader');
+    const dropdownContent = document.getElementById('damageTypesContent');
+    const selectedContainer = document.getElementById('selectedDamageTypes');
+    const placeholder = dropdownContainer.querySelector('.dropdown-placeholder');
+    
+    if (!originalSelect || !dropdownContainer) {
+        console.error('Required elements not found for custom dropdown');
+        return;
+    }
+    
+    // Fetch damage types from API
+    fetch('{% url "reporting:damage_types_api" %}')
+        .then(response => response.json())
+        .then(data => {
+            buildDropdownContent(data.categories);
+            setupDropdownEvents();
+        })
+        .catch(error => {
+            console.error('Error fetching damage types:', error);
+            // Fallback to original select parsing
+            buildDropdownFromOriginalSelect();
+            setupDropdownEvents();
+        });
+    
+    function buildDropdownContent(categories) {
+        let contentHTML = '';
+        
+        Object.keys(categories).forEach(categoryKey => {
+            const category = categories[categoryKey];
+            if (category.items && category.items.length > 0) {
+                contentHTML += `
+                    <div class="damage-category">
+                        <div class="category-header">${category.name}</div>
+                        <div class="category-items">
+                `;
+                
+                category.items.forEach(item => {
+                    contentHTML += `
+                        <div class="damage-type-item" data-value="${item.id}">
+                            <input type="checkbox" id="damage_${item.id}" value="${item.id}">
+                            <label for="damage_${item.id}" title="${item.description || item.name}">${item.name}</label>
+                        </div>
+                    `;
+                });
+                
+                contentHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        
+        dropdownContent.innerHTML = contentHTML;
+    }
+    
+    function buildDropdownFromOriginalSelect() {
+        // Fallback method - parse from original select
+        let contentHTML = `
+            <div class="damage-category">
+                <div class="category-header">Վնասի տեսակներ</div>
+                <div class="category-items">
+        `;
+        
+        Array.from(originalSelect.options).forEach(option => {
+            if (option.value) {
+                contentHTML += `
+                    <div class="damage-type-item" data-value="${option.value}">
+                        <input type="checkbox" id="damage_${option.value}" value="${option.value}">
+                        <label for="damage_${option.value}">${option.text}</label>
+                    </div>
+                `;
+            }
+        });
+        
+        contentHTML += `
+                </div>
+            </div>
+        `;
+        
+        dropdownContent.innerHTML = contentHTML;
+    }
+    
+    function setupDropdownEvents() {
+        const overlay = document.getElementById('dropdownOverlay');
+        
+        // Toggle dropdown
+        dropdownHeader.addEventListener('click', function() {
+            const isOpen = dropdownContainer.classList.contains('open');
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        });
+        
+        function openDropdown() {
+            const dropdownContent = document.getElementById('damageTypesContent');
+            
+            // Show dropdown with smooth animation
+            dropdownContent.style.display = 'block';
+            
+            // Use requestAnimationFrame for smooth animation
+            requestAnimationFrame(() => {
+                dropdownContent.classList.add('show');
+                dropdownContainer.classList.add('open');
+            });
+        }
+        
+        function closeDropdown() {
+            const dropdownContent = document.getElementById('damageTypesContent');
+            
+            dropdownContent.classList.remove('show');
+            dropdownContainer.classList.remove('open');
+            
+            // Hide after animation completes
+            setTimeout(() => {
+                if (!dropdownContent.classList.contains('show')) {
+                    dropdownContent.style.display = 'none';
+                }
+            }, 300);
+        }
+        
+        // Handle checkbox changes
+        dropdownContent.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                updateSelectedValues();
+                updateOriginalSelect();
+            }
+        });
+        
+        // Close dropdown when clicking overlay
+        overlay.addEventListener('click', function() {
+            closeDropdown();
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdownContainer.contains(e.target) && !overlay.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdownContainer.classList.contains('open')) {
+                closeDropdown();
+            }
+        });
+    }
+    
+    function updateSelectedValues() {
+        const selectedCheckboxes = dropdownContent.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedValues = Array.from(selectedCheckboxes);
+        
+        if (selectedValues.length === 0) {
+            selectedContainer.style.display = 'none';
+            placeholder.style.display = 'block';
+        } else {
+            selectedContainer.style.display = 'flex';
+            placeholder.style.display = 'none';
+            
+            let badgesHTML = '';
+            selectedValues.forEach(checkbox => {
+                const label = checkbox.nextElementSibling.textContent;
+                const shortLabel = label.length > 20 ? label.substring(0, 20) + '...' : label;
+                badgesHTML += `
+                    <span class="selected-badge" data-value="${checkbox.value}" title="${label}">
+                        ${shortLabel}
+                        <span class="remove-badge" data-value="${checkbox.value}">×</span>
+                    </span>
+                `;
+            });
+            selectedContainer.innerHTML = badgesHTML;
+        }
+        
+        // Add event listeners to remove badges
+        selectedContainer.querySelectorAll('.remove-badge').forEach(badge => {
+            badge.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.getAttribute('data-value');
+                const checkbox = dropdownContent.querySelector(`input[value="${value}"]`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                    updateSelectedValues();
+                    updateOriginalSelect();
+                }
+            });
+        });
+    }
+    
+    function updateOriginalSelect() {
+        const selectedCheckboxes = dropdownContent.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedValues = Array.from(selectedCheckboxes).map(cb => cb.value);
+        
+        // Clear all selections in original select
+        Array.from(originalSelect.options).forEach(option => {
+            option.selected = false;
+        });
+        
+        // Set selected values in original select
+        selectedValues.forEach(value => {
+            const option = originalSelect.querySelector(`option[value="${value}"]`);
+            if (option) {
+                option.selected = true;
+            }
+        });
+        
+        // Trigger change event on original select
+        originalSelect.dispatchEvent(new Event('change'));
+    }
+    
+    // Universal File Upload Handler
+    function setupUniversalFileUpload() {
+        const uploadArea = document.getElementById('universalFileUpload');
+        const fileInput = document.getElementById('universalFileInput');
+        const uploadedFilesList = document.getElementById('uploadedFilesList');
+        const filesContainer = document.getElementById('filesContainer');
+        const totalSizeValue = document.getElementById('totalSizeValue');
+        
+        let selectedFiles = [];
+        const maxTotalSize = 100 * 1024 * 1024; // 100MB
+        const maxFileSizes = {
+            image: 5 * 1024 * 1024,    // 5MB for images
+            document: 10 * 1024 * 1024, // 10MB for documents
+            video: 50 * 1024 * 1024,   // 50MB for videos
+            audio: 15 * 1024 * 1024,   // 15MB for audio
+            archive: 25 * 1024 * 1024  // 25MB for archives
+        };
+        
+        // Click to upload
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        function handleFiles(files) {
+            const fileArray = Array.from(files);
+            
+            fileArray.forEach(file => {
+                if (validateFile(file)) {
+                    selectedFiles.push(file);
+                }
+            });
+            
+            updateFilesList();
+        }
+        
+        function validateFile(file) {
+            const fileType = getFileType(file.name);
+            const maxSize = maxFileSizes[fileType] || 25 * 1024 * 1024;
+            
+            if (file.size > maxSize) {
+                const maxSizeMB = Math.round(maxSize / (1024 * 1024));
+                alert(`${file.name} ֆայլի չափը չպետք է գերազանցի ${maxSizeMB}ՄԲ-ը`);
+                return false;
+            }
+            
+            const totalSize = selectedFiles.reduce((sum, f) => sum + f.size, 0) + file.size;
+            if (totalSize > maxTotalSize) {
+                alert('Ընդհանուր ֆայլերի ծավալը չպետք է գերազանցի 100ՄԲ-ը');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function getFileType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'].includes(ext)) {
+                return 'image';
+            } else if (['pdf', 'doc', 'docx', 'txt', 'rtf', 'odt'].includes(ext)) {
+                return 'document';
+            } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv'].includes(ext)) {
+                return 'video';
+            } else if (['mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac'].includes(ext)) {
+                return 'audio';
+            } else if (['zip', 'rar', '7z'].includes(ext)) {
+                return 'archive';
+            }
+            return 'other';
+        }
+        
+        function getFileIcon(fileType) {
+            const icons = {
+                image: 'fas fa-image',
+                document: 'fas fa-file-alt',
+                video: 'fas fa-video',
+                audio: 'fas fa-music',
+                archive: 'fas fa-file-archive',
+                other: 'fas fa-file'
+            };
+            return icons[fileType] || 'fas fa-file';
+        }
+        
+        function getFileTypeLabel(fileType) {
+            const labels = {
+                image: 'Նկար',
+                document: 'Փաստ.',
+                video: 'Վիդեո',
+                audio: 'Ձայն',
+                archive: 'Արխիվ',
+                other: 'Ֆայլ'
+            };
+            return labels[fileType] || 'Ֆայլ';
+        }
+        
+        function updateFilesList() {
+            if (selectedFiles.length === 0) {
+                uploadedFilesList.style.display = 'none';
+                return;
+            }
+            
+            uploadedFilesList.style.display = 'block';
+            
+            let html = '';
+            selectedFiles.forEach((file, index) => {
+                const fileType = getFileType(file.name);
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                const icon = getFileIcon(fileType);
+                const typeLabel = getFileTypeLabel(fileType);
+                
+                html += `
+                    <div class="file-item" data-index="${index}">
+                        <div class="file-item-info">
+                            <i class="${icon} file-icon"></i>
+                            <div class="file-details">
+                                <div class="file-item-name" title="${file.name}">${file.name}</div>
+                                <div class="file-item-size">
+                                    ${fileSizeMB} MB
+                                    <span class="file-item-type">${typeLabel}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="file-remove" onclick="removeFile(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            filesContainer.innerHTML = html;
+            
+            // Update total size
+            const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+            const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+            totalSizeValue.textContent = `${totalSizeMB} MB`;
+            
+            // Add warning classes if approaching limits
+            if (totalSize > maxTotalSize * 0.9) {
+                totalSizeValue.className = 'size-warning';
+            } else if (totalSize > maxTotalSize) {
+                totalSizeValue.className = 'size-error';
+            } else {
+                totalSizeValue.className = '';
+            }
+        }
+        
+        // Make removeFile function global
+        window.removeFile = function(index) {
+            selectedFiles.splice(index, 1);
+            updateFilesList();
+        };
+    }
+    
+    // Initialize file upload when page loads
+    setupUniversalFileUpload();
+}
 </script>
 
 <script src="{% static 'js/reporting.js' %}"></script>

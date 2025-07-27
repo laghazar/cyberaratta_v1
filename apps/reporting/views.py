@@ -3,22 +3,120 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from datetime import timedelta
-from .models import PhishingReport, ContactInfo
+from .models import PhishingReport, ContactInfo, PlatformSource, DamageType, EvidenceFile
 from .forms import PhishingReportForm
 from apps.core.utils import update_statistics
+
+@require_http_methods(["GET"])
+def damage_types_api(request):
+    """API endpoint to get damage types grouped by category"""
+    damage_types = DamageType.objects.filter(is_active=True).order_by('category', 'order', 'name')
+    
+    # Group by category
+    categories = {}
+    for damage_type in damage_types:
+        category_key = damage_type.category
+        category_name = damage_type.get_category_display()
+        
+        if category_key not in categories:
+            categories[category_key] = {
+                'name': category_name,
+                'items': []
+            }
+        
+        categories[category_key]['items'].append({
+            'id': damage_type.id,
+            'name': damage_type.name,
+            'description': damage_type.description
+        })
+    
+    return JsonResponse({'categories': categories})
+
+@require_http_methods(["GET"])
+def platform_search_ajax(request):
+    """AJAX view for searchable platform dropdown"""
+    search_term = request.GET.get('q', '').strip()
+    
+    # Filter platforms based on search term
+    platforms = PlatformSource.objects.filter(
+        is_active=True,
+        name__icontains=search_term
+    ).order_by('name')
+    
+    # Separate "Այլ" from other platforms and put it at the end
+    regular_platforms = platforms.exclude(name='Այլ')
+    other_platform = platforms.filter(name='Այլ')
+    
+    results = []
+    
+    # Add regular platforms
+    for platform in regular_platforms:
+        results.append({
+            'id': platform.id,
+            'text': platform.name
+        })
+    
+    # Add "Այլ" at the end if it exists
+    for platform in other_platform:
+        results.append({
+            'id': platform.id,
+            'text': platform.name
+        })
+    
+    return JsonResponse({
+        'results': results,
+        'pagination': {'more': False}  # We're not implementing pagination for now
+    })
 
 def phishing_report_view(request):
     """Handle phishing report submission and display report form."""
     if request.method == 'POST':
-        form = PhishingReportForm(request.POST)
+        form = PhishingReportForm(request.POST, request.FILES)
         if form.is_valid():
             report = form.save()
+            
+            # Handle multiple file uploads
+            files = request.FILES.getlist('evidence_files_multiple')
+            for file in files:
+                if file:
+                    EvidenceFile.objects.create(
+                        phishing_report=report,
+                        file=file,
+                        description=f"Uploaded file: {file.name}"
+                    )
+            
             update_statistics()
-            messages.success(request, 'Զեկուցումը հաջողությամբ ուղարկվել է։ Շնորհակալություն ձեր կարևոր ներդրման համար։')
-            return redirect('reporting:report')
+            
+            # Create detailed success message
+            success_msg = f"""
+            <div class="alert-content">
+                <h5><i class="fas fa-check-circle text-success me-2"></i>Զեկուցումը հաջողությամբ ընդունվեց</h5>
+                <p class="mb-2"><strong>Զեկուցման ID:</strong> #{report.id:06d}</p>
+                <p class="mb-2"><strong>Ակատեգորիա:</strong> {report.get_category_display()}</p>
+                <p class="mb-2"><strong>Ստեղծման ամսաթիվ:</strong> {report.created_at.strftime('%d.%m.%Y %H:%M')}</p>
+                <hr class="my-2">
+                <p class="small text-muted mb-0">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Ձեր զեկուցումը կուսումնասիրվի մեր մասնագետների կողմից և կճանակվի համապատասխան քայլեր։
+                    Շնորհակալություն ձեր կարևոր ներդրման համար։
+                </p>
+            </div>
+            """
+            messages.success(request, success_msg, extra_tags='safe')
+            return redirect('reporting:index')
         else:
-            messages.error(request, 'Խնդրում ենք ստուգել բոլոր պարտադիր դաշտերը։')
+            # Create detailed error message
+            error_msg = """
+            <div class="alert-content">
+                <h6><i class="fas fa-exclamation-triangle text-warning me-2"></i>Զեկուցումը չի կարող ուղարկվել</h6>
+                <p class="mb-0">Խնդրում ենք ստուգել և ճշտել բոլոր պարտադիր դաշտերը:</p>
+            </div>
+            """
+            messages.error(request, error_msg, extra_tags='safe')
     else:
         form = PhishingReportForm()
 

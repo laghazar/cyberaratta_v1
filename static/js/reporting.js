@@ -170,6 +170,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const draftData = JSON.parse(draft);
                     Object.keys(draftData).forEach(key => {
+                        // Skip Select2 fields to avoid interfering with initialization
+                        if (key === 'platform_source' || key === 'damage_types') {
+                            console.log(`Skipping ${key} draft load to avoid Select2 conflict`);
+                            return;
+                        }
+                        
                         const field = form.querySelector(`[name="${key}"]`);
                         if (field) {
                             if (field.type === 'checkbox') {

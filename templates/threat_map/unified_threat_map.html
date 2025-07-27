@@ -1,0 +1,872 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Վտանգների քարտեզ - Հայաստանի Կիբեռ Անվտանգություն{% endblock %}
+
+{% block extra_css %}
+<!-- Cache Control Meta Tags -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="{% static 'css/live-map.css' %}?v=1.6&t={{ timestamp|floatformat:0 }}&rand={{ timestamp|floatformat:0 }}" />
+<style>
+.unified-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(26, 31, 46, 0.95) 50%, rgba(15, 20, 35, 0.95) 100%);
+    padding: 20px 0;
+}
+
+/* Override for simple typography */
+.stat-label-small {
+    font-size: 0.9rem !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    text-shadow: none !important;
+    text-transform: none !important;
+    letter-spacing: 0px !important;
+}
+
+/* Dynamic data styling */
+.stat-number-small {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    color: #00ccff !important; /* Neon turquoise */
+    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5) !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+}
+
+/* Threat level styling */
+.threat-level {
+    padding: 0.25rem 0.75rem !important;
+    border-radius: 15px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+}
+
+.threat-level.low {
+    background: rgba(0, 204, 255, 0.2) !important;
+    color: #00ccff !important;
+    border: 1px solid rgba(0, 204, 255, 0.4) !important;
+    text-shadow: 0 0 8px rgba(0, 204, 255, 0.4) !important;
+}
+
+.threat-level.medium {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4) !important;
+}
+
+.threat-level.high {
+    background: rgba(255, 0, 85, 0.2) !important;
+    color: #ff0055 !important;
+    border: 1px solid rgba(255, 0, 85, 0.4) !important;
+    text-shadow: 0 0 8px rgba(255, 0, 85, 0.4) !important;
+}
+
+.section-header {
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 0;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.section-content {
+    background: rgba(20, 25, 35, 0.9);
+    border-radius: 0 0 10px 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.2);
+    border: 1px solid rgba(0, 255, 136, 0.1);
+    backdrop-filter: blur(15px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 204, 255, 0.08));
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 255, 136, 0.2);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    transition: transform 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #00ff88;
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.data-table {
+    background: rgba(20, 25, 35, 0.95);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 255, 136, 0.1);
+    margin-bottom: 20px;
+    border: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+.data-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    color: #000;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+    vertical-align: middle;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.data-table tr:hover {
+    background-color: rgba(0, 255, 136, 0.05);
+}
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-phishing {
+    background-color: #ff4757;
+    color: white;
+}
+
+.status-safe {
+    background-color: #00ff88;
+    color: #000;
+}
+
+.status-suspicious {
+    background-color: #ffa502;
+    color: #000;
+}
+
+.platform-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 20px 0;
+}
+
+.live-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: #00ff88;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.threat-map-container {
+    height: 500px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.tab-navigation {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 15px 20px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, #00ff88, #00ccff);
+    color: #000;
+}
+
+.tab-button:hover:not(.active) {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+}
+
+.tab-content {
+    display: none;
+    background: rgba(20, 25, 35, 0.95);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 25px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h4 {
+    color: #00ff88;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="unified-container">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center text-white mb-4">
+                    <span class="live-indicator"></span>
+                    🇦🇲 Հայաստանի Կիբեռ Անվտանգության Մոնիտորինգ
+                </h1>
+                <p class="text-center text-white-50 mb-4">
+                    Իրական ժամանակի սպառնալիքների վերլուծություն և կայքի ապահովության ստատիստիկա
+                </p>
+            </div>
+        </div>
+
+        <!-- Live Statistics Overview -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="section-header">
+                    <h3><i class="fas fa-chart-line"></i> Ընդհանուր Վիճակագրություն</h3>
+                </div>
+                <div class="section-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalThreats">{{ site_stats.total_threats }}</div>
+                            <div class="stat-label">Կիբեռ Սպառնալիքներ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalReports">{{ site_stats.total_reports }}</div>
+                            <div class="stat-label">Ստացված Դիմումներ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="urlChecks">{{ site_stats.url_checks }}</div>
+                            <div class="stat-label">URL Ստուգումներ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="phishingUrls">{{ site_stats.phishing_urls }}</div>
+                            <div class="stat-label">Ֆիշինգային Հղումներ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Threat Map -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="section-header">
+                    <h3><i class="fas fa-globe-americas"></i> Լայվ Սպառնալիքների Քարտեզ</h3>
+                </div>
+                <div class="section-content p-0">
+                    <!-- Map Controls -->
+                    <div class="live-controls" style="padding: 20px; background: rgba(20, 25, 35, 0.9); border-bottom: 1px solid rgba(0, 255, 136, 0.2); border-radius: 10px 10px 0 0;">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="control-group">
+                                    <h6 style="color: #00ff88;">Ցուցադրում</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="showAttackLines" checked>
+                                        <label class="form-check-label" for="showAttackLines" style="color: rgba(255, 255, 255, 0.9);">Հարձակման գծեր</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="showSourceMarkers" checked>
+                                        <label class="form-check-label" for="showSourceMarkers" style="color: rgba(255, 255, 255, 0.9);">Աղբյուր մարկերներ</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="control-group">
+                                    <h6 style="color: #00ff88;">Թարմացում</h6>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="autoRefresh" checked>
+                                        <label class="form-check-label" for="autoRefresh" style="color: rgba(255, 255, 255, 0.9);">Ավտոմատ թարմացում</label>
+                                    </div>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm" id="manualRefresh" style="background: linear-gradient(135deg, #00ff88, #00ccff); color: #000; border: none;">
+                                            <i class="fas fa-sync-alt"></i> Թարմացնել
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="stat-small">
+                                            <div class="stat-number-small" id="totalAttacks">0</div>
+                                            <div class="stat-label-small">Ընդամենը</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="stat-small">
+                                            <div class="stat-number-small" id="recentAttacks">0</div>
+                                            <div class="stat-label-small">Վերջին 5 րոպեում</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="stat-small">
+                                            <div class="stat-number-small" id="sourceCountries">0</div>
+                                            <div class="stat-label-small">Աղբյուր երկրներ</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="stat-small">
+                                            <span class="threat-level" id="threatLevel">LOW</span>
+                                            <div class="stat-label-small">Վտանգ մակարդակ</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Container -->
+                    <div class="threat-map-container">
+                        <div id="cyber-threat-map" style="height: 100%; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Analysis Tabs -->
+        <div class="row">
+            <div class="col-12">
+                <div class="section-header">
+                    <div class="tab-navigation">
+                        <button class="tab-button active" onclick="switchTab('reports')">
+                            <i class="fas fa-file-alt"></i> Ֆիշինգի Դիմումներ
+                        </button>
+                        <button class="tab-button" onclick="switchTab('urls')">
+                            <i class="fas fa-link"></i> URL Ստուգումներ
+                        </button>
+                        <button class="tab-button" onclick="switchTab('platforms')">
+                            <i class="fas fa-share-alt"></i> Հարթակների Վերլուծություն
+                        </button>
+                        <button class="tab-button" onclick="switchTab('attacks')">
+                            <i class="fas fa-shield-alt"></i> Հարձակումների Մատյան
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    
+                    <!-- Reports Tab -->
+                    <div id="reports-tab" class="tab-content active">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Ֆիշինգի Դիմումների Վերլուծություն</h4>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <canvas id="reportsChart" style="max-height: 300px;"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Վերջին 10 Դիմումները</h5>
+                                <div class="data-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Ամսաթիվ</th>
+                                                <th>Հարթակ</th>
+                                                <th>Կատեգորիա</th>
+                                                <th>Կարգավիճակ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for report in recent_reports %}
+                                            <tr>
+                                                <td>{{ report.created_at|date:"M d, H:i" }}</td>
+                                                <td>
+                                                    {% if report.platform_source %}
+                                                        {{ report.platform_source.name }}
+                                                    {% else %}
+                                                        Անհայտ
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ report.category|default:"Ընդհանուր" }}</td>
+                                                <td>
+                                                    <span class="status-badge status-phishing">Ֆիշինգ</span>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center">Դիմումներ չկան</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- URLs Tab -->
+                    <div id="urls-tab" class="tab-content">
+                        <h4><i class="fas fa-search"></i> URL Ստուգումների Արդյունքներ</h4>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <canvas id="urlsChart" style="max-height: 300px;"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Վերջին URL Ստուգումները</h5>
+                                <div class="data-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>URL</th>
+                                                <th>Կարգավիճակ</th>
+                                                <th>Ամսաթիվ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for check in recent_url_checks %}
+                                            <tr>
+                                                <td title="{{ check.url }}">
+                                                    {{ check.url|truncatechars:40 }}
+                                                </td>
+                                                <td>
+                                                    {% if check.status == 'safe' %}
+                                                        <span class="status-badge status-safe">Անվտանգ</span>
+                                                    {% elif check.status == 'suspicious' %}
+                                                        <span class="status-badge status-suspicious">Կասկածելի</span>
+                                                    {% else %}
+                                                        <span class="status-badge status-phishing">Վտանգավոր</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ check.checked_at|date:"M d, H:i" }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center">URL ստուգումներ չկան</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Platforms Tab -->
+                    <div id="platforms-tab" class="tab-content">
+                        <h4><i class="fas fa-chart-pie"></i> Հարթակների ըստ Ֆիշինգի Վերլուծություն</h4>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <canvas id="platformsChart" style="max-height: 300px;"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Հարթակների Վիճակագրություն</h5>
+                                <div class="data-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Հարթակ</th>
+                                                <th>Դիմումներ</th>
+                                                <th>Տոկոս</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for platform in platform_statistics %}
+                                            <tr>
+                                                <td>{{ platform.name }}</td>
+                                                <td>{{ platform.count }}</td>
+                                                <td>{{ platform.percentage|floatformat:1 }}%</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center">Տվյալներ չկան</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attacks Log Tab -->
+                    <div id="attacks-tab" class="tab-content">
+                        <h4><i class="fas fa-list"></i> Հարձակումների Մատյան</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div style="background: #1a1a1a; color: #00ff88; padding: 20px; border-radius: 10px; font-family: monospace; max-height: 400px; overflow-y: auto;" id="attackLogContainer">
+                                    <div class="log-item">📡 Բեռնում է հարձակումների տվյալները...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h3>🌐 Տվյալների բեռնում...</h3>
+        <p>Ստացվում են վերջին կիբեռ սպառնալիքների տվյալները</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/live-threat-map.js' %}"></script>
+<script>
+let threatMap;
+let reportsChart, urlsChart, platformsChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Initializing Unified Threat Map...');
+    
+    // Force typography styling for Armenian labels
+    setTimeout(() => {
+        const labelElements = document.querySelectorAll('.stat-label-small');
+        labelElements.forEach(element => {
+            element.style.fontSize = '0.9rem';
+            element.style.color = '#ffffff';
+            element.style.fontWeight = '500';
+            element.style.textShadow = 'none';
+            element.style.textTransform = 'none';
+            element.style.letterSpacing = '0px';
+        });
+        
+        // Style dynamic numbers with neon turquoise
+        const numberElements = document.querySelectorAll('.stat-number-small');
+        numberElements.forEach(element => {
+            element.style.fontSize = '2rem';
+            element.style.fontWeight = '800';
+            element.style.color = '#00ccff'; // Neon turquoise
+            element.style.textShadow = '0 0 10px rgba(0, 204, 255, 0.5)';
+            element.style.marginBottom = '5px';
+            element.style.display = 'block';
+        });
+        
+        // Style threat level indicator
+        const threatLevel = document.getElementById('threatLevel');
+        if (threatLevel) {
+            threatLevel.style.padding = '0.25rem 0.75rem';
+            threatLevel.style.borderRadius = '15px';
+            threatLevel.style.fontSize = '0.8rem';
+            threatLevel.style.fontWeight = '600';
+            threatLevel.style.textTransform = 'uppercase';
+            
+            // Apply color based on level
+            const level = threatLevel.textContent.toLowerCase();
+            if (level === 'low') {
+                threatLevel.style.background = 'rgba(0, 204, 255, 0.2)';
+                threatLevel.style.color = '#00ccff';
+                threatLevel.style.border = '1px solid rgba(0, 204, 255, 0.4)';
+                threatLevel.style.textShadow = '0 0 8px rgba(0, 204, 255, 0.4)';
+            } else if (level === 'medium') {
+                threatLevel.style.background = 'rgba(255, 255, 255, 0.2)';
+                threatLevel.style.color = '#ffffff';
+                threatLevel.style.border = '1px solid rgba(255, 255, 255, 0.4)';
+                threatLevel.style.textShadow = '0 0 8px rgba(255, 255, 255, 0.4)';
+            } else if (level === 'high') {
+                threatLevel.style.background = 'rgba(255, 0, 85, 0.2)';
+                threatLevel.style.color = '#ff0055';
+                threatLevel.style.border = '1px solid rgba(255, 0, 85, 0.4)';
+                threatLevel.style.textShadow = '0 0 8px rgba(255, 0, 85, 0.4)';
+            }
+        }
+        
+        console.log('✅ Typography fixed for', labelElements.length, 'labels and', numberElements.length, 'numbers');
+    }, 100);
+    
+    // Initialize the live threat map
+    threatMap = new LiveThreatMap('cyber-threat-map');
+    threatMap.initialize().catch(error => {
+        console.error('❌ Failed to initialize threat map:', error);
+    });
+    
+    // Initialize charts
+    initializeCharts();
+    
+    // Load site statistics
+    loadSiteStatistics();
+});
+
+function switchTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Activate clicked button
+    event.target.classList.add('active');
+}
+
+function initializeCharts() {
+    // Reports Chart
+    const reportsCtx = document.getElementById('reportsChart').getContext('2d');
+    reportsChart = new Chart(reportsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for category in report_categories %}'{{ category.category }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for category in report_categories %}{{ category.count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [
+                    '#00ff88', '#00ccff', '#ff4757', '#ffa502', '#a55eea'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Դիմումներ ըստ Կատեգորիայի',
+                    color: '#00ff88'
+                }
+            }
+        }
+    });
+    
+    // URLs Chart
+    const urlsCtx = document.getElementById('urlsChart').getContext('2d');
+    urlsChart = new Chart(urlsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Անվտանգ', 'Կասկածելի', 'Վտանգավոր'],
+            datasets: [{
+                label: 'URL Ստուգումներ',
+                data: [{{ url_stats.safe }}, {{ url_stats.suspicious }}, {{ url_stats.malicious }}],
+                backgroundColor: ['#00ff88', '#ffa502', '#ff4757']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'URL Ստուգումների Արդյունքներ',
+                    color: '#00ff88'
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#ffffff'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    }
+                }
+            }
+        }
+    });
+    
+    // Platforms Chart
+    const platformsCtx = document.getElementById('platformsChart').getContext('2d');
+    platformsChart = new Chart(platformsCtx, {
+        type: 'pie',
+        data: {
+            labels: [{% for platform in platform_statistics %}'{{ platform.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for platform in platform_statistics %}{{ platform.count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [
+                    '#00ff88', '#00ccff', '#ffa502', '#ff4757', '#a55eea', '#764ba2'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#ffffff'
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Ֆիշինգ ըստ Հարթակների',
+                    color: '#00ff88'
+                }
+            }
+        }
+    });
+}
+
+function loadSiteStatistics() {
+    fetch('/threat_map/api/site-statistics/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                updateStatistics(data.data);
+            }
+        })
+        .catch(error => console.error('Error loading site statistics:', error));
+}
+
+function updateStatistics(stats) {
+    // Update values
+    document.getElementById('totalThreats').textContent = stats.total_threats || 0;
+    document.getElementById('totalReports').textContent = stats.total_reports || 0;
+    document.getElementById('urlChecks').textContent = stats.url_checks || 0;
+    document.getElementById('phishingUrls').textContent = stats.phishing_urls || 0;
+    
+    // Apply dynamic styling to updated numbers
+    setTimeout(() => {
+        const numberElements = document.querySelectorAll('.stat-number-small');
+        numberElements.forEach(element => {
+            element.style.color = '#00ccff'; // Neon turquoise
+            element.style.textShadow = '0 0 10px rgba(0, 204, 255, 0.5)';
+            element.style.fontWeight = '800';
+            element.style.fontSize = '2rem';
+            
+            // Add pulse animation
+            element.style.animation = 'numberPulse 0.5s ease-out';
+        });
+    }, 50);
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes markerPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.2); opacity: 0.7; }
+    }
+    
+    @keyframes numberPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .attack-line-animated {
+        animation: attackLineDash 3s linear infinite;
+    }
+    
+    @keyframes attackLineDash {
+        0% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: -30; }
+    }
+    
+    .stat-small {
+        text-align: center;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .stat-number-small {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+    
+    .stat-label-small {
+        font-size: 0.8rem;
+        color: #666;
+    }
+    
+    .threat-level {
+        padding: 4px 8px;
+        border-radius: 15px;
+        font-size: 0.7rem;
+        font-weight: bold;
+    }
+    
+    .threat-level.low {
+        background: #2ed573;
+        color: white;
+    }
+    
+    .threat-level.medium {
+        background: #ffa502;
+        color: white;
+    }
+    
+    .threat-level.high {
+        background: #ff4757;
+        color: white;
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

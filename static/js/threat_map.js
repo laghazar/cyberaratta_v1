@@ -1,4 +1,4 @@
-// Threat Map JavaScript Functions
+// Threat Map JavaScript Functions - Updated URLs
 
 class ThreatMap {
     constructor() {
@@ -19,17 +19,17 @@ class ThreatMap {
             this.showLoading(true);
             
             // Load statistics
-            const statsResponse = await fetch('/threat-map/api/stats/');
+            const statsResponse = await fetch('/threat_map/api/stats/');
             const stats = await statsResponse.json();
             this.updateStats(stats);
 
             // Load threats
-            const threatsResponse = await fetch('/threat-map/api/threats/');
+            const threatsResponse = await fetch('/threat_map/api/threats/');
             const threats = await threatsResponse.json();
             this.updateThreats(threats);
 
             // Load phishing URLs
-            const urlsResponse = await fetch('/threat-map/api/phishing-urls/');
+            const urlsResponse = await fetch('/threat_map/api/phishing-urls/');
             const urls = await urlsResponse.json();
             this.updatePhishingUrls(urls);
 
@@ -267,7 +267,7 @@ class ThreatMap {
 
     async checkUrlStatus(url) {
         try {
-            const response = await fetch('/threat-map/api/check-url/', {
+            const response = await fetch('/threat_map/api/check-url/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

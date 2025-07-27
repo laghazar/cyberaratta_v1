@@ -79,6 +79,21 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# File Upload Settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024  # 100MB - increased for multiple files
+DATA_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024  # 100MB - increased for multiple files
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100
+
+# Custom file size limits per file type
+FILE_SIZE_LIMITS = {
+    'IMAGE_MAX_SIZE': 5 * 1024 * 1024,   # 5MB for images
+    'DOCUMENT_MAX_SIZE': 10 * 1024 * 1024, # 10MB for documents
+    'VIDEO_MAX_SIZE': 50 * 1024 * 1024,   # 50MB for videos
+    'AUDIO_MAX_SIZE': 15 * 1024 * 1024,   # 15MB for audio
+    'GENERAL_MAX_SIZE': 25 * 1024 * 1024, # 25MB for general files
+    'TOTAL_MAX_SIZE': 100 * 1024 * 1024,  # 100MB total for all files
+}
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 

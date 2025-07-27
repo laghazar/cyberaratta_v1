@@ -40,7 +40,7 @@ def threat_map_view(request):
     platform_stats = PhishingReport.objects.filter(
         created_at__gte=last_month,
         platform_source__isnull=False
-    ).exclude(platform_source='').values('platform_source', 'category').annotate(
+    ).values('platform_source__name', 'category').annotate(
         count=Count('id')
     ).order_by('-count')[:15]
     
@@ -51,15 +51,14 @@ def threat_map_view(request):
     # Get platform statistics for template
     platform_dict = {}
     platform_report_stats = (PhishingReport.objects
-                            .values('platform_source')
+                            .filter(platform_source__isnull=False)
+                            .values('platform_source__name')
                             .annotate(count=Count('id'))
                             .order_by('-count'))
     
     for stat in platform_report_stats:
-        if stat['platform_source']:
-            # Get the display name for platform choice
-            platform_name = dict(PhishingReport.PLATFORM_CHOICES).get(stat['platform_source'], stat['platform_source'])
-            platform_dict[platform_name] = stat['count']
+        if stat['platform_source__name']:
+            platform_dict[stat['platform_source__name']] = stat['count']
     
     # Get contact guidelines
     contact_guidelines = ContactGuideline.objects.filter(is_active=True).order_by('contact__order')
@@ -263,4 +262,224 @@ def check_url_api(request):
     return JsonResponse({
         'status': 'error',
         'message': 'Միայն POST հարցումներ են թույլատրված'
+    })
+
+def live_threat_map_view(request):
+    """Live Threat Map - Real-time Armenia cyber security monitor"""
+    context = {
+        'page_title': 'Live Threat Map - Հայաստանի Կիբեռ Անվտանգություն',
+        'description': 'Հայաստանը թիրախ դարձնող կիբեռ սպառնալիքների իրական ժամանակի մոնիտորինգ',
+    }
+    return render(request, 'threat_map/live_map.html', context)
+
+def live_threats_api(request):
+    """API endpoint for live threat data"""
+    import random
+    from datetime import datetime, timedelta
+    
+    # Mock data generator - replace with real threat intelligence APIs
+    source_countries = [
+        {'name': 'Russia', 'coords': [55.7558, 37.6176], 'flag': '🇷🇺', 'threat': 'high'},
+        {'name': 'China', 'coords': [39.9042, 116.4074], 'flag': '🇨🇳', 'threat': 'medium'},
+        {'name': 'Iran', 'coords': [35.6892, 51.3890], 'flag': '🇮🇷', 'threat': 'high'},
+        {'name': 'Turkey', 'coords': [39.9334, 32.8597], 'flag': '🇹🇷', 'threat': 'medium'},
+        {'name': 'USA', 'coords': [38.9072, -77.0369], 'flag': '🇺🇸', 'threat': 'low'},
+        {'name': 'Germany', 'coords': [52.5200, 13.4050], 'flag': '🇩🇪', 'threat': 'low'},
+        {'name': 'North Korea', 'coords': [39.0392, 125.7625], 'flag': '🇰🇵', 'threat': 'high'},
+        {'name': 'Azerbaijan', 'coords': [40.4093, 49.8671], 'flag': '🇦🇿', 'threat': 'medium'}
+    ]
+    
+    attack_types = [
+        'DDoS Attack', 'Malware Distribution', 'Phishing Campaign',
+        'Brute Force', 'SQL Injection', 'Data Breach Attempt',
+        'Ransomware', 'APT Activity', 'Bot Network'
+    ]
+    
+    # Generate random attacks
+    attacks = []
+    num_attacks = random.randint(8, 20)
+    
+    for i in range(num_attacks):
+        source = random.choice(source_countries)
+        attack_type = random.choice(attack_types)
+        timestamp = datetime.now() - timedelta(hours=random.randint(0, 24))
+        
+        attacks.append({
+            'id': f'attack_{int(timestamp.timestamp())}_{i}',
+            'source': source,
+            'target': {'name': 'Armenia', 'coords': [40.1792, 44.4991]},
+            'type': attack_type,
+            'timestamp': timestamp.isoformat(),
+            'severity': source['threat'],
+            'ip': f'{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}.{random.randint(1, 255)}',
+            'details': f'{attack_type} detected from {source["name"]}'
+        })
+    
+    # Sort by timestamp (newest first)
+    attacks.sort(key=lambda x: x['timestamp'], reverse=True)
+    
+    # Calculate statistics
+    now = datetime.now()
+    five_minutes_ago = now - timedelta(minutes=5)
+    recent_attacks = [a for a in attacks if datetime.fromisoformat(a['timestamp']) > five_minutes_ago]
+    
+    countries = set(attack['source']['name'] for attack in attacks)
+    high_threat_attacks = [a for a in attacks if a['severity'] == 'high']
+    
+    # Determine threat level
+    if len(high_threat_attacks) > 5:
+        threat_level = 'high'
+    elif len(high_threat_attacks) > 2 or len(recent_attacks) > 3:
+        threat_level = 'medium'
+    else:
+        threat_level = 'low'
+    
+    response_data = {
+        'attacks': attacks,
+        'statistics': {
+            'total': len(attacks),
+            'recent': len(recent_attacks),
+            'countries': len(countries),
+            'threat_level': threat_level
+        },
+        'last_updated': now.isoformat()
+    }
+    
+    return JsonResponse(response_data)
+
+def unified_threat_map_view(request):
+    """Ամբողջական սպառնալիքների քարտեզ և կայքի վիճակագրություն"""
+    from apps.reporting.models import ContactGuideline
+    
+    last_month = timezone.now() - timedelta(days=30)
+    last_week = timezone.now() - timedelta(days=7)
+    today = timezone.now().date()
+    
+    # Get phishing reports data
+    recent_reports = PhishingReport.objects.filter(
+        created_at__gte=last_week
+    ).select_related('platform_source').order_by('-created_at')[:10]
+    
+    # Get URL checker results
+    recent_url_checks = URLCheck.objects.filter(
+        checked_at__gte=last_week
+    ).order_by('-checked_at')[:10]
+    
+    # Platform statistics from phishing reports
+    platform_reports = PhishingReport.objects.filter(
+        created_at__gte=last_month,
+        platform_source__isnull=False
+    ).values('platform_source__name').annotate(
+        count=Count('id')
+    ).order_by('-count')[:10]
+    
+    total_platform_reports = sum(p['count'] for p in platform_reports)
+    platform_statistics = []
+    for platform in platform_reports:
+        percentage = (platform['count'] / total_platform_reports * 100) if total_platform_reports > 0 else 0
+        platform_statistics.append({
+            'name': platform['platform_source__name'],
+            'count': platform['count'],
+            'percentage': percentage
+        })
+    
+    # Report categories
+    report_categories = PhishingReport.objects.filter(
+        created_at__gte=last_month
+    ).values('category').annotate(
+        count=Count('id')
+    ).order_by('-count')[:5]
+    
+    # URL statistics
+    url_stats = {
+        'safe': URLCheck.objects.filter(
+            checked_at__gte=last_month, 
+            status='safe'
+        ).count(),
+        'suspicious': URLCheck.objects.filter(
+            checked_at__gte=last_month, 
+            status='suspicious'
+        ).count(),
+        'malicious': URLCheck.objects.filter(
+            checked_at__gte=last_month, 
+            status__in=['malicious', 'phishing']
+        ).count(),
+    }
+    
+    # Site statistics
+    site_stats = {
+        'total_threats': Threat.objects.filter(reported_at__gte=last_month).count(),
+        'total_reports': PhishingReport.objects.count(),
+        'url_checks': URLCheck.objects.filter(checked_at__gte=last_month).count(),
+        'phishing_urls': PhishingURL.objects.filter(is_active=True).count(),
+    }
+    
+    context = {
+        'page_title': 'Վտանգների քարտեզ - Հայաստանի Կիբեռ Անվտանգություն',
+        'recent_reports': recent_reports,
+        'recent_url_checks': recent_url_checks,
+        'platform_statistics': platform_statistics,
+        'report_categories': report_categories,
+        'url_stats': url_stats,
+        'site_stats': site_stats,
+        'timestamp': timezone.now().timestamp(),
+    }
+    
+    return render(request, 'threat_map/unified_threat_map.html', context)
+
+def site_statistics_api(request):
+    """API endpoint for real-time site statistics"""
+    last_month = timezone.now() - timedelta(days=30)
+    last_week = timezone.now() - timedelta(days=7)
+    today = timezone.now().date()
+    
+    # Calculate statistics
+    stats = {
+        'total_threats': Threat.objects.filter(reported_at__gte=last_month).count(),
+        'total_reports': PhishingReport.objects.count(),
+        'today_reports': PhishingReport.objects.filter(created_at__date=today).count(),
+        'url_checks': URLCheck.objects.filter(checked_at__gte=last_month).count(),
+        'phishing_urls': PhishingURL.objects.filter(is_active=True).count(),
+        'recent_reports': PhishingReport.objects.filter(created_at__gte=last_week).count(),
+        
+        # Platform breakdown
+        'platform_breakdown': list(
+            PhishingReport.objects.filter(
+                created_at__gte=last_month,
+                platform_source__isnull=False
+            ).values('platform_source__name').annotate(
+                count=Count('id')
+            ).order_by('-count')[:5]
+        ),
+        
+        # URL status breakdown
+        'url_breakdown': {
+            'safe': URLCheck.objects.filter(
+                checked_at__gte=last_month, 
+                status='safe'
+            ).count(),
+            'suspicious': URLCheck.objects.filter(
+                checked_at__gte=last_month, 
+                status='suspicious'
+            ).count(),
+            'malicious': URLCheck.objects.filter(
+                checked_at__gte=last_month, 
+                status__in=['malicious', 'phishing']
+            ).count(),
+        },
+        
+        # Reports by category
+        'category_breakdown': list(
+            PhishingReport.objects.filter(
+                created_at__gte=last_month
+            ).values('category').annotate(
+                count=Count('id')
+            ).order_by('-count')[:5]
+        ),
+    }
+    
+    return JsonResponse({
+        'status': 'success',
+        'data': stats,
+        'last_updated': timezone.now().isoformat()
     })

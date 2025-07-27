@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Test - Platform Source Dropdown</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #1a1a1a; color: #ffffff; }
+        .form-group { margin: 20px 0; }
+        .form-control { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #00a99d; 
+            background: #2a2a2a; 
+            color: #ffffff;
+        }
+        select.form-control {
+            height: auto !important;
+            min-height: 40px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h2>Dropdown Test - Without Select2</h2>
+    
+    <form>
+        <div class="form-group">
+            <label>Platform Source (Normal HTML Select):</label>
+            <select class="form-control" name="test_platform">
+                <option value="">Ընտրել աղբյուրը</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Twitter">Twitter</option>
+                <option value="Telegram">Telegram</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="SMS">SMS</option>
+                <option value="Email">Email</option>
+                <option value="Website">Website</option>
+                <option value="Այլ">Այլ</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Platform Source (Large List - 50+ options):</label>
+            <select class="form-control" name="test_platform_large">
+                <option value="">Ընտրել աղբյուրը</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Twitter">Twitter</option>
+                <option value="Telegram">Telegram</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="SMS">SMS</option>
+                <option value="Email">Email</option>
+                <option value="Website">Website</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="YouTube">YouTube</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Snapchat">Snapchat</option>
+                <option value="Discord">Discord</option>
+                <option value="Reddit">Reddit</option>
+                <option value="Pinterest">Pinterest</option>
+                <option value="Tumblr">Tumblr</option>
+                <option value="Viber">Viber</option>
+                <option value="Signal">Signal</option>
+                <option value="Skype">Skype</option>
+                <option value="Zoom">Zoom</option>
+                <option value="Teams">Teams</option>
+                <option value="Slack">Slack</option>
+                <option value="WeChat">WeChat</option>
+                <option value="Line">Line</option>
+                <option value="Kik">Kik</option>
+                <option value="Messenger">Messenger</option>
+                <option value="Wickr">Wickr</option>
+                <option value="Threema">Threema</option>
+                <option value="Riot">Riot</option>
+                <option value="Element">Element</option>
+                <option value="Matrix">Matrix</option>
+                <option value="IRC">IRC</option>
+                <option value="Gitter">Gitter</option>
+                <option value="Keybase">Keybase</option>
+                <option value="Mastodon">Mastodon</option>
+                <option value="Clubhouse">Clubhouse</option>
+                <option value="Parler">Parler</option>
+                <option value="Gab">Gab</option>
+                <option value="MeWe">MeWe</option>
+                <option value="Vkontakte">Vkontakte</option>
+                <option value="Odnoklassniki">Odnoklassniki</option>
+                <option value="Այլ">Այլ</option>
+            </select>
+        </div>
+    </form>
+    
+    <script>
+        console.log('HTML Select test page loaded');
+        
+        // Add change listeners
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Selected:', this.name, '=', this.value);
+            });
+        });
+    </script>
+</body>
+</html>
