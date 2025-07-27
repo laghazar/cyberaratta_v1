@@ -1,5 +1,13 @@
 from django.urls import path
 from . import views
+# Import demo APIs
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from demo_api_views import (
+    live_demo_stats_api, demo_threat_feed_api, demo_quiz_stats_api,
+    demo_url_checker_stats_api, demo_reporting_stats_api
+)
 
 app_name = 'threat_map'
 
@@ -13,4 +21,11 @@ urlpatterns = [
     path('api/check-url/', views.check_url_api, name='check_url_api'),
     path('api/live-threats/', views.live_threats_api, name='live_threats_api'),
     path('api/site-statistics/', views.site_statistics_api, name='site_statistics_api'),
+    
+    # Demo APIs for presentation
+    path('api/demo/stats/', live_demo_stats_api, name='demo_stats'),
+    path('api/demo/threats/', demo_threat_feed_api, name='demo_threats'),
+    path('api/demo/quiz/', demo_quiz_stats_api, name='demo_quiz'),
+    path('api/demo/url-checker/', demo_url_checker_stats_api, name='demo_url_checker'),
+    path('api/demo/reporting/', demo_reporting_stats_api, name='demo_reporting'),
 ]

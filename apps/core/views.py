@@ -25,6 +25,13 @@ def home(request):
     
     return render(request, 'core/home.html', context)
 
+def demo_dashboard(request):
+    """Demo dashboard for presentation"""
+    context = {
+        'page_title': 'CyberAratta Demo Dashboard - Հայաստանի Կիբեռ Անվտանգություն'
+    }
+    return render(request, 'demo_dashboard.html', context)
+
 def update_statistics():
     stats = {
         'checked_urls': URLCheck.objects.count(),

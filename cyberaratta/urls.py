@@ -2,10 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.core.views import demo_dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.core.urls')),  # Core app for homepage
+    path('demo/', demo_dashboard, name='demo_dashboard'),  # Demo dashboard
     path('quiz/', include('apps.quiz.urls', namespace='quiz')),  # Quiz app
     path('url-checker/', include('apps.url_checker.urls', namespace='url_checker')),  # URL Checker app
     path('reporting/', include('apps.reporting.urls', namespace='reporting')),  # Reporting app
