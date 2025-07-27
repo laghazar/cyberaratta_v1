@@ -1,5 +1,8 @@
 from django.db import models
 
+# Import integration models
+from .models_integrations import SecurityIntegration, IntegrationResult
+
 class URLCheck(models.Model):
     """URL/Էլ. փոստի ստուգման մոդել"""
     STATUS_CHOICES = [
@@ -28,6 +31,7 @@ class UrlCheckResult(models.Model):
     url_check = models.ForeignKey(URLCheck, on_delete=models.CASCADE, related_name='results')
     virustotal_result = models.JSONField(null=True, blank=True, verbose_name="VirusTotal արդյունք")
     kaspersky_result = models.JSONField(null=True, blank=True, verbose_name="Kaspersky արդյունք")
+    safebrowsing_result = models.JSONField(null=True, blank=True, verbose_name="Google Safe Browsing արդյունք")
     checked_at = models.DateTimeField(auto_now_add=True, verbose_name="Ստուգման ժամանակ")
 
     class Meta:

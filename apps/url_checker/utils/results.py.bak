@@ -1,0 +1,155 @@
+"""
+URL Check Results Formatter
+
+Այս մոդուլը տրամադրում է ֆունկցիա        # Ձևավորում ենք վերջնական HTML
+        return mark_safe(f"""
+        <div class="url-check-results">
+            <div class="mt-4 mb-3">
+                <p style="color: #000;"><strong style="color: #000;">Օգտագործված API-ներ:</strong> {', '.join(all_results.keys())}</p>
+            </div>
+            
+            <h4 class="mt-4 mb-3">🔍 Մանրամասն Ստուգման Արդյունքներ</h4>
+            {scan_results_html}
+            
+            {overall_result_html}
+            
+            {recommendations_html} արդյունքների ձևավորման համար:
+"""
+
+from django.utils.safestring import mark_safe
+from django.utils.html import escape
+from .formatting import format_scan_result_html, format_overall_result
+from .recommendations import generate_recommendations
+
+
+def format_detailed_response(status, url, vt_result=None, kasp_result=None, safebrowsing_result=None, need_manual_review=False):
+    """
+    Ձևավորում է մանրամասն HTML պատասխան URL ստուգման արդյունքների հիման վրա
+    
+    Args:
+        status (str): Ընդհանուր կարգավիճակը ('safe', 'suspicious', 'malicious', 'pending')
+        url (str): Ստուգված URL-ը
+        vt_result (dict): VirusTotal ստուգման արդյունքները
+        kasp_result (dict): Kaspersky ստուգման արդյունքները
+        safebrowsing_result (dict): Google Safe Browsing ստուգման արդյունքները
+        need_manual_review (bool): Պահանջվում է ձեռքով ստուգում
+        
+    Returns:
+        str: HTML ձևաչափով ձևավորված արդյունք
+    """
+    try:
+        all_results = {}
+        
+        if status == 'pending':
+            # Ընթացիկ ստուգում
+            return mark_safe(f"""
+            <div class="alert alert-warning">
+                <i class="fas fa-clock me-2"></i>
+                URL-ի ստուգումը ընթացքի մեջ է: Խնդրում ենք սպասել...
+            </div>
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Բեռնվում է...</span>
+                </div>
+            </div>
+            """)
+        
+        # Ձևավորում ենք անվտանգության միավորը
+        security_score = calculate_security_score(status, vt_result, kasp_result, safebrowsing_result)
+        
+        # Հավաքում ենք արդյունքները
+        if vt_result and not vt_result.get('pending', False):
+            all_results['VirusTotal'] = vt_result
+            
+        if kasp_result and not kasp_result.get('pending', False):
+            all_results['Kaspersky'] = kasp_result
+            
+        if safebrowsing_result and not safebrowsing_result.get('pending', False):
+            all_results['SafeBrowsing'] = safebrowsing_result
+        
+        # Ձևավորում ենք ընդհանուր արդյունքը
+        overall_result_html = format_overall_result(security_score, all_results)
+        
+        # Ձևավորում ենք առանձին ստուգումների արդյունքները
+        scan_results_html = ""
+        
+        for integration_name, result in all_results.items():
+            scan_results_html += format_scan_result_html(result, integration_name)
+        
+        # Ձևավորում ենք առաջարկությունները
+        recommendations_html = generate_recommendations(all_results, url)
+        
+        # Ձևավորում ենք վերջնական HTML
+        return mark_safe(f"""
+        <div class="url-check-results">
+            <div class="mt-4 mb-3 sources-info p-3 rounded" style="background: linear-gradient(135deg, #f0f8ff 0%, #e6f0ff 100%); border-left: 4px solid #007bff;">
+                <h5><i class="fas fa-shield-alt me-2"></i>�️ Օգտագործված API-ներ</h5>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                    {' '.join(f'<span class="badge bg-primary">{name}</span>' for name in all_results.keys())}
+                </div>
+            </div>
+            
+            <h4 class="mt-4 mb-3">🔍 Մանրամասն Ստուգման Արդյունքներ</h4>
+            {scan_results_html}
+            
+            {overall_result_html}
+            
+            {recommendations_html}
+            
+            {
+                '<div class="alert alert-warning mt-4"><i class="fas fa-user-check me-2"></i> <strong>Նշում:</strong> Այս URL-ը դեռ ուսումնասիրվում է մեր մասնագետների կողմից:</div>' 
+                if need_manual_review 
+                else ''
+            }
+        </div>
+        """)
+    except Exception as e:
+        # Սխալի դեպքում ցուցադրել պարզ տեղեկատվություն
+        print(f"Error in format_detailed_response: {str(e)}")
+        return mark_safe(f"""
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <strong>Սխալ է տեղի ունեցել:</strong> URL-ի ստուգման ընթացքում սխալ է տեղի ունեցել: Խնդրում ենք կրկին փորձել:
+        </div>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Տեխնիկական տեղեկություն:</strong> {escape(str(e))}
+        </div>
+        """)
+
+
+def calculate_security_score(status, vt_result=None, kasp_result=None, safebrowsing_result=None):
+    """
+    Հաշվարկում է անվտանգության միավորը (0-100) ստուգման արդյունքների հիման վրա
+    
+    Args:
+        status (str): Ընդհանուր կարգավիճակը
+        vt_result (dict): VirusTotal ստուգման արդյունքները
+        kasp_result (dict): Kaspersky ստուգման արդյունքները
+        safebrowsing_result (dict): Google Safe Browsing ստուգման արդյունքները
+        
+    Returns:
+        int: Անվտանգության միավորը (0-100)
+    """
+    if status == 'malicious':
+        # Եթե որևէ աղբյուր նշում է վտանգավոր, ապա միավորը ցածր է
+        return 10
+    
+    if status == 'suspicious':
+        # Կասկածելի - միջին միավոր
+        return 40
+    
+    if status == 'safe':
+        # Անվտանգ - բարձր միավոր
+        # Եթե ավելի շատ աղբյուրներ են նշում անվտանգ, միավորը ավելի բարձր է
+        sources_count = sum(1 for result in [vt_result, kasp_result, safebrowsing_result] if result)
+        trusted_sources = sum(1 for result in [vt_result, kasp_result, safebrowsing_result] if result and result.get('trusted', False))
+        
+        if trusted_sources > 0:
+            return 100  # Վստահելի դոմեն - առավելագույն միավոր
+        
+        # Այլ անվտանգ կայքեր
+        return 85
+    
+    # Ընթացիկ կամ այլ կարգավիճակ - չեզոք միավոր
+    return 50

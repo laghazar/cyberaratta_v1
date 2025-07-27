@@ -9,7 +9,9 @@
 {% endblock %}
 
 {% block extra_head %}
+{% load static %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/url_checker.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +22,7 @@
             <div class="cyber-card h-100">
                 <div class="cyber-card-header">
                     <h4><i class="fas fa-link me-2"></i>URL Ստուգիչ</h4>
-                    <p class="mb-0 text-muted">Ստուգեք կայքերի անվտանգությունը</p>
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">Ստուգեք կայքերի անվտանգությունը</p>
                 </div>
                 <div class="cyber-card-body">
                     <form method="post" action="{% url 'url_checker:check_url' %}" id="urlCheckForm">
@@ -42,63 +44,87 @@
                             <label class="form-label">
                                 <i class="fas fa-shield-alt me-2"></i>Ընտրեք Անվտանգության Աղբյուրները
                             </label>
-                            <div class="row g-2">
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-inline bg-light p-3 rounded border">
-                                        <input class="form-check-input" type="checkbox" name="sources" value="virustotal" id="vt_check" checked>
-                                        <label class="form-check-label w-100" for="vt_check">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-virus text-primary me-2"></i>
-                                                <div>
-                                                    <strong>VirusTotal</strong>
-                                                    <small class="d-block text-muted">70+ անվտանգության movement</small>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="sourcesDropdown" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+                                    <span id="selectedSourcesText">VirusTotal, Kaspersky, Google Safe Browsing</span>
+                                    <span class="badge bg-primary ms-2" id="selectedCount">3</span>
+                                </button>
+                                <ul class="dropdown-menu w-100 p-2" aria-labelledby="sourcesDropdown">
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="virustotal" id="vt_dropdown_check" checked>
+                                            <label class="form-check-label" for="vt_dropdown_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-virus text-primary me-2"></i>
+                                                    <div>
+                                                        <strong>VirusTotal</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">70+ անվտանգության engine</small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-inline bg-light p-3 rounded border">
-                                        <input class="form-check-input" type="checkbox" name="sources" value="kaspersky" id="kasp_check" checked>
-                                        <label class="form-check-label w-100" for="kasp_check">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-shield-virus text-success me-2"></i>
-                                                <div>
-                                                    <strong>Kaspersky OpenTIP</strong>
-                                                    <small class="d-block text-muted">Կիբեր-սպառնալիքների բազա</small>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="kaspersky" id="kasp_dropdown_check" checked>
+                                            <label class="form-check-label" for="kasp_dropdown_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-shield-virus text-success me-2"></i>
+                                                    <div>
+                                                        <strong>Kaspersky OpenTIP</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">Կիբեր-սպառնալիքների բազա</small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-inline bg-light p-3 rounded border opacity-75">
-                                        <input class="form-check-input" type="checkbox" name="sources" value="safebrowsing" id="safe_check" disabled>
-                                        <label class="form-check-label w-100" for="safe_check">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fab fa-google text-warning me-2"></i>
-                                                <div>
-                                                    <strong>Google Safe Browsing</strong>
-                                                    <small class="d-block text-muted">Շուտով հասանելի</small>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="safebrowsing" id="safe_dropdown_check" checked>
+                                            <label class="form-check-label" for="safe_dropdown_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fab fa-google text-warning me-2"></i>
+                                                    <div>
+                                                        <strong>Google Safe Browsing</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">Google-ի անվտանգության բազա</small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-check form-check-inline bg-light p-3 rounded border opacity-75">
-                                        <input class="form-check-input" type="checkbox" name="sources" value="urlvoid" id="void_check" disabled>
-                                        <label class="form-check-label w-100" for="void_check">
-                                            <div class="d-flex align-items-center">
-                                                <i class="fas fa-search text-info me-2"></i>
-                                                <div>
-                                                    <strong>URLVoid</strong>
-                                                    <small class="d-block text-muted">Շուտով հասանելի</small>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="urlvoid" id="void_dropdown_check" disabled>
+                                            <label class="form-check-label" for="void_dropdown_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-search text-info me-2"></i>
+                                                    <div>
+                                                        <strong>URLVoid</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">Շուտով հասանելի</small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="abuseipdb" id="abuse_dropdown_check" disabled>
+                                            <label class="form-check-label" for="abuse_dropdown_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-database text-danger me-2"></i>
+                                                    <div>
+                                                        <strong>AbuseIPDB</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">Շուտով հասանելի</small>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="form-text">
                                 <i class="fas fa-lightbulb me-1"></i>
@@ -108,7 +134,7 @@
                         
                         <div class="text-center">
                             <button type="submit" class="btn btn-cyber btn-lg w-100">
-                                <i class="fas fa-shield-alt me-2"></i>Ստուգել URL-ը
+                                <i class="fas fa-search me-2"></i>Գնահատել Անվտանգությունը
                             </button>
                         </div>
                     </form>
@@ -123,7 +149,7 @@
             <div class="cyber-card h-100">
                 <div class="cyber-card-header">
                     <h4><i class="fas fa-envelope me-2"></i>Էլ. փոստի Ստուգիչ</h4>
-                    <p class="mb-0 text-muted">Ստուգեք էլ. փոստերի ֆիշինգային ու վտանգավոր բնույթը</p>
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">Ստուգեք էլ. փոստերի ֆիշինգային ու վտանգավոր բնույթը</p>
                 </div>
                 <div class="cyber-card-body">
                     <form method="post" id="emailCheckForm">
@@ -167,15 +193,15 @@
                 <div class="cyber-card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-3"><i class="fas fa-link me-2"></i>URL Ստուգումներ</h6>
-                            <div id="recentUrls" class="text-center text-muted">
+                            <h6 class="mb-3" style="color: rgba(255, 255, 255, 0.7);"><i class="fas fa-link me-2"></i>URL Ստուգումներ</h6>
+                            <div id="recentUrls" class="text-center" style="color: rgba(255, 255, 255, 0.6);">
                                 <i class="fas fa-clock fa-2x mb-3"></i>
                                 <p>Ստուգեք առաջին URL-ը և այն կհայտնվի այստեղ</p>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-3"><i class="fas fa-envelope me-2"></i>Էլ. փոստի Ստուգումներ</h6>
-                            <div id="recentEmails" class="text-center text-muted">
+                            <h6 class="mb-3" style="color: rgba(255, 255, 255, 0.7);"><i class="fas fa-envelope me-2"></i>Էլ. փոստի Ստուգումներ</h6>
+                            <div id="recentEmails" class="text-center" style="color: rgba(255, 255, 255, 0.6);">
                                 <i class="fas fa-clock fa-2x mb-3"></i>
                                 <p>Էլ. փոստի ստուգումները շուտով կլինեն հասանելի</p>
                             </div>
@@ -203,6 +229,94 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Dropdown checkbox functionality
+function updateDropdownText() {
+    const checkboxes = document.querySelectorAll('.source-checkbox:checked:not(:disabled)');
+    const selectedText = document.getElementById('selectedSourcesText');
+    const selectedCount = document.getElementById('selectedCount');
+    
+    if (checkboxes.length === 0) {
+        selectedText.textContent = 'Ընտրեք աղբյուրները...';
+        selectedCount.textContent = '0';
+        selectedCount.className = 'badge bg-secondary ms-2';
+    } else {
+        const names = Array.from(checkboxes).map(cb => {
+            switch(cb.value) {
+                case 'virustotal': return 'VirusTotal';
+                case 'kaspersky': return 'Kaspersky';
+                case 'safebrowsing': return 'Google Safe Browsing';
+                case 'urlvoid': return 'URLVoid';
+                case 'abuseipdb': return 'AbuseIPDB';
+                default: return cb.value;
+            }
+        });
+        
+        if (names.length <= 2) {
+            selectedText.textContent = names.join(', ');
+        } else {
+            selectedText.textContent = names.slice(0, 2).join(', ') + '...';
+        }
+        
+        selectedCount.textContent = checkboxes.length;
+        selectedCount.className = 'badge bg-primary ms-2';
+    }
+}
+
+// Initialize dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing dropdown...');
+    
+    // Initialize Bootstrap dropdown
+    const dropdownElement = document.getElementById('sourcesDropdown');
+    const dropdownMenu = dropdownElement?.nextElementSibling;
+    
+    console.log('Dropdown element:', dropdownElement);
+    console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+    
+    if (dropdownElement && typeof bootstrap !== 'undefined') {
+        try {
+            new bootstrap.Dropdown(dropdownElement);
+            console.log('Bootstrap dropdown initialized');
+        } catch (e) {
+            console.error('Bootstrap dropdown failed:', e);
+        }
+    } 
+    
+    if (dropdownElement && dropdownMenu) {
+        // Manual dropdown toggle (always add as backup)
+        dropdownElement.addEventListener('click', function(e) {
+            console.log('Dropdown clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+            dropdownElement.setAttribute('aria-expanded', dropdownMenu.classList.contains('show'));
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdownElement.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+                dropdownElement.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+    
+    // Update dropdown text on checkbox change
+    document.querySelectorAll('.source-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateDropdownText);
+    });
+    
+    // Prevent dropdown from closing when clicking on checkboxes
+    document.querySelectorAll('.dropdown-item-text').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+    
+    // Initial update
+    updateDropdownText();
+});
+
 // URL Checker Form Handler
 document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -220,6 +334,16 @@ document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
     // Show loading state with selected sources count
     submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>Ստուգվում է ${selectedSources.length} աղբյուրով...`;
     submitBtn.disabled = true;
+    
+    // Clear previous results
+    document.getElementById('urlResult').innerHTML = `
+        <div class="d-flex justify-content-center my-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="ms-3">Կատարվում է URL-ի անվտանգության ստուգում...</div>
+        </div>
+    `;
 
     fetch("{% url 'url_checker:check_url' %}", {
         method: 'POST',
@@ -228,7 +352,12 @@ document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
         },
         body: new FormData(this)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         let alertClass = 'alert-warning';
         let iconClass = 'fa-question-circle';
@@ -249,9 +378,9 @@ document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
             iconClass = 'fa-exclamation-circle';
             statusColor = 'text-warning';
         } else if (data.status === 'pending') {
-            alertClass = 'alert-info';
-            iconClass = 'fa-clock';
-            statusColor = 'text-info';
+            alertClass = 'alert-primary';
+            iconClass = 'fa-search';
+            statusColor = 'text-primary';
         }
 
         // Confidence level indication
@@ -271,29 +400,65 @@ document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
         let sourcesDisplay = '';
         if (data.sources_used && data.sources_used.length > 0) {
             sourcesDisplay = `
-                <div class="mt-2 pt-2 border-top">
-                    <small class="text-muted">
-                        <i class="fas fa-satellite-dish me-1"></i>
-                        <strong>Օգտագործված աղբյուրներ:</strong> 
-                        ${data.sources_used.map(source => {
-                            if (source === 'virustotal') return '<span class="badge bg-primary me-1">VirusTotal</span>';
-                            if (source === 'kaspersky') return '<span class="badge bg-success me-1">Kaspersky</span>';
-                            if (source === 'trusted_domain') return '<span class="badge bg-info me-1">Վստահելի Ցուցակ</span>';
-                            return `<span class="badge bg-secondary me-1">${source}</span>`;
-                        }).join('')}
-                    </small>
+                <div class="mt-4 mb-3">
+                    <p style="color: #000;"><strong style="color: #000;">Օգտագործված API-ներ:</strong> ${data.sources_used.join(', ')}</p>
                 </div>
             `;
+        }
+        
+        // Manual review message check
+        let manualReviewDisplay = '';
+        if (data.manual_review_required || (data.internal_analysis && data.internal_analysis.manual_review_required) || data.status === 'pending') {
+            // Use the review message if provided, otherwise use a default
+            const reviewMessage = data.review_message || 
+                                (data.internal_analysis && data.internal_analysis.review_message) || 
+                                'Այս URL-ը անհայտ է մեր բազայում: Մեր անվտանգության թիմը կանցկացնի manual ստուգում 5 աշխատանքային օրվա ընթացքում';
+            manualReviewDisplay = `
+                <div class="alert alert-info mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-clock me-2"></i>
+                        <div>
+                            <strong>Manual Review Կկատարվի</strong>
+                            <p class="mb-0 mt-1">${reviewMessage}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Force the status to show pending with manual review for UI consistency
+            if (data.status === 'pending') {
+                alertClass = 'alert-primary';
+                iconClass = 'fa-search';
+                statusColor = 'text-primary';
+            }
         }
 
         document.getElementById('urlResult').innerHTML = `
             <div class="result-container">
-                <div class="sources-info mb-3">
-                    ${sourcesDisplay}
-                </div>
+                ${sourcesDisplay}
+                ${manualReviewDisplay}
                 ${data.result || 'Չկա լրացուցիչ տեղեկություն'}
             </div>
         `;
+        
+        // Update recent URLs list if the result is available
+        const checkedUrl = document.getElementById('url_input').value;
+        if (checkedUrl && !document.querySelector('#recentUrls p.checked-url[data-url="' + checkedUrl + '"]')) {
+            try {
+                updateRecentChecks(checkedUrl, data.status, data.status_display);
+            } catch (error) {
+                console.error('Error updating recent checks:', error);
+                // Fallback if function is not available
+                const recentUrlsContainer = document.getElementById('recentUrls');
+                if (recentUrlsContainer) {
+                    const urlElement = document.createElement('p');
+                    urlElement.className = 'checked-url mb-2';
+                    urlElement.setAttribute('data-url', checkedUrl);
+                    urlElement.textContent = checkedUrl + ' - ' + (data.status_display || data.status);
+                    recentUrlsContainer.insertBefore(urlElement, recentUrlsContainer.firstChild);
+                }
+            }
+        }
         
         // Create pie chart if canvas exists
         setTimeout(() => {
@@ -376,9 +541,15 @@ document.getElementById('urlCheckForm').addEventListener('submit', function(e) {
     .catch(error => {
         console.error('Error:', error);
         document.getElementById('urlResult').innerHTML = `
-            <div class="alert alert-error alert-dismissible fade show" role="alert">
-                <i class="fas fa-times-circle me-2"></i>
-                Սխալ է տեղի ունեցել URL-ի ստուգման ժամանակ: Խնդրում ենք կրկին փորձել:
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-times-circle fa-2x me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Սխալ է տեղի ունեցել URL-ի ստուգման ժամանակ</h5>
+                        <p class="mb-0">Խնդրում ենք կրկին փորձել կամ ստուգել այլ URL:</p>
+                        <p class="mb-0 mt-2"><small class="text-muted">Տեխնիկական սխալ: ${error.message}</small></p>
+                    </div>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Փակել"></button>
             </div>
         `;
@@ -420,6 +591,49 @@ document.getElementById('emailCheckForm').addEventListener('submit', function(e)
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }, 2000);
+});
+
+// Ensure all JavaScript functions are available
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if url_checker.js functions are loaded
+    if (typeof updateRecentChecks !== 'function') {
+        console.error('URL Checker functions not loaded. Loading fallback implementation.');
+        
+        // Fallback implementation
+        window.updateRecentChecks = function(url, status, statusDisplay) {
+            console.log('Using fallback updateRecentChecks function');
+            const recentUrlsContainer = document.getElementById('recentUrls');
+            if (!recentUrlsContainer) return;
+            
+            // Clear the initial message if it exists
+            if (recentUrlsContainer.querySelector('p:not(.checked-url)')) {
+                recentUrlsContainer.innerHTML = '';
+            }
+            
+            // Create a new URL entry element
+            const urlElement = document.createElement('p');
+            urlElement.className = 'checked-url mb-2';
+            urlElement.setAttribute('data-url', url);
+            urlElement.textContent = url + ' - ' + (statusDisplay || status);
+            
+            // Add to the container (at the beginning)
+            recentUrlsContainer.insertBefore(urlElement, recentUrlsContainer.firstChild);
+            
+            // Limit to 5 recent URLs
+            const allUrls = recentUrlsContainer.querySelectorAll('.checked-url');
+            if (allUrls.length > 5) {
+                recentUrlsContainer.removeChild(allUrls[allUrls.length - 1]);
+            }
+        };
+        
+        window.fillUrlInput = function(url) {
+            const urlInput = document.getElementById('url_input');
+            if (urlInput) {
+                urlInput.value = url;
+                urlInput.focus();
+            }
+        };
+    }
 });
 </script>
 
@@ -471,20 +685,91 @@ document.getElementById('emailCheckForm').addEventListener('submit', function(e)
     word-break: break-all;
 }
 
-/* Source Selection Styles */
-.form-check-inline {
+/* Source Selection Styles - Dropdown */
+.dropdown-menu {
+    max-height: 250px !important;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    background-color: white !important;
+    position: absolute !important;
+    z-index: 1050 !important;
+}
+
+.dropdown-item-text {
+    padding: 0.5rem 0;
+    color: black !important;
+}
+
+.dropdown-item-text .form-check {
+    margin-bottom: 0;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item-text .form-check:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.dropdown-item-text .form-check-input:disabled + .form-check-label {
+    opacity: 0.6;
+}
+
+.dropdown-item-text .form-check-label {
+    color: black !important;
+}
+
+.dropdown-item-text .form-check-label strong {
+    color: black !important;
+}
+
+.dropdown-item-text .form-check-label .text-muted {
+    color: #6c757d !important;
+}
+
+/* Custom scrollbar for dropdown */
+.dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.dropdown-toggle {
+    min-height: 50px;
+    padding: 12px 16px;
+    border: 2px solid #dee2e6;
     transition: all 0.3s ease;
-    cursor: pointer;
+    background-color: white !important;
+    color: black !important;
 }
 
-.form-check-inline:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+.dropdown-toggle:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    background-color: white !important;
+    color: black !important;
 }
 
-.form-check-inline input[type="checkbox"]:checked + label {
-    background-color: rgba(13, 110, 253, 0.1) !important;
-    border-color: var(--bs-primary) !important;
+.dropdown-toggle:hover {
+    background-color: white !important;
+    color: black !important;
+}
+
+.dropdown-divider {
+    margin: 0.25rem 0;
 }
 
 .form-check-inline.opacity-75 {
@@ -495,6 +780,27 @@ document.getElementById('emailCheckForm').addEventListener('submit', function(e)
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 8px;
     padding: 0.75rem;
+}
+
+.source-api-section {
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.source-api-section:hover {
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.source-api-section .badge {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.source-api-section .badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* Light theme colors */

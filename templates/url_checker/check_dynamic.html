@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Անվտանգության Ստուգում - CyberAratta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        
+        .analysis-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .source-selection {
+            margin-bottom: 2rem;
+        }
+        
+        .security-sources {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #dee2e6;
+        }
+        
+        .dropdown-menu {
+            padding: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 0;
+            border: none;
+            background: none;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-check {
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .form-check-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .integration-status {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+        }
+        
+        .status-active { background: #d4edda; color: #155724; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .status-maintenance { background: #fff3cd; color: #856404; }
+        .status-coming-soon { background: #cce5ff; color: #004085; }
+        
+        .btn-analyze {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        .loading-animation {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 0.3rem solid #f3f3f3;
+            border-top: 0.3rem solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .alert-success { border-left: 5px solid #28a745; }
+        .alert-warning { border-left: 5px solid #ffc107; }
+        .alert-danger { border-left: 5px solid #dc3545; }
+        .alert-info { border-left: 5px solid #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-shield-alt me-3"></i>
+                        URL Անվտանգության Ստուգում
+                    </h1>
+                    <p class="lead mb-0">
+                        Ստուգեք ցանկացած կայքի անվտանգությունը մեր բազմաշերտ վերլուծության համակարգով
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="analysis-section">
+                    <form id="urlForm" method="post">
+                        {% csrf_token %}
+                        
+                        <!-- URL Input Section -->
+                        <div class="mb-4">
+                            <label for="input_text" class="form-label fs-5 fw-semibold">
+                                <i class="fas fa-link text-primary me-2"></i>
+                                Մուտքագրեք URL-ը կամ էլ. փոստի հասցեն
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text">
+                                    <i class="fas fa-globe"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="input_text" 
+                                       name="input_text" 
+                                       placeholder="https://example.com" 
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Source Selection Section -->
+                        <div class="source-selection">
+                            <div class="security-sources">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-cogs text-primary me-2"></i>
+                                    Ընտրեք անվտանգության աղբյուրները
+                                </h5>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-primary dropdown-toggle w-100 text-start" 
+                                            type="button" 
+                                            id="sourcesDropdown" 
+                                            data-bs-toggle="dropdown" 
+                                            aria-expanded="false">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        <span id="selectedText">Ընտրեք անվտանգության ծառայություններ</span>
+                                    </button>
+                                    
+                                    <ul class="dropdown-menu w-100" aria-labelledby="sourcesDropdown">
+                                        <!-- Dynamic integrations will be loaded here -->
+                                        {% for integration in integrations %}
+                                        <li class="dropdown-item">
+                                            <div class="form-check">
+                                                <input class="form-check-input source-checkbox" 
+                                                       type="checkbox" 
+                                                       name="sources" 
+                                                       value="{{ integration.slug }}" 
+                                                       id="source_{{ integration.slug }}"
+                                                       {% if integration.is_active %}checked{% endif %}
+                                                       {% if not integration.is_active %}disabled{% endif %}>
+                                                <label class="form-check-label d-flex align-items-center justify-content-between w-100" 
+                                                       for="source_{{ integration.slug }}">
+                                                    <div>
+                                                        {% if integration.icon_class %}
+                                                            <i class="{{ integration.icon_class }} me-2"></i>
+                                                        {% else %}
+                                                            <i class="fas fa-shield me-2"></i>
+                                                        {% endif %}
+                                                        {{ integration.display_name }}
+                                                    </div>
+                                                    <span class="integration-status status-{{ integration.status }}">
+                                                        {% if integration.status == 'active' %}
+                                                            Ակտիվ
+                                                        {% elif integration.status == 'inactive' %}
+                                                            Ապակտիվ
+                                                        {% elif integration.status == 'maintenance' %}
+                                                            Սպասարկում
+                                                        {% elif integration.status == 'coming_soon' %}
+                                                            Շուտով
+                                                        {% endif %}
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            {% if integration.description %}
+                                            <small class="text-muted ms-4">{{ integration.description }}</small>
+                                            {% endif %}
+                                        </li>
+                                        {% endfor %}
+                                        
+                                        <!-- Manual Analysis Option -->
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li class="dropdown-item">
+                                            <div class="form-check">
+                                                <input class="form-check-input source-checkbox" 
+                                                       type="checkbox" 
+                                                       name="sources" 
+                                                       value="manual" 
+                                                       id="source_manual" 
+                                                       checked>
+                                                <label class="form-check-label d-flex align-items-center justify-content-between w-100" 
+                                                       for="source_manual">
+                                                    <div>
+                                                        <i class="fas fa-user-shield me-2"></i>
+                                                        Ներքին վերլուծություն
+                                                    </div>
+                                                    <span class="integration-status status-active">Ակտիվ</span>
+                                                </label>
+                                            </div>
+                                            <small class="text-muted ms-4">CyberAratta-ի ներքին անվտանգության վերլուծություն</small>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-analyze btn-lg">
+                                <i class="fas fa-search me-2"></i>
+                                Սկսել վերլուծությունը
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Loading Animation -->
+                <div id="loadingAnimation" class="loading-animation">
+                    <div class="loading-spinner"></div>
+                    <h5 class="text-muted">Վերլուծություն է կատարվում...</h5>
+                    <p class="text-muted">Խնդրում ենք սպասել, քանի որ ստուգվում են բազմաթիվ անվտանգության համակարգեր</p>
+                </div>
+
+                <!-- Results will be displayed here -->
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Enhanced dropdown functionality with fallback
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing dropdown functionality');
+            
+            const dropdown = document.getElementById('sourcesDropdown');
+            const dropdownMenu = dropdown.nextElementSibling;
+            const selectedText = document.getElementById('selectedText');
+            const checkboxes = document.querySelectorAll('.source-checkbox');
+            
+            // Function to update selected text
+            function updateSelectedText() {
+                const checked = Array.from(checkboxes).filter(cb => cb.checked && !cb.disabled);
+                console.log('Checked checkboxes:', checked.length);
+                
+                if (checked.length === 0) {
+                    selectedText.textContent = 'Ընտրեք անվտանգության ծառայություններ';
+                } else if (checked.length === 1) {
+                    const label = checked[0].nextElementSibling.querySelector('div').textContent.trim();
+                    selectedText.textContent = label;
+                } else {
+                    selectedText.textContent = `Ընտրված է ${checked.length} ծառայություն`;
+                }
+            }
+            
+            // Add event listeners to checkboxes
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function(e) {
+                    console.log('Checkbox changed:', this.value, this.checked);
+                    updateSelectedText();
+                    e.stopPropagation();
+                });
+            });
+            
+            // Prevent dropdown from closing when clicking on items
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Manual dropdown toggle (fallback)
+            dropdown.addEventListener('click', function(e) {
+                console.log('Dropdown button clicked');
+                e.preventDefault();
+                
+                if (dropdownMenu.classList.contains('show')) {
+                    console.log('Closing dropdown manually');
+                    dropdownMenu.classList.remove('show');
+                } else {
+                    console.log('Opening dropdown manually');
+                    dropdownMenu.classList.add('show');
+                }
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+            
+            // Initialize text
+            updateSelectedText();
+            
+            // Form submission with loading animation
+            document.getElementById('urlForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const loadingDiv = document.getElementById('loadingAnimation');
+                const resultsDiv = document.getElementById('results');
+                
+                // Show loading animation
+                loadingDiv.style.display = 'block';
+                resultsDiv.innerHTML = '';
+                
+                // Submit form via AJAX
+                fetch(this.action || window.location.pathname, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    loadingDiv.style.display = 'none';
+                    resultsDiv.innerHTML = html;
+                    
+                    // Scroll to results
+                    resultsDiv.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    loadingDiv.style.display = 'none';
+                    resultsDiv.innerHTML = `
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Սխալ է տեղի ունեցել: ${error.message}
+                        </div>
+                    `;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

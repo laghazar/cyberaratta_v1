@@ -918,6 +918,138 @@ body.cyber-bg {
     border-radius: 10px;
 }
 
+.alert-primary {
+    background: rgba(0, 204, 255, 0.1);
+    border: 1px solid rgba(0, 204, 255, 0.3);
+    color: var(--neon-blue);
+    border-radius: 10px;
+}
+
+/* Text Color Overrides for Better Contrast */
+.text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.text-info {
+    color: var(--neon-blue) !important;
+}
+
+.text-success {
+    color: var(--neon-green) !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-danger {
+    color: #ff6b6b !important;
+}
+
+.text-dark {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.small.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Card and Badge Improvements */
+.card-header {
+    color: #ffffff !important;
+}
+
+.badge {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* Ensure proper contrast for all badge backgrounds */
+.bg-success {
+    background-color: var(--neon-green) !important;
+    color: #000000 !important;
+}
+
+.bg-danger {
+    background-color: #ff6b6b !important;
+    color: #ffffff !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+}
+
+.bg-info {
+    background-color: var(--neon-blue) !important;
+    color: #ffffff !important;
+}
+
+.bg-primary {
+    background-color: var(--neon-blue) !important;
+    color: #ffffff !important;
+}
+
+/* URL Code Display */
+code {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #333333 !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 500;
+}
+
+/* Card Header Improvements */
+.card-header.bg-light {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333333 !important;
+}
+
+.card-header.bg-light h6 {
+    color: #333333 !important;
+}
+
+/* Accordion Improvements */
+.accordion-button.bg-light {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #333333 !important;
+}
+
+.accordion-body.bg-light {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #333333 !important;
+}
+
+/* Card Body Background Override */
+.card {
+    background-color: var(--card-bg) !important;
+    color: #ffffff !important;
+}
+
+.card-body {
+    background-color: var(--card-bg) !important;
+    color: #ffffff !important;
+}
+
+/* Ensure proper text colors within cards */
+.card-body .text-light {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.card-body small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Progress Bar Visibility */
+.progress {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.progress-bar {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
 /* Loading Animation */
 .loading-cyber, .loading-spinner {
     display: inline-block;
@@ -963,4 +1095,42 @@ body.cyber-bg {
     .stat-item h4 {
         font-size: 1.5rem;
     }
+}
+
+/* URL Checker Results - Override white background text issues */
+[style*="background-color: white"],
+[style*="background-color:#ffffff"],
+[style*="background-color: #ffffff"] {
+    color: #212529 !important;
+}
+
+[style*="background-color: white"] * {
+    color: #212529 !important;
+}
+
+[style*="background-color: white"] .text-muted {
+    color: #6c757d !important;
+}
+
+[style*="background-color: white"] code {
+    color: #e83e8c !important;
+    background-color: #f8f9fa !important;
+}
+
+/* Fix for URL Checker result cards */
+.security-analysis-result .card[style*="background-color: white"] {
+    color: #212529 !important;
+}
+
+.security-analysis-result .card[style*="background-color: white"] * {
+    color: inherit !important;
+}
+
+.security-analysis-result .card[style*="background-color: white"] h5,
+.security-analysis-result .card[style*="background-color: white"] h6,
+.security-analysis-result .card[style*="background-color: white"] p,
+.security-analysis-result .card[style*="background-color: white"] small,
+.security-analysis-result .card[style*="background-color: white"] span,
+.security-analysis-result .card[style*="background-color: white"] strong {
+    color: #212529 !important;
 }

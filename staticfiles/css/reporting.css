@@ -1,9 +1,7 @@
 /* Reporting Module Styles */
 
 .reporting-container {
-    background: 
-        linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(26, 31, 46, 0.95) 50%, rgba(15, 20, 35, 0.95) 100%),
-        url('/static/images/hero-bg.jpg') top center/cover no-repeat fixed;
+    background: linear-gradient(135deg, rgba(10, 14, 26, 0.95) 0%, rgba(26, 31, 46, 0.95) 50%, rgba(15, 20, 35, 0.95) 100%);
     min-height: 100vh;
     padding: 2rem 0;
 }

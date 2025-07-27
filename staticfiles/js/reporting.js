@@ -4,6 +4,18 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Only run on reporting page - multiple checks
+    const isReportingPage = window.location.pathname.includes('/reporting/') || 
+                           window.location.pathname.includes('/report/');
+    const hasReportForm = document.getElementById('reportForm');
+    
+    if (!isReportingPage || !hasReportForm) {
+        console.log('Not on reporting page or no report form found - skipping reporting.js');
+        return;
+    }
+    
+    console.log('Loading reporting.js functionality');
+    
     const form = document.getElementById('reportForm');
     const submitButton = form?.querySelector('button[type="submit"]');
     
@@ -146,6 +158,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function loadDraft() {
+            // Double check we're on reporting page
+            if (!window.location.pathname.includes('/reporting/') && 
+                !window.location.pathname.includes('/report/')) {
+                console.log('Not on reporting page - skipping draft load');
+                return;
+            }
+            
             const draft = localStorage.getItem(draftKey);
             if (draft) {
                 try {
@@ -161,11 +180,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
                     
-                    // Show draft notification
-                    if (Object.keys(draftData).length > 0) {
+                    // Show draft notification only if significant data exists
+                    const significantFields = ['description', 'suspicious_url', 'suspicious_email'];
+                    const hasSignificantData = significantFields.some(field => 
+                        draftData[field] && draftData[field].trim().length > 5
+                    );
+                    
+                    if (hasSignificantData) {
+                        console.log('Loading draft with significant data');
                         showNotification('Բեռնվել է նախկինում պահպանված կեսատվով տվյալը', 'info');
                     }
                 } catch (e) {
+                    console.log('Error loading draft, removing from localStorage');
                     localStorage.removeItem(draftKey);
                 }
             }
@@ -193,14 +219,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (container) {
             container.insertBefore(alertDiv, container.firstChild);
             
-            // Auto-dismiss after 5 seconds
+            // Auto-dismiss after 3 seconds (reduced from 5)
             setTimeout(() => {
                 if (alertDiv.parentNode) {
                     alertDiv.remove();
                 }
-            }, 5000);
+            }, 3000);
         }
     }
+
+    // Clear localStorage for reporting on successful submission
+    window.clearReportingDraft = function() {
+        localStorage.removeItem('reportForm_draft');
+        console.log('Reporting draft cleared');
+    };
     
     function showFieldError(field, message) {
         clearFieldError(field);

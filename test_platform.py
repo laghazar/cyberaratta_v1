@@ -172,7 +172,7 @@ class CyberArattaTester:
         
         # Test URL checker page
         try:
-            response = requests.get(f"{self.base_url}/url_checker/", timeout=10)
+            response = requests.get(f"{self.base_url}/url-checker/", timeout=10)
             if response.status_code == 200:
                 self.log_test("URL Checker Page", True, "URL checker page loaded")
             else:
@@ -197,7 +197,7 @@ class CyberArattaTester:
             ('/quiz/', 'Quiz'),
             ('/reporting/report/', 'Reporting'),
             ('/threat_map/', 'Threat Map'),
-            ('/url_checker/', 'URL Checker')
+            ('/url-checker/', 'URL Checker')
         ]
         
         for url, name in pages:
