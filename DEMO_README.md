@@ -146,12 +146,7 @@ python populate_demo_data.py
 5. **Educational Value**: Emphasize learning components
 6. **Security Integration**: Show multiple security layers
 
-### 📞 Demo Support
 
-- **Admin Login**: username: `admin`, password: `demo123`
-- **Demo Dashboard**: Always start here for overview
-- **Fallback URLs**: All modules accessible independently
-- **Data Refresh**: `python populate_demo_data.py` if needed
 
 ## 🎬 Ready for Demo Recording!
 
