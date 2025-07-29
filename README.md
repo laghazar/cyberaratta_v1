@@ -324,7 +324,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### **Community**
 - 🐛 [Report Issues](https://github.com/laghazar/cyberaratta_v1/issues)
 - 💡 [Feature Requests](https://github.com/laghazar/cyberaratta_v1/discussions)
-- 📧 Contact: [security@cyberaratta.am](mailto:security@cyberaratta.am)
+- 📧 Contact: larissaghazaryan@gmail.com
 
 ### **Professional Services**
 For enterprise deployment, custom integrations, or professional support, please contact our team for consultation and implementation services.
