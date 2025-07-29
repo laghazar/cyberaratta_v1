@@ -578,6 +578,49 @@ body.cyber-bg {
     backdrop-filter: blur(15px);
 }
 
+.cyber-footer .cyber-text {
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.cyber-footer .cyber-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cyber-footer .cyber-link:hover {
+    color: #00ff88;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+.cyber-footer .social-links .cyber-link {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.cyber-footer .social-links .cyber-link:hover {
+    background: rgba(0, 255, 136, 0.1);
+    border-color: #00ff88;
+    transform: translateY(-2px);
+}
+
+.cyber-footer h6 {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.cyber-footer ul li {
+    margin-bottom: 8px;
+}
+
 /* === Radio Button Styles for Quiz === */
 .form-check-input[type="radio"] {
     width: 20px !important;
