@@ -9,7 +9,7 @@ urlpatterns = [
     path('', include('apps.core.urls')),  # Core app for homepage
     path('demo/', demo_dashboard, name='demo_dashboard'),  # Demo dashboard
     path('quiz/', include('apps.quiz.urls', namespace='quiz')),  # Quiz app
-    path('url-checker/', include('apps.url_checker.urls', namespace='url_checker')),  # URL Checker app
+    path('url-checker/', include('apps.url_checker.urls')),  # URL Checker app
     path('reporting/', include('apps.reporting.urls', namespace='reporting')),  # Reporting app
     path('threat_map/', include('apps.threat_map.urls', namespace='threat_map')),  # Threat Map app
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

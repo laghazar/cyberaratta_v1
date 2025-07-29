@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}URL Ստուգիչ - CyberAratta{% endblock %}
+
+{% block page_title %}🔗 URL Ստուգիչ{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Ստուգեք կայքերի և էլ. փոստի անվտանգությունը վայրկյանների ընթացքում</p>
+{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/url_checker.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- URL Checker Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="cyber-card h-100">
+                <div class="cyber-card-header">
+                    <h4><i class="fas fa-link me-2"></i>URL Ստուգիչ</h4>
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">Ստուգեք կայքերի անվտանգությունը</p>
+                </div>
+                <div class="cyber-card-body">
+                    <form method="post" action="{% url 'url_email_analyzer:check_url' %}" id="urlCheckForm">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="url_input" class="form-label">
+                                <i class="fas fa-globe me-2"></i>Կայքի Հասցե (URL)
+                            </label>
+                            <input type="url" name="input_text" id="url_input" class="form-control" 
+                                   placeholder="https://example.com" required>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Մուտքագրեք ստուգվող կայքի ամբողջական հասցեն
+                            </div>
+                        </div>
+                        
+                        <!-- Security Sources Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-shield-alt me-2"></i>Ընտրեք Անվտանգության Աղբյուրները
+                            </label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="sourcesDropdown" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+                                    <span id="selectedSourcesText">VirusTotal, Kaspersky, Google Safe Browsing</span>
+                                    <span class="badge bg-primary ms-2" id="selectedCount">3</span>

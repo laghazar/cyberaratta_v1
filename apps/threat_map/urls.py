@@ -26,6 +26,6 @@ urlpatterns = [
     path('api/demo/stats/', live_demo_stats_api, name='demo_stats'),
     path('api/demo/threats/', demo_threat_feed_api, name='demo_threats'),
     path('api/demo/quiz/', demo_quiz_stats_api, name='demo_quiz'),
-    path('api/demo/url-checker/', demo_url_checker_stats_api, name='demo_url_checker'),
+    path('api/demo/url-email-analyzer/', demo_url_checker_stats_api, name='demo_url_email_analyzer'),
     path('api/demo/reporting/', demo_reporting_stats_api, name='demo_reporting'),
 ]
