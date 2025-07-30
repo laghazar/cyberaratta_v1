@@ -118,16 +118,23 @@ class LiveThreatMap {
     
     async loadThreatData() {
         try {
-            // Simulate loading threat data from multiple sources
-            console.log('📡 Loading threat data...');
+            console.log('📡 Loading live threat data...');
             
-            // In real implementation, this would call:
-            // 1. AbuseIPDB API for malicious IPs
-            // 2. ipapi.co for geolocation
-            // 3. Internal threat intelligence
-            
-            const mockAttacks = await this.generateMockThreatData();
-            this.attacks = mockAttacks;
+            // Try to load real threat data first
+            try {
+                const realAttacks = await this.loadRealThreatData();
+                if (realAttacks && realAttacks.length > 0) {
+                    this.attacks = realAttacks;
+                    console.log('✅ Loaded real threat data');
+                } else {
+                    throw new Error('No real data available');
+                }
+            } catch (realDataError) {
+                console.warn('⚠️ Real threat data unavailable, using mock data:', realDataError.message);
+                // Fallback to mock data
+                const mockAttacks = await this.generateMockThreatData();
+                this.attacks = mockAttacks;
+            }
             
             this.updateStatistics();
             this.renderAttacks();
@@ -138,6 +145,71 @@ class LiveThreatMap {
             console.error('❌ Failed to load threat data:', error);
             throw error;
         }
+    }
+    
+    async loadRealThreatData() {
+        // Real API integration
+        const response = await fetch('/threat_map/api/live-threats/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        console.log('🔍 API Response:', data);
+        console.log('📊 Data source:', data.data_source);
+        console.log('🚨 Attacks count:', data.attacks?.length || 0);
+        
+        // Store data source info
+        this.stats.dataSource = data.data_source || 'unknown';
+        
+        // Update statistics from API
+        if (data.statistics) {
+            this.stats = { ...this.stats, ...data.statistics };
+        }
+        
+        // Format and return the attacks data
+        const attacks = data.attacks || [];
+        const formattedAttacks = this.formatRealThreatData(attacks);
+        console.log('✅ Formatted attacks:', formattedAttacks.length);
+        return formattedAttacks;
+    }
+    
+    formatRealThreatData(apiData) {
+        // Convert real API data to our format
+        return apiData.map(attack => ({
+            id: attack.id || `threat_${Date.now()}_${Math.random()}`,
+            source: {
+                name: attack.source?.name || 'Unknown',
+                coords: attack.source?.coordinates || [0, 0],
+                flag: this.getCountryFlag(attack.source?.name),
+                threat: attack.severity || 'medium'
+            },
+            target: { name: 'Armenia', coords: this.armeniaCoords },
+            type: attack.type || 'Cyber Attack',
+            timestamp: new Date(attack.timestamp || Date.now()),
+            severity: attack.severity || 'medium',
+            ip: attack.source?.ip || 'Unknown',
+            details: attack.description || 'Threat detected',
+            port: attack.port || 80
+        }));
+    }
+    
+    getCountryFlag(countryName) {
+        const flags = {
+            'Russia': '🇷🇺', 'China': '🇨🇳', 'Iran': '🇮🇷',
+            'Turkey': '🇹🇷', 'USA': '🇺🇸', 'Germany': '🇩🇪',
+            'North Korea': '🇰🇵', 'Azerbaijan': '🇦🇿',
+            'Pakistan': '🇵🇰', 'Ukraine': '🇺🇦'
+        };
+        return flags[countryName] || '🏴';
     }
     
     async generateMockThreatData() {
@@ -221,6 +293,18 @@ class LiveThreatMap {
         const threatLevelElement = document.getElementById('threatLevel');
         threatLevelElement.textContent = this.stats.threatLevel.toUpperCase();
         threatLevelElement.className = `threat-level ${this.stats.threatLevel}`;
+        
+        // Show data source indicator
+        const dataSourceElement = document.getElementById('dataSource');
+        if (dataSourceElement) {
+            const isRealData = this.stats.dataSource === 'real';
+            dataSourceElement.innerHTML = isRealData 
+                ? '🔴 Live Data (AbuseIPDB)' 
+                : '🟡 Demo Data';
+            dataSourceElement.className = isRealData 
+                ? 'data-source real-data' 
+                : 'data-source demo-data';
+        }
     }
     
     renderAttacks() {

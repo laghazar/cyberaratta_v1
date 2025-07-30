@@ -77,7 +77,18 @@ def phishing_report_view(request):
     if request.method == 'POST':
         form = PhishingReportForm(request.POST, request.FILES)
         if form.is_valid():
-            report = form.save()
+            report = form.save(commit=False)
+            
+            # Handle platform_source conversion
+            platform_source_id = form.cleaned_data.get('platform_source')
+            if platform_source_id:
+                try:
+                    report.platform_source = PlatformSource.objects.get(pk=platform_source_id)
+                except PlatformSource.DoesNotExist:
+                    report.platform_source = None
+            
+            report.save()
+            form.save_m2m()  # Save many-to-many relationships
             
             # Handle multiple file uploads
             files = request.FILES.getlist('evidence_files_multiple')

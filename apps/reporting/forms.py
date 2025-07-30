@@ -58,7 +58,7 @@ class PhishingReportForm(forms.ModelForm):
     
     class Meta:
         model = PhishingReport
-        fields = ['category', 'description', 'platform_source', 'platform_source_other', 'suspicious_url', 'suspicious_email', 'contact_info', 'has_damage', 'damage_types', 'damage_details']
+        fields = ['category', 'description', 'platform_source_other', 'suspicious_url', 'suspicious_email', 'contact_info', 'has_damage', 'damage_types', 'damage_details']
         widgets = {
             'category': forms.Select(attrs={
                 'class': 'form-select',
@@ -98,51 +98,9 @@ class PhishingReportForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
         # Populate platform_source choices
-        platform_sources = PlatformSource.objects.filter(is_active=True)
-        choices = [('', 'Ընտրել աղբյուրը')]
-        
-        # Add all platforms except "Այլ"
-        for ps in platform_sources:
-            if ps.name != 'Այլ':
-                choices.append((ps.id, ps.name))
-        
-        # Add "Այլ" at the end
-        other_platform = platform_sources.filter(name='Այլ').first()
-        if other_platform:
-            choices.append((other_platform.id, 'Այլ'))
-        
-        self.fields['platform_source'].choices = choices
-        
-        # Populate damage_types with admin-managed data
-        self.fields['damage_types'].queryset = DamageType.objects.filter(is_active=True)
-        
-        # Labels
-        self.fields['category'].label = 'Կատեգորիա *'
-        self.fields['description'].label = 'Դեպքի նկարագրություն'
-        self.fields['platform_source'].label = 'Հարթակ/Աղբյուր'
-        self.fields['platform_source_other'].label = 'Այլ հարթակ/աղբյուր'
-        self.fields['suspicious_url'].label = 'Կասկածելի URL հասցե'
-        self.fields['suspicious_email'].label = 'Կասկածելի էլ. փոստ'
-        self.fields['contact_info'].label = 'Հետադարձ կապի տվյալներ'
-        self.fields['has_damage'].label = 'Արդյոք կրել եք վնաս այս դեպքի արդյունքում?'
-        self.fields['damage_types'].label = 'Կրած վնասի տեսակները (կարող եք ընտրել մեկից ավելի)'
-        self.fields['damage_details'].label = 'Վնասի մանրամասներ'
-        self.fields['evidence_files_multiple'].label = 'Կցել ֆայլ'
-        
-        # Help texts
-        self.fields['category'].help_text = 'Ընտրեք ամենայն կատեգորիան'
-        self.fields['description'].help_text = 'Նկարագրեք դեպքը հնարավորինս մանրամասն'
-        self.fields['platform_source'].help_text = 'Ընտրեք հարթակը/աղբյուրը ցանկից'
-        self.fields['platform_source_other'].help_text = 'Եթե ընտրել եք "Այլ", մուտքագրեք հարթակը'
-        self.fields['suspicious_url'].help_text = 'Եթե կա կասկածելի կայքի հասցե'
-        self.fields['suspicious_email'].help_text = 'Եթե կա կասկածելի էլ. փոստի հասցե'
-        self.fields['has_damage'].help_text = 'Նշեք եթե այս դեպքի պատճառով կրել եք ցանկացած տեսակի վնաս'
-        self.fields['damage_types'].help_text = 'Ընտրեք բոլոր այն վնասի տեսակները, որոնք կրել եք'
-        self.fields['damage_details'].help_text = 'Մանրամասներ վնասի մասին կամ լրացուցիչ տեղեկություններ'
-        self.fields['evidence_files_multiple'].help_text = 'Կցեք ֆայլեր (նկարներ, փաստաթղթեր, վիդեո, ձայն) - Ընդհանուր մաքս. 100ՄԲ'
-        
+        self.fields['platform_source'].choices = [(ps.id, ps.name) for ps in PlatformSource.objects.all()]
+
     def clean(self):
         cleaned_data = super().clean()
         suspicious_url = cleaned_data.get('suspicious_url')
@@ -173,16 +131,7 @@ class PhishingReportForm(forms.ModelForm):
     
     def save(self, commit=True):
         instance = super().save(commit=False)
-        
-        # Set the platform_source based on selection
-        platform_source_id = self.cleaned_data.get('platform_source')
-        if platform_source_id:
-            try:
-                platform_obj = PlatformSource.objects.get(id=platform_source_id)
-                instance.platform_source = platform_obj
-            except PlatformSource.DoesNotExist:
-                instance.platform_source = None
-        
+        # Don't handle platform_source here - it's handled in the view
         if commit:
             instance.save()
         return instance

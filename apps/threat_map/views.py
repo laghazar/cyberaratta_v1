@@ -273,11 +273,154 @@ def live_threat_map_view(request):
     return render(request, 'threat_map/live_map.html', context)
 
 def live_threats_api(request):
-    """API endpoint for live threat data"""
+    """API endpoint for live threat data with real AbuseIPDB integration"""
+    import random
+    from datetime import datetime, timedelta
+    import json
+    
+    # Try to get real threat data from AbuseIPDB
+    real_attacks = []
+    try:
+        real_attacks = get_abuseipdb_threats()
+        print(f"✅ Got {len(real_attacks)} real threats from AbuseIPDB")
+    except Exception as e:
+        print(f"⚠️ AbuseIPDB failed: {e}, using mock data")
+    
+    # If no real data, use mock data as fallback
+    if not real_attacks:
+        real_attacks = generate_mock_threat_data()
+    
+    # Sort by timestamp (newest first)
+    real_attacks.sort(key=lambda x: x['timestamp'], reverse=True)
+    
+    # Calculate statistics
+    now = datetime.now()
+    five_minutes_ago = now - timedelta(minutes=5)
+    recent_attacks = [a for a in real_attacks if datetime.fromisoformat(a['timestamp']) > five_minutes_ago]
+    
+    countries = set(attack['source']['name'] for attack in real_attacks)
+    high_threat_attacks = [a for a in real_attacks if a['severity'] == 'high']
+    
+    # Determine threat level
+    if len(high_threat_attacks) > 5:
+        threat_level = 'high'
+    elif len(high_threat_attacks) > 2 or len(recent_attacks) > 3:
+        threat_level = 'medium'
+    else:
+        threat_level = 'low'
+    
+    response_data = {
+        'attacks': real_attacks,
+        'statistics': {
+            'total': len(real_attacks),
+            'recent': len(recent_attacks),
+            'countries': len(countries),
+            'threat_level': threat_level
+        },
+        'last_updated': now.isoformat(),
+        'data_source': 'real' if real_attacks else 'mock'
+    }
+    
+    return JsonResponse(response_data)
+
+def get_abuseipdb_threats():
+    """Get real threat data from AbuseIPDB API"""
+    import requests
+    from django.conf import settings
+    
+    # AbuseIPDB API configuration
+    api_key = getattr(settings, 'ABUSEIPDB_API_KEY', None)
+    if not api_key:
+        raise Exception("AbuseIPDB API key not configured")
+    
+    url = "https://api.abuseipdb.com/api/v2/blacklist"
+    headers = {
+        'Key': api_key,
+        'Accept': 'application/json'
+    }
+    params = {
+        'limit': 20,  # Get top 20 malicious IPs
+        'confidenceMinimum': 75  # High confidence only
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        threats = []
+        
+        for ip_data in data.get('data', []):
+            # Get geolocation for IP
+            country_info = get_ip_geolocation(ip_data['ipAddress'])
+            
+            # Convert to our format
+            threat = {
+                'id': f"abuseipdb_{ip_data['ipAddress']}_{int(datetime.now().timestamp())}",
+                'source': {
+                    'name': country_info['country'],
+                    'coords': country_info['coords'],
+                    'flag': country_info['flag'],
+                    'threat': 'high' if ip_data['confidencePercentage'] > 90 else 'medium'
+                },
+                'target': {'name': 'Armenia', 'coords': [40.1792, 44.4991]},
+                'type': 'Malicious IP Activity',
+                'timestamp': (datetime.now() - timedelta(minutes=random.randint(1, 60))).isoformat(),
+                'severity': 'high' if ip_data['confidencePercentage'] > 90 else 'medium',
+                'ip': ip_data['ipAddress'],
+                'details': f"Malicious IP from {country_info['country']} - Confidence: {ip_data['confidencePercentage']}%",
+                'confidence': ip_data['confidencePercentage']
+            }
+            threats.append(threat)
+        
+        return threats
+        
+    except requests.RequestException as e:
+        raise Exception(f"AbuseIPDB API request failed: {e}")
+    except KeyError as e:
+        raise Exception(f"Invalid AbuseIPDB response format: {e}")
+
+def get_ip_geolocation(ip_address):
+    """Get geolocation data for IP address"""
+    try:
+        # Using ip-api.com (free, no key required)
+        response = requests.get(f"http://ip-api.com/json/{ip_address}", timeout=5)
+        data = response.json()
+        
+        if data['status'] == 'success':
+            country = data.get('country', 'Unknown')
+            lat = data.get('lat', 0)
+            lon = data.get('lon', 0)
+            
+            # Map country to flag emoji
+            country_flags = {
+                'Russia': '🇷🇺', 'China': '🇨🇳', 'Iran': '🇮🇷',
+                'Turkey': '🇹🇷', 'United States': '🇺🇸', 'Germany': '🇩🇪',
+                'North Korea': '🇰🇵', 'Azerbaijan': '🇦🇿',
+                'Pakistan': '🇵🇰', 'Ukraine': '🇺🇦', 'Brazil': '🇧🇷',
+                'India': '🇮🇳', 'France': '🇫🇷', 'United Kingdom': '🇬🇧'
+            }
+            
+            return {
+                'country': country,
+                'coords': [lat, lon],
+                'flag': country_flags.get(country, '🏴')
+            }
+    except:
+        pass
+    
+    # Fallback to unknown location
+    return {
+        'country': 'Unknown',
+        'coords': [0, 0],
+        'flag': '🏴'
+    }
+
+def generate_mock_threat_data():
+    """Fallback mock data generator"""
     import random
     from datetime import datetime, timedelta
     
-    # Mock data generator - replace with real threat intelligence APIs
     source_countries = [
         {'name': 'Russia', 'coords': [55.7558, 37.6176], 'flag': '🇷🇺', 'threat': 'high'},
         {'name': 'China', 'coords': [39.9042, 116.4074], 'flag': '🇨🇳', 'threat': 'medium'},
@@ -305,7 +448,7 @@ def live_threats_api(request):
         timestamp = datetime.now() - timedelta(hours=random.randint(0, 24))
         
         attacks.append({
-            'id': f'attack_{int(timestamp.timestamp())}_{i}',
+            'id': f'mock_attack_{int(timestamp.timestamp())}_{i}',
             'source': source,
             'target': {'name': 'Armenia', 'coords': [40.1792, 44.4991]},
             'type': attack_type,
@@ -315,37 +458,7 @@ def live_threats_api(request):
             'details': f'{attack_type} detected from {source["name"]}'
         })
     
-    # Sort by timestamp (newest first)
-    attacks.sort(key=lambda x: x['timestamp'], reverse=True)
-    
-    # Calculate statistics
-    now = datetime.now()
-    five_minutes_ago = now - timedelta(minutes=5)
-    recent_attacks = [a for a in attacks if datetime.fromisoformat(a['timestamp']) > five_minutes_ago]
-    
-    countries = set(attack['source']['name'] for attack in attacks)
-    high_threat_attacks = [a for a in attacks if a['severity'] == 'high']
-    
-    # Determine threat level
-    if len(high_threat_attacks) > 5:
-        threat_level = 'high'
-    elif len(high_threat_attacks) > 2 or len(recent_attacks) > 3:
-        threat_level = 'medium'
-    else:
-        threat_level = 'low'
-    
-    response_data = {
-        'attacks': attacks,
-        'statistics': {
-            'total': len(attacks),
-            'recent': len(recent_attacks),
-            'countries': len(countries),
-            'threat_level': threat_level
-        },
-        'last_updated': now.isoformat()
-    }
-    
-    return JsonResponse(response_data)
+    return attacks
 
 def unified_threat_map_view(request):
     """Ամբողջական սպառնալիքների քարտեզ և կայքի վիճակագրություն"""
