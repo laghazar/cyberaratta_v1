@@ -1,0 +1,762 @@
+{% extends 'base.html' %}
+
+{% block title %}URL & Email Ստուգիչ - CyberAratta{% endblock %}
+
+{% block page_title %}🔗 URL & Email Անվտանգության Ստուգիչ{% endblock %}
+
+{% block page_subtitle %}
+<p class="lead text-center mb-5">Ստուգեք կայքերի և էլ. փոստի phishing ռիսկը</p>
+{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/url-checker.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Main Input Section -->
+        <div class="col-12 mb-4">
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h4><i class="fas fa-shield-alt me-2"></i>URL & Email Անվտանգության Ստուգիչ</h4>
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">Ստուգեք կայքերի և էլ. փոստի phishing ռիսկը</p>
+                </div>
+                <div class="cyber-card-body">
+                    <form method="post" action="{% url 'url_checker:check_url' %}" id="unifiedCheckForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="input_type" id="input_type_field" value="url">
+                        
+                        <!-- Input Type Toggle -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-toggle-on me-2"></i>Ընտրեք Մուտքագրվող Տիպը
+                            </label>
+                            <div class="btn-group w-100" role="group" aria-label="Input type toggle">
+                                <input type="radio" class="btn-check" name="input_type_toggle" id="url_type" value="url" checked>
+                                <label class="btn btn-outline-primary" for="url_type">
+                                    <i class="fas fa-link me-2"></i>URL
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="input_type_toggle" id="email_type" value="email">
+                                <label class="btn btn-outline-primary" for="email_type">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Email Instructions -->
+                        <div id="emailInstructions" style="display: none;" class="mb-4">
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle me-2"></i>Ինչպես ստանալ Email-ի Raw Content-ը:</h6>
+                                
+                                <!-- Email Provider Tabs -->
+                                <div class="nav nav-tabs" id="providerTabs" role="tablist">
+                                    {% for provider_key, provider_info in email_providers.items %}
+                                    <button class="nav-link {% if forloop.first %}active{% endif %}" 
+                                            id="{{ provider_key }}-tab" data-bs-toggle="tab" 
+                                            data-bs-target="#{{ provider_key }}-content" type="button" 
+                                            role="tab" aria-controls="{{ provider_key }}-content" 
+                                            {% if forloop.first %}aria-selected="true"{% endif %}>
+                                        <i class="{{ provider_info.icon }} me-2"></i>{{ provider_info.name }}
+                                    </button>
+                                    {% endfor %}
+                                </div>
+                                
+                                <!-- Tab Contents -->
+                                <div class="tab-content mt-3" id="providerTabsContent">
+                                    {% for provider_key, provider_info in email_providers.items %}
+                                    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+                                         id="{{ provider_key }}-content" role="tabpanel" 
+                                         aria-labelledby="{{ provider_key }}-tab">
+                                        <ol class="mb-0">
+                                            {% for step in provider_info.steps %}
+                                            <li>{{ step }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- URL Input (default) -->
+                        <div id="urlInputSection" class="mb-4">
+                            <label for="url_input_main" class="form-label">
+                                <i class="fas fa-globe me-2"></i>Կայքի Հասցե (URL)
+                            </label>
+                            <input type="url" name="input_text" id="url_input_main" class="form-control" 
+                                   placeholder="https://example.com">
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Մուտքագրեք ստուգվող կայքի ամբողջական հասցեն
+                            </div>
+                        </div>
+                        
+                        <!-- Email Input (hidden by default) -->
+                        <div id="emailInputSection" class="mb-4" style="display: none;">
+                            <label for="email_input" class="form-label">
+                                <i class="fas fa-code me-2"></i>Email Raw Content
+                            </label>
+                            <textarea name="input_text" id="email_input" class="form-control" 
+                                      rows="8" placeholder="Return-Path: <sender@domain.com>
+Delivered-To: recipient@domain.com
+From: sender@domain.com
+To: recipient@domain.com
+Subject: Email Subject
+Date: Mon, 1 Jan 2024 12:00:00 +0000
+Content-Type: text/html
+
+<html>
+<body>
+Email content here...
+</body>
+</html>"></textarea>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Paste արեք email-ի ամբողջական raw source code-ը վերևի ցուցումներին համապատասխան
+                            </div>
+                        </div>
+
+                        <!-- Security Sources (only for URL) -->
+                        <div id="sourcesSection" class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-shield-alt me-2"></i>Ընտրեք Անվտանգության Աղբյուրները
+                            </label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button" id="sourcesDropdownMain" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+                                    <span id="selectedSourcesTextMain">VirusTotal, Kaspersky, Google Safe Browsing</span>
+                                    <span class="badge bg-primary ms-2" id="selectedCountMain">3</span>
+                                </button>
+                                <ul class="dropdown-menu w-100 p-2" aria-labelledby="sourcesDropdownMain">
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox-main" type="checkbox" name="sources" value="virustotal" id="vt_main_check" checked>
+                                            <label class="form-check-label" for="vt_main_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-virus text-primary me-2"></i>
+                                                    <div>
+                                                        <strong>VirusTotal</strong>
+                                                        <small class="d-block" style="color: rgba(0, 0, 0, 0.6);">70+ անվտանգության engine</small>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox-main" type="checkbox" name="sources" value="kaspersky" id="kasp_main_check" checked>
+                                            <label class="form-check-label" for="kasp_main_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-shield-virus text-success me-2"></i>
+                                                    <div>
+                                                        <strong>Kaspersky OpenTIP</strong>
+                                                        <small class="d-block" style="color: rgba(0, 0, 0, 0.6);">Կիբեր-սպառնալիքների բազա</small>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li class="dropdown-item-text">
+                                        <div class="form-check">
+                                            <input class="form-check-input source-checkbox-main" type="checkbox" name="sources" value="safebrowsing" id="safe_main_check" checked>
+                                            <label class="form-check-label" for="safe_main_check">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fab fa-google text-warning me-2"></i>
+                                                    <div>
+                                                        <strong>Google Safe Browsing</strong>
+                                                        <small class="d-block" style="color: rgba(0, 0, 0, 0.6);">Google-ի անվտանգության բազա</small>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="form-text">
+                                                        </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-cyber btn-lg w-100" id="checkButton">
+                                <i class="fas fa-search me-2"></i><span id="checkButtonText">Գնահատել Անվտանգությունը</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="resultSection" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Email Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="cyber-card">
+                <div class="cyber-card-header">
+                    <h5><i class="fas fa-flask me-2"></i>Փորձարկման Email Sample</h5>
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">Օգտագործեք այս sample-ը email checker-ը փորձարկելու համար</p>
+                </div>
+                <div class="cyber-card-body">
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Զգուշացում</h6>
+                        <p class="mb-0">Այս sample email-ը պարունակում է phishing indicators և նախատեսված է բացառապես ծրագրի փորձարկման համար:</p>
+                    </div>
+                    
+                    <div class="position-relative">
+                        <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2" 
+                                onclick="copySampleEmail()" id="copySampleBtn">
+                            <i class="fas fa-copy me-1"></i>Copy
+                        </button>
+                        <pre id="sampleEmail" class="bg-dark text-light p-3 rounded" style="font-size: 0.85em; max-height: 300px; overflow-y: auto;">Return-Path: &lt;no-reply@paypa1-security.com&gt;
+Delivered-To: user@example.com
+Received: by 2002:a17:90a:abc0:0:0:0:0 with SMTP id example123csp456789
+From: "PayPal Security" &lt;security@paypa1-security.com&gt;
+To: user@example.com
+Subject: Urgent: Your PayPal Account Has Been Limited
+Date: Thu, 31 Jul 2025 10:30:00 +0000
+Message-ID: &lt;123456789@paypa1-security.com&gt;
+Content-Type: text/html; charset=UTF-8
+
+&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;PayPal Account Limited&lt;/h2&gt;
+&lt;p&gt;Dear Valued Customer,&lt;/p&gt;
+&lt;p&gt;We have detected suspicious activity on your PayPal account and have temporarily limited access for your security.&lt;/p&gt;
+&lt;p&gt;Please verify your account immediately by clicking the link below:&lt;/p&gt;
+&lt;a href="http://192.168.1.100/paypal-verify"&gt;Click Here to Verify Your PayPal Account&lt;/a&gt;
+&lt;p&gt;If you do not verify within 24 hours, your account will be permanently suspended.&lt;/p&gt;
+&lt;p&gt;Thank you,&lt;br&gt;PayPal Security Team&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button class="btn btn-outline-primary" onclick="loadSampleEmail()">
+                            <i class="fas fa-upload me-2"></i>Load Sample-ը Email Field-ում
+                        </button>
+                        <small class="text-muted ms-3">Կտեղափոխի sample-ը email input field-ում automatic</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent URL Checks Section -->
+    <div class="row mt-4">
+        <div class="col-lg-8 mb-4">
+            <div class="cyber-card h-100">
+                <div class="cyber-card-header">
+                    <h5><i class="fas fa-history me-2"></i>Վերջին Ստուգվածներ</h5>
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.7);">Ձեր վերջին ստուգված հղումները</p>
+                </div>
+                <div class="cyber-card-body">
+                    <div id="recentUrls">
+                        <p class="text-muted text-center">
+                            <i class="fas fa-info-circle me-2"></i>Դեռ URL ստուգված չէ
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="cyber-card h-100">
+                <div class="cyber-card-header">
+                    <h5><i class="fas fa-chart-pie me-2"></i>Օրական Վիճակագրություն</h5>
+                </div>
+                <div class="cyber-card-body">
+                    <canvas id="dailyStatsChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Scripts -->
+<script>
+// Initialize page functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize input type toggle
+    initializeInputTypeToggle();
+    
+    // Initialize sources dropdown
+    initializeSourcesDropdown();
+    
+    // Initialize form handling
+    initializeUnifiedForm();
+    
+    // Initialize chart
+    initializeDailyStatsChart();
+});
+
+/**
+ * Initialize input type toggle functionality
+ */
+function initializeInputTypeToggle() {
+    const urlTypeRadio = document.getElementById('url_type');
+    const emailTypeRadio = document.getElementById('email_type');
+    const inputTypeField = document.getElementById('input_type_field');
+    const urlInputSection = document.getElementById('urlInputSection');
+    const emailInputSection = document.getElementById('emailInputSection');
+    const emailInstructions = document.getElementById('emailInstructions');
+    const sourcesSection = document.getElementById('sourcesSection');
+    const checkButtonText = document.getElementById('checkButtonText');
+    
+    if (urlTypeRadio && emailTypeRadio) {
+        urlTypeRadio.addEventListener('change', function() {
+            if (this.checked) {
+                inputTypeField.value = 'url';
+                urlInputSection.style.display = 'block';
+                emailInputSection.style.display = 'none';
+                emailInstructions.style.display = 'none';
+                sourcesSection.style.display = 'block';
+                checkButtonText.textContent = 'Գնահատել Անվտանգությունը';
+                
+                // Clear email input
+                document.getElementById('email_input').value = '';
+                // Enable URL input requirement
+                document.getElementById('url_input_main').required = true;
+            }
+        });
+        
+        emailTypeRadio.addEventListener('change', function() {
+            if (this.checked) {
+                inputTypeField.value = 'email';
+                urlInputSection.style.display = 'none';
+                emailInputSection.style.display = 'block';
+                emailInstructions.style.display = 'block';
+                sourcesSection.style.display = 'none';
+                checkButtonText.textContent = 'Վերլուծել Email Phishing';
+                
+                // Clear URL input
+                document.getElementById('url_input_main').value = '';
+                // Disable URL input requirement
+                document.getElementById('url_input_main').required = false;
+            }
+        });
+    }
+}
+
+/**
+ * Initialize unified form handling
+ */
+function initializeUnifiedForm() {
+    const form = document.getElementById('unifiedCheckForm');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const inputType = document.getElementById('input_type_field').value;
+            let inputText = '';
+            
+            if (inputType === 'email') {
+                inputText = document.getElementById('email_input').value.trim();
+                if (!inputText) {
+                    showError('Խնդրում ենք մուտքագրել email-ի raw content-ը');
+                    return;
+                }
+            } else {
+                inputText = document.getElementById('url_input_main').value.trim();
+                if (!inputText) {
+                    showError('Խնդրում ենք մուտքագրել URL-ը');
+                    return;
+                }
+            }
+            
+            // Show loading
+            showLoading();
+            
+            // Submit form data
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showResult(data, inputType);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showError('Սերվերի սխալ: ' + error.message);
+            });
+        });
+    }
+}
+
+/**
+ * Show loading state
+ */
+function showLoading() {
+    const resultDiv = document.getElementById('resultSection');
+    const button = document.getElementById('checkButton');
+    
+    if (resultDiv) {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Վերլուծվում է...</p>
+            </div>
+        `;
+    }
+    
+    if (button) {
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Վերլուծվում է...';
+    }
+}
+
+/**
+ * Hide loading state
+ */
+function hideLoading() {
+    const button = document.getElementById('checkButton');
+    const inputType = document.getElementById('input_type_field').value;
+    
+    if (button) {
+        button.disabled = false;
+        const originalText = inputType === 'email' ? 'Վերլուծել Email Phishing' : 'Գնահատել Անվտանգությունը';
+        button.innerHTML = `<i class="fas fa-search me-2"></i>${originalText}`;
+    }
+}
+
+/**
+ * Show error message
+ */
+function showError(message) {
+    const resultDiv = document.getElementById('resultSection');
+    
+    if (resultDiv) {
+        resultDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Սխալ:</strong> ${message}
+            </div>
+        `;
+    }
+}
+
+/**
+ * Show result
+ */
+function showResult(data, inputType) {
+    const resultDiv = document.getElementById('resultSection');
+    
+    if (resultDiv) {
+        let resultHtml = data.result || '';
+        
+        // Add additional information for email results
+        if (inputType === 'email') {
+            resultHtml += generateEmailResultSummary(data);
+        }
+        
+        resultDiv.innerHTML = resultHtml;
+        
+        // Update recent checks if it's URL
+        if (inputType === 'url') {
+            updateRecentChecks(data.input_text || 'Unknown URL', data.status, data.status_display);
+        }
+    }
+}
+
+/**
+ * Generate email result summary
+ */
+function generateEmailResultSummary(data) {
+    const riskScore = data.risk_score || 0;
+    const totalChecks = data.total_checks || 0;
+    const emailDetails = data.email_details || {};
+    
+    return `
+        <div class="mt-3 p-3" style="background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+            <h6><i class="fas fa-chart-bar me-2"></i>Վերլուծության Ամփոփում</h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Ռիսկի Գնահատական:</strong> ${riskScore}/100</p>
+                    <p><strong>Ստուգումների Քանակ:</strong> ${totalChecks}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Հղումներ:</strong> ${emailDetails.links_found || 0}</p>
+                    <p><strong>Վստահության Մակարդակ:</strong> ${data.confidence || 'unknown'}</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Copy sample email to clipboard
+ */
+function copySampleEmail() {
+    const sampleEmailElement = document.getElementById('sampleEmail');
+    const sampleText = sampleEmailElement.textContent;
+    
+    navigator.clipboard.writeText(sampleText).then(function() {
+        const copyBtn = document.getElementById('copySampleBtn');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+        copyBtn.classList.add('btn-success');
+        copyBtn.classList.remove('btn-outline-secondary');
+        
+        setTimeout(function() {
+            copyBtn.innerHTML = originalText;
+            copyBtn.classList.remove('btn-success');
+            copyBtn.classList.add('btn-outline-secondary');
+        }, 2000);
+    }).catch(function() {
+        alert('Copying failed. Please copy manually.');
+    });
+}
+
+/**
+ * Load sample email into the email input field
+ */
+function loadSampleEmail() {
+    const sampleEmailElement = document.getElementById('sampleEmail');
+    const emailInput = document.getElementById('email_input');
+    const emailTypeRadio = document.getElementById('email_type');
+    
+    if (sampleEmailElement && emailInput && emailTypeRadio) {
+        // Switch to email type
+        emailTypeRadio.click();
+        
+        // Load sample content
+        emailInput.value = sampleEmailElement.textContent;
+        
+        // Scroll to email input
+        emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Focus on email input
+        setTimeout(function() {
+            emailInput.focus();
+        }, 500);
+    }
+}
+
+/**
+ * Initialize sources dropdown functionality (for URL checking)
+ */
+function initializeSourcesDropdown() {
+    const checkboxes = document.querySelectorAll('.source-checkbox-main');
+    const selectedText = document.getElementById('selectedSourcesTextMain');
+    const selectedCount = document.getElementById('selectedCountMain');
+    
+    if (checkboxes.length > 0) {
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedSources);
+        });
+        
+        // Initial update
+        updateSelectedSources();
+    }
+    
+    function updateSelectedSources() {
+        const checkedBoxes = document.querySelectorAll('.source-checkbox-main:checked');
+        const sourceNames = Array.from(checkedBoxes).map(cb => {
+            const label = document.querySelector(`label[for="${cb.id}"] strong`);
+            return label ? label.textContent : cb.value;
+        });
+        
+        if (selectedText && selectedCount) {
+            selectedText.textContent = sourceNames.length > 0 ? sourceNames.join(', ') : 'Ընտրեք աղբյուրները';
+            selectedCount.textContent = sourceNames.length;
+        }
+    }
+}
+
+/**
+ * Update the recent URL checks list
+ */
+function updateRecentChecks(url, status, statusDisplay) {
+    const recentUrlsContainer = document.getElementById('recentUrls');
+    
+    if (recentUrlsContainer.querySelector('p:not(.checked-url)')) {
+        recentUrlsContainer.innerHTML = '';
+    }
+    
+    let statusIcon, statusColor;
+    switch(status) {
+        case 'safe':
+            statusIcon = 'fa-shield-alt';
+            statusColor = 'text-success';
+            break;
+        case 'malicious':
+            statusIcon = 'fa-exclamation-triangle';
+            statusColor = 'text-danger';
+            break;
+        case 'suspicious':
+            statusIcon = 'fa-exclamation-circle';
+            statusColor = 'text-warning';
+            break;
+        default:
+            statusIcon = 'fa-search';
+            statusColor = 'text-primary';
+    }
+    
+    const urlElement = document.createElement('p');
+    urlElement.className = 'checked-url mb-2 d-flex align-items-center';
+    urlElement.setAttribute('data-url', url);
+    
+    const displayUrl = url.length > 50 ? url.substring(0, 47) + '...' : url;
+    
+    urlElement.innerHTML = `
+        <i class="fas ${statusIcon} me-2 ${statusColor}"></i>
+        <a href="#" class="text-reset text-decoration-none flex-grow-1" 
+           title="${url}" onclick="fillUrlInput('${url}'); return false;">
+            ${displayUrl}
+        </a>
+        <span class="badge bg-light text-dark ms-2">${statusDisplay}</span>
+    `;
+    
+    recentUrlsContainer.insertBefore(urlElement, recentUrlsContainer.firstChild);
+    
+    const allUrls = recentUrlsContainer.querySelectorAll('.checked-url');
+    if (allUrls.length > 5) {
+        recentUrlsContainer.removeChild(allUrls[allUrls.length - 1]);
+    }
+}
+
+/**
+ * Fill the URL input field with a previously checked URL
+ */
+function fillUrlInput(url) {
+    const urlInput = document.getElementById('url_input_main');
+    const urlTypeRadio = document.getElementById('url_type');
+    
+    if (urlInput && urlTypeRadio) {
+        // Switch to URL type
+        urlTypeRadio.click();
+        
+        // Fill URL
+        urlInput.value = url;
+        urlInput.focus();
+        
+        // Scroll to the form
+        document.getElementById('unifiedCheckForm').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+/**
+ * Initialize daily stats chart
+ */
+function initializeDailyStatsChart() {
+    const ctx = document.getElementById('dailyStatsChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Անվտանգ', 'Կասկածելի', 'Վտանգավոր'],
+                datasets: [{
+                    data: [65, 25, 10],
+                    backgroundColor: [
+                        '#28a745',
+                        '#ffc107', 
+                        '#dc3545'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'white',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+</script>
+
+<style>
+/* URL & Email Analysis Result Styles */
+.cyber-card-body .alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.cyber-card-body .alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    color: #17a2b8;
+}
+
+.cyber-card-body .alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+}
+
+.cyber-card-body .alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.cyber-card-body .alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+/* Form styling improvements */
+.btn-check:checked + .btn-outline-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+/* Tab styling */
+.nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Recent URLs styling */
+.checked-url a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+/* Sample email styling */
+#sampleEmail {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+</style>
+{% endblock %}

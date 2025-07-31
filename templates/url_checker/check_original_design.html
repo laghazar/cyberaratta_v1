@@ -54,12 +54,12 @@
                                     <li class="dropdown-item-text">
                                         <div class="form-check">
                                             <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="virustotal" id="vt_dropdown_check" checked>
-                                            <label class="form-check-label text-dark" for="vt_dropdown_check">
+                                            <label class="form-check-label" for="vt_dropdown_check">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-virus text-primary me-2"></i>
                                                     <div>
-                                                        <strong class="text-dark">VirusTotal</strong>
-                                                        <small class="d-block text-secondary">70+ անվտանգության engine</small>
+                                                        <strong>VirusTotal</strong>
+                                                        <small class="d-block" style="color: rgba(0, 0, 0, 0.6);">70+ անվտանգության engine</small>
                                                     </div>
                                                 </div>
                                             </label>
@@ -69,12 +69,12 @@
                                     <li class="dropdown-item-text">
                                         <div class="form-check">
                                             <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="kaspersky" id="kasp_dropdown_check" checked>
-                                            <label class="form-check-label text-dark" for="kasp_dropdown_check">
+                                            <label class="form-check-label" for="kasp_dropdown_check">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-shield-virus text-success me-2"></i>
                                                     <div>
-                                                        <strong class="text-dark">Kaspersky OpenTIP</strong>
-                                                        <small class="d-block text-secondary">Կիբեր-սպառնալիքների բազա</small>
+                                                        <strong>Kaspersky OpenTIP</strong>
+                                                        <small class="d-block" style="color: rgba(0, 0, 0, 0.6);">Կիբեր-սպառնալիքների բազա</small>
                                                     </div>
                                                 </div>
                                             </label>
@@ -84,12 +84,12 @@
                                     <li class="dropdown-item-text">
                                         <div class="form-check">
                                             <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="safebrowsing" id="safe_dropdown_check" checked>
-                                            <label class="form-check-label text-dark" for="safe_dropdown_check">
+                                            <label class="form-check-label" for="safe_dropdown_check">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fab fa-google text-warning me-2"></i>
                                                     <div>
-                                                        <strong class="text-dark">Google Safe Browsing</strong>
-                                                        <small class="d-block text-secondary">Google-ի անվտանգության բազա</small>
+                                                        <strong>Google Safe Browsing</strong>
+                                                        <small class="d-block" style="color: rgba(0, 0, 0, 0.6);">Google-ի անվտանգության բազա</small>
                                                     </div>
                                                 </div>
                                             </label>
@@ -99,12 +99,12 @@
                                     <li class="dropdown-item-text">
                                         <div class="form-check">
                                             <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="urlvoid" id="void_dropdown_check" disabled>
-                                            <label class="form-check-label text-dark" for="void_dropdown_check">
+                                            <label class="form-check-label" for="void_dropdown_check">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-search text-info me-2"></i>
                                                     <div>
-                                                        <strong class="text-dark">URLVoid</strong>
-                                                        <small class="d-block text-secondary">Շուտով հասանելի</small>
+                                                        <strong>URLVoid</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">Շուտով հասանելի</small>
                                                     </div>
                                                 </div>
                                             </label>
@@ -114,12 +114,12 @@
                                     <li class="dropdown-item-text">
                                         <div class="form-check">
                                             <input class="form-check-input source-checkbox" type="checkbox" name="sources" value="abuseipdb" id="abuse_dropdown_check" disabled>
-                                            <label class="form-check-label text-dark" for="abuse_dropdown_check">
+                                            <label class="form-check-label" for="abuse_dropdown_check">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-database text-danger me-2"></i>
                                                     <div>
-                                                        <strong class="text-dark">AbuseIPDB</strong>
-                                                        <small class="d-block text-secondary">Շուտով հասանելի</small>
+                                                        <strong>AbuseIPDB</strong>
+                                                        <small class="d-block" style="color: rgba(255, 255, 255, 0.6);">Շուտով հասանելի</small>
                                                     </div>
                                                 </div>
                                             </label>
@@ -327,8 +327,6 @@ Content-Type: text/html; charset=UTF-8
 <script>
 // Initialize page functionality
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing...');
-    
     // Initialize URL checker form
     initializeUrlForm();
     
@@ -340,54 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize chart
     initializeDailyStatsChart();
-    
-    // Initialize Bootstrap components
-    initializeBootstrapComponents();
-    
-    // Test alert to see if JavaScript is working
-    // alert('Page loaded successfully!');
 });
-
-/**
- * Initialize Bootstrap components (tabs, dropdowns, etc.)
- */
-function initializeBootstrapComponents() {
-    console.log('Initializing Bootstrap components...');
-    console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
-    console.log('jQuery available:', typeof $ !== 'undefined');
-    
-    // Check if Bootstrap is available
-    if (typeof bootstrap === 'undefined') {
-        console.error('Bootstrap is not loaded!');
-        return;
-    }
-    
-    // Initialize all tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-    
-    // Initialize all dropdowns
-    const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-    console.log('Found dropdowns:', dropdownElementList.length);
-    const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-        console.log('Initializing dropdown:', dropdownToggleEl.id);
-        return new bootstrap.Dropdown(dropdownToggleEl);
-    });
-    
-    // Initialize all tabs
-    const triggerTabList = [].slice.call(document.querySelectorAll('#providerTabs button'));
-    console.log('Found tabs:', triggerTabList.length);
-    triggerTabList.forEach(function (triggerEl) {
-        const tabTrigger = new bootstrap.Tab(triggerEl);
-        
-        triggerEl.addEventListener('click', function (event) {
-            event.preventDefault();
-            tabTrigger.show();
-        });
-    });
-}
 
 /**
  * Initialize URL form functionality
@@ -578,38 +529,10 @@ function initializeSourcesDropdown() {
     const checkboxes = document.querySelectorAll('.source-checkbox');
     const selectedText = document.getElementById('selectedSourcesText');
     const selectedCount = document.getElementById('selectedCount');
-    const dropdown = document.getElementById('sourcesDropdown');
-    
-    console.log('Initializing sources dropdown...');
-    console.log('Found checkboxes:', checkboxes.length);
     
     if (checkboxes.length > 0) {
         checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function(e) {
-                console.log('Checkbox changed:', e.target.value, e.target.checked);
-                updateSelectedSources();
-            });
-            
-            // Prevent dropdown from closing when clicking on checkboxes
-            checkbox.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        });
-        
-        // Prevent dropdown from closing when clicking on labels
-        const labels = document.querySelectorAll('.dropdown-menu label');
-        labels.forEach(label => {
-            label.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        });
-        
-        // Prevent dropdown from closing when clicking on dropdown items
-        const dropdownItems = document.querySelectorAll('.dropdown-item-text');
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
+            checkbox.addEventListener('change', updateSelectedSources);
         });
         
         // Initial update
@@ -617,92 +540,15 @@ function initializeSourcesDropdown() {
     }
     
     function updateSelectedSources() {
-        const checkedBoxes = document.querySelectorAll('.source-checkbox:checked:not(:disabled)');
+        const checkedBoxes = document.querySelectorAll('.source-checkbox:checked');
         const sourceNames = Array.from(checkedBoxes).map(cb => {
             const label = document.querySelector(`label[for="${cb.id}"] strong`);
             return label ? label.textContent : cb.value;
         });
         
-        console.log('Selected sources:', sourceNames);
-        
         if (selectedText && selectedCount) {
             selectedText.textContent = sourceNames.length > 0 ? sourceNames.join(', ') : 'Ընտրեք աղբյուրները';
             selectedCount.textContent = sourceNames.length;
-            selectedCount.className = `badge ms-2 ${sourceNames.length > 0 ? 'bg-primary' : 'bg-secondary'}`;
-        }
-    }
-}
-
-/**
- * Initialize daily stats chart
- */
-function initializeDailyStatsChart() {
-    const ctx = document.getElementById('dailyStatsChart');
-    if (ctx) {
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Անվտանգ', 'Կասկածելի', 'Վտանգավոր'],
-                datasets: [{
-                    data: [65, 25, 10],
-                    backgroundColor: [
-                        '#28a745',
-                        '#ffc107', 
-                        '#dc3545'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: 'white',
-                            font: {
-                                size: 12
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-}
-
-/**
- * Update recent checks
- */
-function updateRecentChecks(url, status, statusDisplay) {
-    const recentUrlsElement = document.getElementById('recentUrls');
-    if (recentUrlsElement) {
-        const statusClass = status === 'safe' ? 'success' : status === 'malicious' ? 'danger' : 'warning';
-        const statusIcon = status === 'safe' ? 'check-circle' : status === 'malicious' ? 'times-circle' : 'exclamation-triangle';
-        
-        const urlItem = `
-            <div class="d-flex justify-content-between align-items-center p-2 mb-2" style="background: rgba(255, 255, 255, 0.05); border-radius: 6px;">
-                <div class="flex-grow-1">
-                    <small class="text-truncate d-block" style="max-width: 200px;" title="${url}">
-                        <i class="fas fa-link me-1"></i>${url}
-                    </small>
-                </div>
-                <span class="badge bg-${statusClass}">
-                    <i class="fas fa-${statusIcon} me-1"></i>${statusDisplay}
-                </span>
-            </div>
-        `;
-        
-        if (recentUrlsElement.innerHTML.includes('Դեռ URL ստուգված չէ')) {
-            recentUrlsElement.innerHTML = urlItem;
-        } else {
-            recentUrlsElement.insertAdjacentHTML('afterbegin', urlItem);
-            
-            // Keep only last 5 items
-            const items = recentUrlsElement.children;
-            while (items.length > 5) {
-                recentUrlsElement.removeChild(items[items.length - 1]);
-            }
         }
     }
 }
@@ -764,92 +610,6 @@ function enableButton(button, originalHtml) {
         button.innerHTML = originalHtml;
     }
 }
-
-/**
- * Show loading in element
- */
-function showLoadingInElement(elementId) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.innerHTML = `
-            <div class="text-center py-4">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-3 text-muted">Վերլուծվում է...</p>
-            </div>
-        `;
-    }
-}
-
-/**
- * Show error in element
- */
-function showErrorInElement(elementId, errorMessage) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                <strong>Սխալ:</strong> ${errorMessage}
-            </div>
-        `;
-    }
-}
-
-/**
- * Copy text to clipboard
- */
-function copyToClipboard(text, successMessage) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function() {
-            showNotification(successMessage || 'Copied to clipboard!', 'success');
-        }).catch(function(err) {
-            console.error('Failed to copy: ', err);
-            showNotification('Failed to copy to clipboard', 'error');
-        });
-    } else {
-        // Fallback for older browsers
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        try {
-            document.execCommand('copy');
-            showNotification(successMessage || 'Copied to clipboard!', 'success');
-        } catch (err) {
-            console.error('Failed to copy: ', err);
-            showNotification('Failed to copy to clipboard', 'error');
-        }
-        document.body.removeChild(textArea);
-    }
-}
-
-/**
- * Show notification
- */
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
-    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
-        ${message}
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 3000);
-}
-
-
 </script>
 
 <style>

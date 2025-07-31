@@ -12,7 +12,7 @@ class URLCheck(models.Model):
         ('pending', 'Սպասում է ձեռքով մշակման'),
     ]
 
-    input_text = models.CharField(max_length=500, verbose_name="URL կամ Էլ. փոստ")
+    input_text = models.TextField(verbose_name="URL կամ Էլ. փոստ")  # Changed to TextField for email support
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="Կարգավիճակ")
     source = models.CharField(max_length=100, blank=True, verbose_name="Աղբյուր")
     analysis_result = models.TextField(blank=True, verbose_name="Վերլուծության արդյունք")

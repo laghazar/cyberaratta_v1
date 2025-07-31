@@ -7,6 +7,7 @@ from .models_integrations import SecurityIntegration
 from django.conf import settings
 from apps.core.utils import update_statistics
 from apps.core.security import security_rate_limit, sanitize_input, validate_url, log_security_event
+from .email_checker import EmailPhishingChecker, get_email_provider_instructions
 from .utils import (
     # Validators
     is_trusted_domain, 
@@ -41,16 +42,24 @@ import json
 @security_rate_limit(key='url_check', rate='10/m', method='POST')
 def check_url(request):
     if request.method == 'GET':
-        # Return the original template without any changes to UI
-        return render(request, 'url_checker/check.html')
+        # Email provider instructions-ը context-ի մեջ ավելացնում ենք
+        context = {
+            'email_providers': get_email_provider_instructions()
+        }
+        return render(request, 'url_checker/check.html', context)
     
     if request.method == 'POST':
         try:
             input_text = request.POST.get('input_text', '').strip()
+            input_type = request.POST.get('input_type', 'url')  # 'url' or 'email'
             selected_sources = request.POST.getlist('sources')  # Ընտրված աղբյուրները
             
             if not input_text:
                 return JsonResponse({'error': 'URL կամ էլ. փոստ մուտքագրեք'})
+            
+            # Եթե email է, նույն մոդելում պահելու համար նշում ենք տիպը
+            if input_type == 'email':
+                return handle_email_check(request, input_text)
             
             # URL վալիդացիա
             try:
@@ -357,3 +366,172 @@ def determine_confidence_level(vt_result, kasp_result, final_status='pending', s
         return 'medium'
     
     return 'low'
+
+
+def handle_email_check(request, raw_email_content):
+    """Handle email phishing check"""
+    try:
+        # Email phishing checker ստեղծում
+        email_checker = EmailPhishingChecker()
+        
+        # Email վերլուծություն
+        analysis_result = email_checker.analyze_email(raw_email_content)
+        
+        # URLCheck մոդելում պահպանում (email տիպի համար)
+        url_check = URLCheck.objects.create(
+            input_text=f"EMAIL_CHECK: {raw_email_content[:100]}...",  # Սահմանափակ տեքստ
+            status=analysis_result['status'],
+            source='Email Phishing Analysis',
+            analysis_result=format_email_analysis_result(analysis_result)
+        )
+        
+        # Վիճակագրությունը թարմացնում
+        update_statistics()
+        
+        # Response ձևավորում
+        response_data = {
+            'status': analysis_result['status'],
+            'status_display': get_email_status_display(analysis_result['status']),
+            'result': format_email_analysis_result(analysis_result),
+            'confidence': get_email_confidence(analysis_result),
+            'source': 'Email Phishing Analysis',
+            'input_type': 'email',
+            'risk_score': analysis_result.get('risk_score', 0),
+            'total_checks': analysis_result.get('total_checks', 0),
+            'email_details': {
+                'authentication': analysis_result.get('details', {}).get('authentication', {}),
+                'links_found': analysis_result.get('details', {}).get('links_found', 0),
+                'headers': analysis_result.get('details', {}).get('headers', {}),
+                'reasons': analysis_result.get('reasons', [])
+            }
+        }
+        
+        return JsonResponse(response_data)
+        
+    except Exception as e:
+        print(f"Email check error: {str(e)}")
+        return JsonResponse({
+            'error': f'Email վերլուծության սխալ: {str(e)}',
+            'input_type': 'email'
+        }, status=500)
+
+
+def format_email_analysis_result(analysis_result):
+    """Format email analysis result for display"""
+    status = analysis_result.get('status', 'error')
+    risk_score = analysis_result.get('risk_score', 0)
+    reasons = analysis_result.get('reasons', [])
+    details = analysis_result.get('details', {})
+    
+    # Status-ի համاձայն գույներ
+    if status == 'likely_phishing':
+        status_color = '#dc3545'  # Red
+        status_text = 'Phishing է (մեծ հավանականությամբ)'
+        icon = 'fas fa-exclamation-triangle'
+    elif status == 'suspicious':
+        status_color = '#ffc107'  # Yellow
+        status_text = 'Կասկածելի է'
+        icon = 'fas fa-question-circle'
+    elif status == 'safe':
+        status_color = '#28a745'  # Green
+        status_text = 'Անվտանգ է'
+        icon = 'fas fa-check-circle'
+    else:
+        status_color = '#6c757d'  # Gray
+        status_text = 'Վերլուծության սխալ'
+        icon = 'fas fa-times-circle'
+    
+    html_result = f"""
+    <div class="alert alert-info">
+        <h5><i class="{icon}" style="color: {status_color};"></i> Email Phishing Analysis</h5>
+        <p><strong>Կարգավիճակ:</strong> <span style="color: {status_color}; font-weight: bold;">{status_text}</span></p>
+        <p><strong>Ռիսկի գնահատական:</strong> {risk_score}/100</p>
+        <p><strong>Ստուգումների քանակ:</strong> {len(reasons)}</p>
+    </div>
+    """
+    
+    # Reasons ցուցակ
+    if reasons:
+        html_result += '<div class="alert alert-warning"><h6>Հայտնաբերված խնդիրներ:</h6><ul>'
+        for reason in reasons:
+            html_result += f'<li>{reason}</li>'
+        html_result += '</ul></div>'
+    
+    # Authentication details
+    auth_details = details.get('authentication', {})
+    if auth_details:
+        html_result += '<div class="alert alert-info"><h6>Email Authentication:</h6>'
+        
+        # SPF
+        spf = auth_details.get('spf', {})
+        if spf:
+            spf_status = spf.get('status', 'unknown')
+            spf_color = '#28a745' if spf_status == 'pass' else '#dc3545' if spf_status == 'fail' else '#ffc107'
+            html_result += f'<p><strong>SPF:</strong> <span style="color: {spf_color};">{spf_status.upper()}</span> - {spf.get("reason", "N/A")}</p>'
+        
+        # DKIM
+        dkim = auth_details.get('dkim', {})
+        if dkim:
+            dkim_status = dkim.get('status', 'unknown')
+            dkim_color = '#28a745' if dkim_status in ['pass', 'present'] else '#dc3545' if dkim_status == 'fail' else '#ffc107'
+            html_result += f'<p><strong>DKIM:</strong> <span style="color: {dkim_color};">{dkim_status.upper()}</span> - {dkim.get("reason", "N/A")}</p>'
+        
+        # DMARC
+        dmarc = auth_details.get('dmarc', {})
+        if dmarc:
+            dmarc_status = dmarc.get('status', 'unknown')
+            dmarc_color = '#28a745' if dmarc_status in ['strict', 'moderate'] else '#ffc107' if dmarc_status == 'lenient' else '#dc3545'
+            html_result += f'<p><strong>DMARC:</strong> <span style="color: {dmarc_color};">{dmarc_status.upper()}</span> - {dmarc.get("reason", "N/A")}</p>'
+        
+        html_result += '</div>'
+    
+    # Links information
+    links_found = details.get('links_found', 0)
+    if links_found > 0:
+        html_result += f'<div class="alert alert-info"><h6>Հղումներ:</h6><p>Գտնվել է {links_found} հղում email-ում</p>'
+        
+        # Blacklisted URLs
+        blacklisted = details.get('blacklisted_urls', [])
+        if blacklisted:
+            html_result += f'<p><strong>Վտանգավոր հղումներ:</strong> {len(blacklisted)}</p><ul>'
+            for url in blacklisted[:3]:  # Առաջին 3-ը
+                html_result += f'<li style="color: #dc3545;">{url}</li>'
+            html_result += '</ul>'
+        
+        # Brand impersonation
+        brand_impersonation = details.get('brand_impersonation', [])
+        if brand_impersonation:
+            html_result += f'<p><strong>Brand Impersonation:</strong></p><ul>'
+            for imp in brand_impersonation[:3]:
+                suspected_brand = imp.get('suspected_brand', 'Unknown')
+                domain = imp.get('domain', 'Unknown')
+                html_result += f'<li style="color: #dc3545;">Կասկած {suspected_brand} նմանակման - {domain}</li>'
+            html_result += '</ul>'
+        
+        html_result += '</div>'
+    
+    return html_result
+
+
+def get_email_status_display(status):
+    """Get display text for email status"""
+    status_map = {
+        'likely_phishing': 'Phishing (մեծ հավանականությամբ)',
+        'suspicious': 'Կասկածելի',
+        'safe': 'Անվտանգ',
+        'error': 'Վերլուծության սխալ'
+    }
+    return status_map.get(status, 'Անհայտ')
+
+
+def get_email_confidence(analysis_result):
+    """Get confidence level for email analysis"""
+    risk_score = analysis_result.get('risk_score', 0)
+    total_checks = analysis_result.get('total_checks', 0)
+    
+    if total_checks >= 5 and risk_score >= 50:
+        return 'high'
+    elif total_checks >= 3 and risk_score >= 25:
+        return 'medium'
+    else:
+        return 'low'

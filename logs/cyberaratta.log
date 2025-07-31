@@ -221,3 +221,399 @@ INFO 2025-07-31 08:20:55,748 autoreload 6764 26820 C:\Users\laris\OneDrive\Docum
 INFO 2025-07-31 08:20:56,418 autoreload 10672 2780 Watching for file changes with StatReloader
 INFO 2025-07-31 08:20:57,203 autoreload 8072 8480 Watching for file changes with StatReloader
 INFO 2025-07-31 08:20:57,260 autoreload 26508 20728 Watching for file changes with StatReloader
+INFO 2025-07-31 08:27:29,116 basehttp 10672 30044 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:27:32,594 basehttp 10672 18704 "GET /threat_map/ HTTP/1.1" 200 56505
+INFO 2025-07-31 08:27:32,965 basehttp 10672 18704 "GET /static/css/live-map.css?v=1.6&t=1753936052&rand=1753936052 HTTP/1.1" 200 12300
+INFO 2025-07-31 08:27:33,018 basehttp 10672 9240 "GET /static/js/live-threat-map.js?v=1.1&t=1753936052 HTTP/1.1" 200 21983
+INFO 2025-07-31 08:27:33,171 basehttp 10672 18704 "GET /threat_map/api/site-statistics/ HTTP/1.1" 200 778
+INFO 2025-07-31 08:27:37,701 basehttp 10672 9240 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 4623
+INFO 2025-07-31 08:28:08,865 basehttp 10672 10664 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 6214
+INFO 2025-07-31 08:28:40,391 basehttp 10672 30376 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 7302
+INFO 2025-07-31 08:29:35,588 autoreload 26508 20728 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:29:35,820 autoreload 10672 2780 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:29:35,832 autoreload 8072 8480 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:29:43,662 autoreload 9420 20940 Watching for file changes with StatReloader
+INFO 2025-07-31 08:29:43,662 autoreload 22920 30020 Watching for file changes with StatReloader
+INFO 2025-07-31 08:29:43,662 autoreload 18416 20300 Watching for file changes with StatReloader
+INFO 2025-07-31 08:34:07,348 autoreload 22920 30020 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\models.py changed, reloading.
+INFO 2025-07-31 08:34:07,353 autoreload 9420 20940 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\models.py changed, reloading.
+INFO 2025-07-31 08:34:07,364 autoreload 18416 20300 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\models.py changed, reloading.
+INFO 2025-07-31 08:34:08,646 autoreload 8012 25104 Watching for file changes with StatReloader
+
+INFO 2025-07-31 08:34:08,758 autoreload 6360 29144 Watching for file changes with StatReloader
+INFO 2025-07-31 08:42:30,957 autoreload 14744 14540 Watching for file changes with StatReloader
+INFO 2025-07-31 08:42:41,267 basehttp 14744 28848 "GET /url-checker/ HTTP/1.1" 200 43967
+INFO 2025-07-31 08:42:45,222 basehttp 14744 26472 "GET /url-checker/?id=95c16bf1-ca1d-4058-a315-faca5eef4d98&vscodeBrowserReqId=1753936965189 HTTP/1.1" 200 43967
+INFO 2025-07-31 08:42:52,190 basehttp 14744 9460 "POST /url-checker/ HTTP/1.1" 200 135
+INFO 2025-07-31 08:43:06,555 basehttp 14744 20172 "POST /url-checker/ HTTP/1.1" 200 135
+INFO 2025-07-31 08:46:42,786 basehttp 14744 24808 "POST /url-checker/ HTTP/1.1" 200 4698
+INFO 2025-07-31 08:54:54,426 autoreload 25004 23252 Watching for file changes with StatReloader
+INFO 2025-07-31 08:54:58,537 basehttp 14744 7572 "GET /url-checker/ HTTP/1.1" 200 41914
+WARNING 2025-07-31 08:55:24,654 log 14744 11608 Not Found: /url_checker/
+WARNING 2025-07-31 08:55:24,655 basehttp 14744 11608 "GET /url_checker/?id=bea8684d-edc1-4e1c-846a-d6c849632cbc&vscodeBrowserReqId=1753937723798 HTTP/1.1" 404 3998
+INFO 2025-07-31 08:56:10,784 autoreload 8012 25104 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\models.py changed, reloading.
+INFO 2025-07-31 08:56:10,803 autoreload 6360 29144 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\email_checker.py changed, reloading.
+INFO 2025-07-31 08:56:10,811 autoreload 14744 14540 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\models.py changed, reloading.
+INFO 2025-07-31 08:56:10,826 autoreload 17932 16756 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\email_checker.py changed, reloading.
+INFO 2025-07-31 08:56:10,844 autoreload 25004 23252 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:56:12,754 autoreload 24768 16604 Watching for file changes with StatReloader
+INFO 2025-07-31 08:56:12,761 autoreload 5696 13464 Watching for file changes with StatReloader
+INFO 2025-07-31 08:56:13,364 autoreload 10460 12108 Watching for file changes with StatReloader
+INFO 2025-07-31 08:56:13,377 autoreload 20304 7536 Watching for file changes with StatReloader
+INFO 2025-07-31 08:56:13,380 autoreload 25736 6044 Watching for file changes with StatReloader
+INFO 2025-07-31 08:56:15,403 basehttp 5696 23604 "GET /url-checker/ HTTP/1.1" 200 41914
+WARNING 2025-07-31 08:58:47,186 log 5696 20912 Not Found: /url_checker/check/
+WARNING 2025-07-31 08:58:47,187 basehttp 5696 20912 "POST /url_checker/check/ HTTP/1.1" 404 3940
+INFO 2025-07-31 08:59:00,362 basehttp 5696 22480 "GET /url-checker/?id=bea8684d-edc1-4e1c-846a-d6c849632cbc&vscodeBrowserReqId=1753937939726 HTTP/1.1" 200 46204
+INFO 2025-07-31 08:59:05,813 basehttp 5696 16636 "GET /url-checker/ HTTP/1.1" 200 46204
+WARNING 2025-07-31 08:59:37,181 basehttp 5696 20912 "POST /url-checker/check/ HTTP/1.1" 403 3120
+INFO 2025-07-31 08:59:46,822 basehttp 5696 16636 "POST /url-checker/ HTTP/1.1" 200 2235
+INFO 2025-07-31 12:31:12,903 basehttp 5696 15032 "GET /url-checker/ HTTP/1.1" 200 47278
+INFO 2025-07-31 12:31:13,079 basehttp 5696 15032 "GET /static/css/custom.css HTTP/1.1" 304 0
+INFO 2025-07-31 12:31:35,444 basehttp 5696 22356 "POST /url-checker/ HTTP/1.1" 200 2235
+INFO 2025-07-31 12:32:16,407 basehttp 5696 16144 "POST /url-checker/ HTTP/1.1" 200 14291
+INFO 2025-07-31 12:34:56,729 basehttp 5696 5904 "GET /url-checker/?id=bea8684d-edc1-4e1c-846a-d6c849632cbc&vscodeBrowserReqId=1753950896250 HTTP/1.1" 200 48020
+INFO 2025-07-31 12:35:03,143 basehttp 5696 30544 "GET /url-checker/ HTTP/1.1" 200 48020
+INFO 2025-07-31 12:35:36,561 basehttp 5696 6392 "GET /threat_map/ HTTP/1.1" 200 56505
+INFO 2025-07-31 12:35:37,118 basehttp 5696 6392 "GET /static/css/live-map.css?v=1.6&t=1753950936&rand=1753950936 HTTP/1.1" 200 12300
+INFO 2025-07-31 12:35:37,138 basehttp 5696 16916 "GET /static/js/live-threat-map.js?v=1.1&t=1753950936 HTTP/1.1" 200 21983
+INFO 2025-07-31 12:35:37,409 basehttp 5696 6392 "GET /threat_map/api/site-statistics/ HTTP/1.1" 200 778
+INFO 2025-07-31 12:35:38,301 basehttp 5696 16916 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 7642
+INFO 2025-07-31 12:35:40,350 basehttp 5696 18680 "GET /reporting/report/ HTTP/1.1" 200 75294
+INFO 2025-07-31 12:35:40,415 basehttp 5696 18680 "GET /static/css/reporting.css?v=20251 HTTP/1.1" 304 0
+INFO 2025-07-31 12:35:40,429 basehttp 5696 18680 "GET /static/css/select2/select2.min.css?v=20251 HTTP/1.1" 304 0
+INFO 2025-07-31 12:35:40,431 basehttp 5696 7468 "GET /static/js/reporting.js HTTP/1.1" 304 0
+INFO 2025-07-31 12:35:40,431 basehttp 5696 22644 "GET /static/js/select2/select2.min.js?v=20251 HTTP/1.1" 304 0
+INFO 2025-07-31 12:35:41,497 basehttp 5696 22644 "GET /quiz/ HTTP/1.1" 200 18786
+INFO 2025-07-31 12:35:42,741 basehttp 5696 22644 "GET /threat_map/ HTTP/1.1" 200 56505
+INFO 2025-07-31 12:35:42,803 basehttp 5696 22644 "GET /static/css/live-map.css?v=1.6&t=1753950943&rand=1753950943 HTTP/1.1" 200 12300
+INFO 2025-07-31 12:35:42,804 basehttp 5696 7468 "GET /static/js/live-threat-map.js?v=1.1&t=1753950943 HTTP/1.1" 200 21983
+INFO 2025-07-31 12:35:42,989 basehttp 5696 22644 "GET /threat_map/api/site-statistics/ HTTP/1.1" 200 778
+INFO 2025-07-31 12:35:43,624 basehttp 5696 7468 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 5458
+INFO 2025-07-31 12:35:45,299 basehttp 5696 10904 "GET /url-checker/ HTTP/1.1" 200 49155
+INFO 2025-07-31 12:37:43,397 basehttp 5696 18988 "GET /url-checker/?id=bea8684d-edc1-4e1c-846a-d6c849632cbc&vscodeBrowserReqId=1753951063051 HTTP/1.1" 200 49705
+INFO 2025-07-31 12:37:58,978 basehttp 5696 13252 "GET /url-checker/ HTTP/1.1" 200 49856
+INFO 2025-07-31 12:38:18,924 basehttp 5696 21568 "GET /threat_map/ HTTP/1.1" 200 56505
+INFO 2025-07-31 12:38:19,001 basehttp 5696 21568 "GET /static/css/live-map.css?v=1.6&t=1753951099&rand=1753951099 HTTP/1.1" 200 12300
+INFO 2025-07-31 12:38:19,003 basehttp 5696 20856 "GET /static/js/live-threat-map.js?v=1.1&t=1753951099 HTTP/1.1" 200 21983
+INFO 2025-07-31 12:38:19,273 basehttp 5696 21568 "GET /threat_map/api/site-statistics/ HTTP/1.1" 200 778
+INFO 2025-07-31 12:38:19,561 basehttp 5696 20856 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 3892
+INFO 2025-07-31 12:38:26,124 basehttp 5696 25372 "GET /url-checker/?id=bea8684d-edc1-4e1c-846a-d6c849632cbc&vscodeBrowserReqId=1753951105564 HTTP/1.1" 200 50445
+INFO 2025-07-31 12:38:37,222 basehttp 5696 17748 "GET /reporting/report/ HTTP/1.1" 200 75294
+INFO 2025-07-31 12:38:38,472 basehttp 5696 17748 "GET /reporting/api/damage-types/ HTTP/1.1" 200 14307
+INFO 2025-07-31 12:38:52,761 basehttp 5696 22752 "GET /url-checker/?id=bea8684d-edc1-4e1c-846a-d6c849632cbc&vscodeBrowserReqId=1753951132327 HTTP/1.1" 200 50550
+INFO 2025-07-31 12:39:52,764 basehttp 5696 11376 "GET /reporting/report/ HTTP/1.1" 200 75399
+INFO 2025-07-31 12:39:54,059 basehttp 5696 11376 "GET /reporting/api/damage-types/ HTTP/1.1" 200 14307
+INFO 2025-07-31 12:39:55,454 basehttp 5696 26660 "GET /url-checker/ HTTP/1.1" 200 50550
+INFO 2025-07-31 12:39:55,622 autoreload 29576 9816 Watching for file changes with StatReloader
+INFO 2025-07-31 12:44:29,267 autoreload 21808 29684 Watching for file changes with StatReloader
+INFO 2025-07-31 12:44:50,394 autoreload 16692 7232 Watching for file changes with StatReloader
+INFO 2025-07-31 12:46:29,172 autoreload 8708 27524 Watching for file changes with StatReloader
+INFO 2025-07-31 12:48:11,115 autoreload 25212 26904 Watching for file changes with StatReloader
+INFO 2025-07-31 12:48:20,038 basehttp 5696 21064 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 12:55:56,556 basehttp 5696 21376 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 12:57:19,049 basehttp 5696 30116 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 12:58:11,144 autoreload 1448 28864 Watching for file changes with StatReloader
+WARNING 2025-07-31 12:58:17,206 log 5696 14424 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 12:58:17,208 basehttp 5696 14424 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 12:58:17,600 basehttp 5696 14424 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+WARNING 2025-07-31 12:58:17,704 basehttp 5696 19620 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+INFO 2025-07-31 12:58:19,891 basehttp 5696 20856 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 12:58:19,940 basehttp 5696 20856 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 12:58:19,959 basehttp 5696 15432 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 12:58:19,959 basehttp 5696 20052 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 12:58:19,965 basehttp 5696 20856 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+WARNING 2025-07-31 12:58:19,984 log 5696 20052 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2025-07-31 12:58:19,991 basehttp 5696 15432 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+INFO 2025-07-31 12:58:19,992 basehttp 5696 6844 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 12:58:19,997 basehttp 5696 27316 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+WARNING 2025-07-31 12:58:19,998 basehttp 5696 20052 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 12:58:20,001 basehttp 5696 23768 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+WARNING 2025-07-31 12:58:20,104 basehttp 5696 23768 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 12:58:20,151 basehttp 5696 20052 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 12:58:20,592 basehttp 5696 27316 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:01:33,044 basehttp 5696 9372 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:01:33,097 log 5696 9372 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:01:33,145 basehttp 5696 9372 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:01:33,187 basehttp 5696 9372 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:01:33,300 basehttp 5696 25976 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:01:33,357 autoreload 12316 18628 Watching for file changes with StatReloader
+INFO 2025-07-31 13:02:28,322 basehttp 5696 6764 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:02:28,537 log 5696 6764 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:02:28,559 basehttp 5696 6764 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:02:28,674 basehttp 5696 6764 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:02:28,765 basehttp 5696 7980 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:03:30,731 basehttp 5696 8952 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 13:06:34,447 basehttp 5696 26912 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:06:51,555 log 5696 11488 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:06:51,555 basehttp 5696 11488 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:06:51,962 basehttp 5696 11488 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+WARNING 2025-07-31 13:06:52,006 basehttp 5696 19356 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+INFO 2025-07-31 13:06:54,424 basehttp 5696 26492 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:06:54,515 log 5696 26492 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:06:54,518 basehttp 5696 26492 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:06:54,529 basehttp 5696 26492 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:06:54,534 basehttp 5696 3472 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:06:54,540 basehttp 5696 20348 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:06:54,542 basehttp 5696 19280 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:06:54,555 basehttp 5696 26492 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:06:54,570 basehttp 5696 24188 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:06:54,571 basehttp 5696 29288 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:06:54,572 basehttp 5696 20348 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:06:54,692 basehttp 5696 29288 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:06:54,777 basehttp 5696 24188 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:06:55,354 basehttp 5696 20348 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:07:58,468 basehttp 5696 17900 "GET /threat_map/ HTTP/1.1" 200 56610
+WARNING 2025-07-31 13:07:58,539 log 5696 17900 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:07:58,545 basehttp 5696 17900 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:07:58,563 basehttp 5696 17900 "GET /static/css/live-map.css?v=1.6&t=1753952878&rand=1753952878 HTTP/1.1" 200 12300
+INFO 2025-07-31 13:07:58,573 basehttp 5696 30496 "GET /static/js/live-threat-map.js?v=1.1&t=1753952878 HTTP/1.1" 200 21983
+WARNING 2025-07-31 13:07:58,827 basehttp 5696 30496 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:07:58,880 basehttp 5696 17900 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:07:59,352 basehttp 5696 15124 "GET /threat_map/api/site-statistics/ HTTP/1.1" 200 778
+INFO 2025-07-31 13:07:59,786 basehttp 5696 10076 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 6170
+INFO 2025-07-31 13:08:00,894 basehttp 5696 10076 "GET /reporting/report/ HTTP/1.1" 200 75399
+WARNING 2025-07-31 13:08:00,967 log 5696 10076 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:00,972 basehttp 5696 10076 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:08:00,977 basehttp 5696 15124 "GET /static/css/reporting.css?v=20251 HTTP/1.1" 200 23534
+INFO 2025-07-31 13:08:00,981 basehttp 5696 22344 "GET /static/css/select2/select2.min.css?v=20251 HTTP/1.1" 200 16264
+INFO 2025-07-31 13:08:00,982 basehttp 5696 23112 "GET /static/js/reporting.js HTTP/1.1" 200 13693
+INFO 2025-07-31 13:08:00,983 basehttp 5696 23308 "GET /static/js/select2/select2.min.js?v=20251 HTTP/1.1" 200 73163
+WARNING 2025-07-31 13:08:01,118 basehttp 5696 23308 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:01,134 basehttp 5696 23112 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:01,812 basehttp 5696 22344 "GET /quiz/ HTTP/1.1" 200 18891
+WARNING 2025-07-31 13:08:01,903 log 5696 22344 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:01,905 basehttp 5696 22344 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:01,996 basehttp 5696 22344 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:02,034 basehttp 5696 15124 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:09,512 basehttp 5696 19688 "POST /quiz/start/ HTTP/1.1" 302 0
+INFO 2025-07-31 13:08:09,551 basehttp 5696 19688 "GET /quiz/question/13/ HTTP/1.1" 200 21390
+WARNING 2025-07-31 13:08:09,641 log 5696 19688 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:09,643 basehttp 5696 19688 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:09,800 basehttp 5696 19688 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:09,836 basehttp 5696 11208 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:16,722 basehttp 5696 12832 "POST /quiz/submit_answer/13/ HTTP/1.1" 200 154
+INFO 2025-07-31 13:08:19,358 basehttp 5696 9472 "GET /quiz/question/13/ HTTP/1.1" 200 21521
+WARNING 2025-07-31 13:08:19,422 log 5696 9472 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:19,424 basehttp 5696 9472 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:19,500 basehttp 5696 9472 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:19,533 basehttp 5696 9596 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:27,474 basehttp 5696 26956 "POST /quiz/submit_answer/13/ HTTP/1.1" 200 154
+INFO 2025-07-31 13:08:29,278 basehttp 5696 26956 "GET /quiz/question/13/ HTTP/1.1" 200 21652
+WARNING 2025-07-31 13:08:29,352 log 5696 26956 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:29,353 basehttp 5696 26956 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:29,427 basehttp 5696 26956 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:29,472 basehttp 5696 12596 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:36,213 basehttp 5696 6104 "POST /quiz/submit_answer/13/ HTTP/1.1" 200 154
+INFO 2025-07-31 13:08:38,095 basehttp 5696 22076 "GET /quiz/question/13/ HTTP/1.1" 302 0
+INFO 2025-07-31 13:08:38,145 basehttp 5696 22076 "GET /quiz/result/13/ HTTP/1.1" 200 12105
+WARNING 2025-07-31 13:08:38,209 log 5696 22076 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:38,210 basehttp 5696 22076 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:38,361 basehttp 5696 22076 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:38,382 basehttp 5696 17136 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:41,282 basehttp 5696 18204 "GET /quiz/leaderboard/ HTTP/1.1" 200 26767
+WARNING 2025-07-31 13:08:41,366 log 5696 18204 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:41,367 basehttp 5696 18204 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:41,420 basehttp 5696 18204 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:41,466 basehttp 5696 14912 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:08:48,340 basehttp 5696 23500 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:08:48,433 log 5696 23500 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:08:48,435 basehttp 5696 23500 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:08:48,507 basehttp 5696 23500 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:08:48,575 basehttp 5696 7704 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:09:09,607 basehttp 5696 14472 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:09:09,661 log 5696 14472 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:09:09,665 basehttp 5696 14472 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:09:09,677 basehttp 5696 14472 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:09:09,681 basehttp 5696 25680 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:09:09,692 basehttp 5696 14472 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:09:09,695 basehttp 5696 24696 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:09:09,698 basehttp 5696 11900 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:09:09,700 basehttp 5696 25680 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+INFO 2025-07-31 13:09:09,704 basehttp 5696 28948 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:09:09,718 basehttp 5696 2780 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+WARNING 2025-07-31 13:09:09,795 basehttp 5696 2780 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:09:10,034 basehttp 5696 28948 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:09:10,539 basehttp 5696 11900 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:10:36,995 basehttp 5696 13588 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:10:42,238 log 5696 13588 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:10:42,239 basehttp 5696 13588 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:10:42,529 basehttp 5696 16708 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+WARNING 2025-07-31 13:10:42,548 basehttp 5696 17024 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+INFO 2025-07-31 13:10:48,682 basehttp 5696 13556 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:10:48,742 log 5696 13556 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:10:48,743 basehttp 5696 13556 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:10:48,768 basehttp 5696 6908 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:10:48,769 basehttp 5696 23812 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:10:48,770 basehttp 5696 13556 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:10:48,773 basehttp 5696 24656 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:10:48,775 basehttp 5696 11992 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:10:48,779 basehttp 5696 8248 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:10:48,781 basehttp 5696 23812 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:10:48,782 basehttp 5696 6908 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:10:48,898 basehttp 5696 6908 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:10:48,946 basehttp 5696 23812 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:10:49,377 basehttp 5696 8248 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:12:17,669 basehttp 5696 12192 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:12:17,735 log 5696 12192 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:12:17,736 basehttp 5696 12192 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:12:17,860 basehttp 5696 12192 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:12:17,917 basehttp 5696 21852 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:12:23,104 basehttp 5696 14852 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:12:23,172 log 5696 14852 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:12:23,174 basehttp 5696 14852 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:12:23,196 basehttp 5696 16044 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:12:23,197 basehttp 5696 22776 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:12:23,198 basehttp 5696 24596 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:12:23,199 basehttp 5696 4464 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:12:23,200 basehttp 5696 14852 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:12:23,205 basehttp 5696 18232 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:12:23,207 basehttp 5696 24596 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:12:23,208 basehttp 5696 22776 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:12:23,297 basehttp 5696 22776 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:12:23,331 basehttp 5696 24596 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:12:24,188 basehttp 5696 14852 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:12:38,246 basehttp 5696 20752 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:12:38,301 log 5696 20752 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:12:38,302 basehttp 5696 20752 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:12:38,510 basehttp 5696 20752 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:12:38,601 basehttp 5696 27428 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:12:39,378 basehttp 5696 15912 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:12:39,442 log 5696 15912 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:12:39,443 basehttp 5696 15912 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:12:39,535 basehttp 5696 15912 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:12:39,569 basehttp 5696 1820 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:12:40,737 autoreload 26756 21736 Watching for file changes with StatReloader
+INFO 2025-07-31 13:14:16,525 basehttp 5696 7012 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:14:16,579 log 5696 7012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:14:16,580 basehttp 5696 7012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:14:16,599 basehttp 5696 17140 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:14:16,600 basehttp 5696 19384 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:14:16,603 basehttp 5696 4788 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:14:16,603 basehttp 5696 25864 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:14:16,605 basehttp 5696 17020 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:14:16,609 basehttp 5696 7012 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:14:16,610 basehttp 5696 17140 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:14:16,612 basehttp 5696 25864 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:14:16,701 basehttp 5696 25864 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:14:16,853 basehttp 5696 17140 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:14:17,470 basehttp 5696 17020 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:15:46,240 autoreload 25192 29952 Watching for file changes with StatReloader
+INFO 2025-07-31 13:15:57,771 basehttp 5696 2316 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:15:57,837 log 5696 2316 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:15:57,838 basehttp 5696 2316 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:15:57,855 basehttp 5696 2316 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:15:57,870 basehttp 5696 26936 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:15:57,871 basehttp 5696 8620 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:15:57,871 basehttp 5696 6832 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:15:57,873 basehttp 5696 2316 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:15:57,874 basehttp 5696 29844 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:15:57,878 basehttp 5696 21876 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:15:57,879 basehttp 5696 26936 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:15:57,984 basehttp 5696 26936 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:15:58,153 basehttp 5696 2316 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:15:58,657 basehttp 5696 21876 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:17:05,660 autoreload 22996 304 Watching for file changes with StatReloader
+INFO 2025-07-31 13:17:06,411 basehttp 5696 23708 "GET / HTTP/1.1" 200 14237
+WARNING 2025-07-31 13:17:06,492 log 5696 23708 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:17:06,493 basehttp 5696 23708 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:17:06,646 basehttp 5696 23708 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:17:06,688 basehttp 5696 14232 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:17:08,927 basehttp 5696 9812 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:17:09,002 log 5696 9812 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:17:09,003 basehttp 5696 9812 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:17:09,120 basehttp 5696 9812 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:17:09,222 basehttp 5696 13376 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:18:19,203 basehttp 5696 15292 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:18:19,267 log 5696 15292 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:18:19,314 basehttp 5696 15292 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:18:19,423 basehttp 5696 15292 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:18:19,462 basehttp 5696 5232 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:18:26,696 basehttp 5696 12012 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:18:26,739 log 5696 12012 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:18:26,740 basehttp 5696 12012 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:18:26,762 basehttp 5696 4184 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:18:26,762 basehttp 5696 25632 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:18:26,764 basehttp 5696 17140 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:18:26,767 basehttp 5696 12012 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:18:26,767 basehttp 5696 4420 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:18:26,767 basehttp 5696 5292 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:18:26,773 basehttp 5696 4184 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:18:26,774 basehttp 5696 25632 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:18:26,878 basehttp 5696 4184 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:18:26,967 basehttp 5696 25632 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:18:27,468 basehttp 5696 5292 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:19:07,564 basehttp 5696 15760 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:19:07,622 log 5696 15760 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:19:07,623 basehttp 5696 15760 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:19:07,749 basehttp 5696 15760 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:19:07,790 basehttp 5696 29900 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:19:13,201 basehttp 5696 1352 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:19:13,254 log 5696 1352 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:19:13,255 basehttp 5696 1352 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:19:13,275 basehttp 5696 15468 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:19:13,279 basehttp 5696 15800 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:19:13,280 basehttp 5696 26368 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:19:13,280 basehttp 5696 22352 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:19:13,281 basehttp 5696 28284 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:19:13,284 basehttp 5696 15468 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:19:13,288 basehttp 5696 26368 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+INFO 2025-07-31 13:19:13,289 basehttp 5696 1352 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+WARNING 2025-07-31 13:19:13,373 basehttp 5696 26368 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:19:13,444 basehttp 5696 1352 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:19:14,130 basehttp 5696 15468 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:19:50,872 basehttp 5696 3080 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:19:50,937 log 5696 3080 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:19:50,939 basehttp 5696 3080 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:19:51,007 basehttp 5696 3080 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:19:51,080 basehttp 5696 19204 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:19:58,242 basehttp 5696 23008 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:19:58,314 log 5696 23008 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:19:58,317 basehttp 5696 23008 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:19:58,332 basehttp 5696 23008 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:19:58,333 basehttp 5696 12032 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:19:58,342 basehttp 5696 23008 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:19:58,342 basehttp 5696 9112 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:19:58,346 basehttp 5696 27272 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:19:58,350 basehttp 5696 12032 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+INFO 2025-07-31 13:19:58,353 basehttp 5696 25268 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:19:58,358 basehttp 5696 19972 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+WARNING 2025-07-31 13:19:58,738 basehttp 5696 25268 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:19:58,784 basehttp 5696 12032 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:19:59,421 basehttp 5696 19972 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:23:05,027 basehttp 5696 22932 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:23:05,101 log 5696 22932 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:23:05,174 basehttp 5696 22932 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:23:05,233 basehttp 5696 22932 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:23:05,363 basehttp 5696 27724 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:23:10,107 basehttp 5696 23776 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:23:10,162 log 5696 23776 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:23:10,163 basehttp 5696 23776 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+INFO 2025-07-31 13:23:10,191 basehttp 5696 28776 "GET /static/css/quiz-patterns.css HTTP/1.1" 200 2711
+INFO 2025-07-31 13:23:10,192 basehttp 5696 15368 "GET /static/css/quiz-theme.css HTTP/1.1" 200 1384
+INFO 2025-07-31 13:23:10,194 basehttp 5696 9684 "GET /static/css/quiz.css HTTP/1.1" 200 1822
+INFO 2025-07-31 13:23:10,196 basehttp 5696 23776 "GET /static/css/bootstrap.min.css HTTP/1.1" 200 162264
+INFO 2025-07-31 13:23:10,196 basehttp 5696 14408 "GET /static/css/custom.css HTTP/1.1" 200 29492
+INFO 2025-07-31 13:23:10,199 basehttp 5696 18920 "GET /static/css/quiz-home.css HTTP/1.1" 200 1132
+INFO 2025-07-31 13:23:10,204 basehttp 5696 28776 "GET /static/css/threat-map.css HTTP/1.1" 200 7743
+INFO 2025-07-31 13:23:10,205 basehttp 5696 15368 "GET /static/js/bootstrap.min.js HTTP/1.1" 200 62563
+WARNING 2025-07-31 13:23:10,303 basehttp 5696 28776 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+WARNING 2025-07-31 13:23:10,342 basehttp 5696 15368 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+INFO 2025-07-31 13:23:11,038 basehttp 5696 18920 "GET /static/images/ara.jpg HTTP/1.1" 200 4827470
+INFO 2025-07-31 13:23:21,889 basehttp 5696 20680 "GET / HTTP/1.1" 200 14237
+INFO 2025-07-31 13:23:24,011 basehttp 5696 16312 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 13:23:53,885 basehttp 5696 28012 "POST /url-checker/ HTTP/1.1" 200 4698
+INFO 2025-07-31 13:24:39,940 basehttp 5696 21700 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 13:29:18,205 basehttp 5696 8636 "GET / HTTP/1.1" 200 14237
+INFO 2025-07-31 13:29:19,354 basehttp 5696 8636 "GET /url-checker/ HTTP/1.1" 200 50560
+WARNING 2025-07-31 13:29:24,606 log 5696 16092 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-07-31 13:29:24,607 basehttp 5696 16092 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4029
+WARNING 2025-07-31 13:29:24,910 basehttp 5696 16092 "GET /static/js/bootstrap.min.js.map HTTP/1.1" 404 1996
+WARNING 2025-07-31 13:29:24,933 basehttp 5696 29280 "GET /static/css/bootstrap.min.css.map HTTP/1.1" 404 2002
+INFO 2025-07-31 13:29:57,099 basehttp 5696 14332 "POST /url-checker/ HTTP/1.1" 200 2235
+INFO 2025-07-31 13:30:22,425 basehttp 5696 4652 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 13:30:30,176 basehttp 5696 21316 "GET /url-checker/ HTTP/1.1" 200 50560
+INFO 2025-07-31 13:30:33,617 basehttp 5696 13828 - Broken pipe from ('127.0.0.1', 61601)
+INFO 2025-07-31 13:30:40,415 basehttp 5696 616 - Broken pipe from ('127.0.0.1', 61607)
+INFO 2025-07-31 13:30:58,549 basehttp 5696 20292 "POST /url-checker/ HTTP/1.1" 200 14291
+INFO 2025-07-31 13:31:19,736 basehttp 5696 26536 "POST /url-checker/ HTTP/1.1" 200 4698

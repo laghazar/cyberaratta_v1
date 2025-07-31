@@ -1,3 +1,25 @@
+    <style>
+        /* Force dropdown integration names and descriptions to black, even if inline style or .text-muted */
+        .dropdown-menu .form-check-label,
+        .dropdown-menu .form-check-label *,
+        .dropdown-menu .form-check-label [style*="color"],
+        .dropdown-menu .form-check-label .text-muted,
+        .dropdown-menu .dropdown-item .text-muted,
+        .dropdown-menu .dropdown-item [style*="color"] {
+            color: #212529 !important;
+        }
+    </style>
+    <style>
+      /* Extra specificity to override all styles for dropdown integration names/descriptions */
+      ul.dropdown-menu li.dropdown-item .form-check-label,
+      ul.dropdown-menu li.dropdown-item .form-check-label *,
+      ul.dropdown-menu li.dropdown-item .form-check-label [style*="color"],
+      ul.dropdown-menu li.dropdown-item .form-check-label .text-muted,
+      ul.dropdown-menu li.dropdown-item .text-muted,
+      ul.dropdown-menu li.dropdown-item [style*="color"] {
+        color: #212529 !important;
+      }
+    </style>
 {% load static %}
 <!DOCTYPE html>
 <html lang="hy">

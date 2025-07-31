@@ -46,6 +46,7 @@ def check_url(request):
     if request.method == 'POST':
         input_text = request.POST.get('input_text', '').strip()
         selected_sources = request.POST.getlist('sources')  # Ընտրված աղբյուրները
+        print(f"[DEBUG] selected sources: {selected_sources}")
         
         if not input_text:
             return JsonResponse({'error': 'Մուտքագրեք URL կամ էլ. փոստ'}, status=400)
