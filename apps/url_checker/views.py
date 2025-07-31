@@ -6,6 +6,7 @@ from .models import URLCheck, UrlCheckResult
 from .models_integrations import SecurityIntegration
 from django.conf import settings
 from apps.core.utils import update_statistics
+from apps.core.security import security_rate_limit, sanitize_input, validate_url, log_security_event
 from .utils import (
     # Validators
     is_trusted_domain, 
@@ -37,15 +38,33 @@ from .utils import (
 from .dynamic_integrations import integration_service
 import json
 
-@csrf_exempt
+@security_rate_limit(key='url_check', rate='10/m', method='POST')
 def check_url(request):
     if request.method == 'GET':
         # Return the original template without any changes to UI
         return render(request, 'url_checker/check.html')
     
     if request.method == 'POST':
-        input_text = request.POST.get('input_text', '').strip()
-        selected_sources = request.POST.getlist('sources')  # Ընտրված աղբյուրները
+        try:
+            input_text = request.POST.get('input_text', '').strip()
+            selected_sources = request.POST.getlist('sources')  # Ընտրված աղբյուրները
+            
+            if not input_text:
+                return JsonResponse({'error': 'URL կամ էլ. փոստ մուտքագրեք'})
+            
+            # URL վալիդացիա
+            try:
+                validated_url = validate_url(input_text)
+                input_text = validated_url  # Use validated URL
+            except Exception as e:
+                client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+                log_security_event('INVALID_URL_ATTEMPT', client_ip, str(e))
+                return JsonResponse({'error': f'URL վալիդացիայի սխալ: {str(e)}'})
+        
+        except Exception as e:
+            client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+            log_security_event('URL_CHECK_ERROR', client_ip, str(e))
+            return JsonResponse({'error': 'Սխալ տեղի ունեցավ'})
         
         if not input_text:
             return JsonResponse({'error': 'Մուտքագրեք URL կամ էլ. փոստ'}, status=400)

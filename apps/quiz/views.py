@@ -3,6 +3,7 @@ from .models import QuizCategory, Question, Answer, QuizSession, QuizResult, Qui
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db.models import Prefetch
+from apps.core.security import security_rate_limit, sanitize_input, log_security_event
 import random
 import json
 
@@ -11,16 +12,29 @@ def quiz_home(request):
     # home.html-ը անփոփոխ, ուղարկում ենք կոնտեքստը
     return render(request, 'quiz/home.html', {'categories': categories, 'Question': Question})
 
+@security_rate_limit(key='quiz_start', rate='5/m', method='POST')
 def start_quiz(request):
     if request.method == 'POST':
-        category_id = request.POST.get('category')
-        question_type = request.POST.get('question_type')
-        if not category_id or not question_type:
+        try:
+            category_id = sanitize_input(request.POST.get('category'))
+            question_type = sanitize_input(request.POST.get('question_type'))
+            
+            if not category_id or not question_type:
+                return render(request, 'quiz/home.html', {
+                    'categories': QuizCategory.objects.filter(is_active=True),
+                    'Question': Question,
+                    'error': 'Խնդրում ենք ընտրել կատեգորիա և հարցի տեսակ։'
+                })
+                
+        except Exception as e:
+            client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+            log_security_event('QUIZ_START_ERROR', client_ip, str(e))
             return render(request, 'quiz/home.html', {
                 'categories': QuizCategory.objects.filter(is_active=True),
                 'Question': Question,
-                'error': 'Խնդրում ենք ընտրել կատեգորիա և հարցի տեսակ։'
+                'error': 'Սխալ տեղի ունեցավ։'
             })
+            
         category = get_object_or_404(QuizCategory, id=category_id)
         questions = Question.objects.filter(category=category, question_type=question_type, is_active=True)
         if not questions.exists():
@@ -68,7 +82,7 @@ def quiz_question(request, session_id):
         'progress': progress,
     })
 
-@csrf_exempt
+@security_rate_limit(key='quiz_answer', rate='30/m', method='POST')
 def submit_answer(request, session_id):
     session = get_object_or_404(QuizSession, id=session_id)
     if session.is_completed:
@@ -85,18 +99,29 @@ def submit_answer(request, session_id):
         return JsonResponse({'redirect': 'result'})
     question = questions[session.current_question]
     answer_id = None
-    if request.method == 'POST':
-        if request.content_type and 'application/json' in request.content_type:
-            try:
-                data = json.loads(request.body)
-                answer_id = data.get('answer_id')
-            except json.JSONDecodeError:
-                pass
-        else:
-            answer_id = request.POST.get('answer_id')
-    if not answer_id:
-        return JsonResponse({'error': 'No answer provided'}, status=400)
-    answer = get_object_or_404(Answer, id=answer_id)
+    
+    try:
+        if request.method == 'POST':
+            if request.content_type and 'application/json' in request.content_type:
+                try:
+                    data = json.loads(request.body)
+                    answer_id = sanitize_input(str(data.get('answer_id', '')))
+                except json.JSONDecodeError:
+                    client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+                    log_security_event('QUIZ_INVALID_JSON', client_ip, 'Invalid JSON in quiz answer')
+                    return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+            else:
+                answer_id = sanitize_input(request.POST.get('answer_id', ''))
+        
+        if not answer_id or not answer_id.isdigit():
+            return JsonResponse({'error': 'No valid answer provided'}, status=400)
+            
+    except Exception as e:
+        client_ip = request.META.get('REMOTE_ADDR', 'unknown')
+        log_security_event('QUIZ_ANSWER_ERROR', client_ip, str(e))
+        return JsonResponse({'error': 'Error processing answer'}, status=400)
+    
+    answer = get_object_or_404(Answer, id=int(answer_id))
     correct = answer.is_correct
     points_earned = question.points if correct else 0
     QuizAttempt.objects.create(

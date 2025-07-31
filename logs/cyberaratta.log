@@ -1,0 +1,223 @@
+INFO 2025-07-31 00:43:57,933 autoreload 4140 27136 Watching for file changes with StatReloader
+INFO 2025-07-31 00:44:16,908 autoreload 24648 7604 Watching for file changes with StatReloader
+INFO 2025-07-31 00:46:42,060 autoreload 10432 7656 Watching for file changes with StatReloader
+INFO 2025-07-31 00:47:53,005 autoreload 10432 7656 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 00:47:53,374 autoreload 24648 7604 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 00:47:53,961 autoreload 8056 10116 Watching for file changes with StatReloader
+INFO 2025-07-31 00:47:54,373 autoreload 17900 22700 Watching for file changes with StatReloader
+INFO 2025-07-31 00:48:05,232 autoreload 18968 4312 Watching for file changes with StatReloader
+ERROR 2025-07-31 00:48:34,938 log 8056 3056 Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py", line 128, in __call__
+    self.check_suspicious_input(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py", line 155, in check_suspicious_input
+    if re.search(pattern, str(value), re.IGNORECASE):
+       ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\__init__.py", line 177, in search
+    return _compile(pattern, flags).search(string)
+           ~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\__init__.py", line 350, in _compile
+    p = _compiler.compile(pattern, flags)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_compiler.py", line 748, in compile
+    p = _parser.parse(p, flags)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 980, in parse
+    p = _parse_sub(source, state, flags & SRE_FLAG_VERBOSE, 0)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 459, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+                ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       not nested and not items))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 865, in _parse
+    raise source.error("missing ), unterminated subpattern",
+                       source.tell() - start)
+re.PatternError: missing ), unterminated subpattern at position 6
+ERROR 2025-07-31 00:48:34,955 basehttp 8056 3056 "GET /?id=119e8d85-a882-4b8f-983e-8804fa0ce636&vscodeBrowserReqId=1753908514757 HTTP/1.1" 500 100926
+INFO 2025-07-31 00:48:39,182 basehttp 8056 1424 "GET /quiz/ HTTP/1.1" 200 18786
+INFO 2025-07-31 00:48:42,994 basehttp 8056 7500 "GET / HTTP/1.1" 200 14132
+INFO 2025-07-31 00:48:44,471 basehttp 8056 7500 "GET /threat_map/ HTTP/1.1" 200 56475
+INFO 2025-07-31 00:48:45,065 basehttp 8056 7500 "GET /static/css/live-map.css?v=1.6&t=1753908524&rand=1753908524 HTTP/1.1" 200 12300
+INFO 2025-07-31 00:48:45,087 basehttp 8056 8844 "GET /static/js/live-threat-map.js?v=1.1&t=1753908524 HTTP/1.1" 200 21983
+INFO 2025-07-31 00:48:45,428 basehttp 8056 7500 "GET /threat_map/api/site-statistics/ HTTP/1.1" 200 778
+INFO 2025-07-31 00:48:45,646 basehttp 8056 8844 "GET /threat_map/api/live-threats/ HTTP/1.1" 200 3869
+INFO 2025-07-31 00:48:46,550 basehttp 8056 8844 "GET /url-checker/ HTTP/1.1" 200 44576
+ERROR 2025-07-31 08:05:29,212 log 8056 27224 Internal Server Error: /url-checker/
+Traceback (most recent call last):
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py", line 128, in __call__
+    self.check_suspicious_input(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py", line 155, in check_suspicious_input
+    if re.search(pattern, str(value), re.IGNORECASE):
+       ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\__init__.py", line 177, in search
+    return _compile(pattern, flags).search(string)
+           ~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\__init__.py", line 350, in _compile
+    p = _compiler.compile(pattern, flags)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_compiler.py", line 748, in compile
+    p = _parser.parse(p, flags)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 980, in parse
+    p = _parse_sub(source, state, flags & SRE_FLAG_VERBOSE, 0)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 459, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+                ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       not nested and not items))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 865, in _parse
+    raise source.error("missing ), unterminated subpattern",
+                       source.tell() - start)
+re.PatternError: missing ), unterminated subpattern at position 6
+ERROR 2025-07-31 08:05:29,219 basehttp 8056 27224 "POST /url-checker/ HTTP/1.1" 500 102261
+INFO 2025-07-31 08:05:46,415 autoreload 18968 4312 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:05:46,415 autoreload 17900 22700 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:05:46,417 autoreload 8056 10116 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\quiz\views.py changed, reloading.
+INFO 2025-07-31 08:05:49,191 autoreload 24512 3720 Watching for file changes with StatReloader
+INFO 2025-07-31 08:05:49,191 autoreload 620 10768 Watching for file changes with StatReloader
+INFO 2025-07-31 08:05:49,191 autoreload 23296 13460 Watching for file changes with StatReloader
+INFO 2025-07-31 08:05:50,736 basehttp 23296 27356 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:05:50,790 basehttp 23296 27356 "GET /static/css/custom.css HTTP/1.1" 304 0
+ERROR 2025-07-31 08:05:55,240 log 23296 14620 Internal Server Error: /url-checker/
+Traceback (most recent call last):
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py", line 128, in __call__
+    self.check_suspicious_input(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py", line 155, in check_suspicious_input
+    if re.search(pattern, str(value), re.IGNORECASE):
+       ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\__init__.py", line 177, in search
+    return _compile(pattern, flags).search(string)
+           ~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\__init__.py", line 350, in _compile
+    p = _compiler.compile(pattern, flags)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_compiler.py", line 748, in compile
+    p = _parser.parse(p, flags)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 980, in parse
+    p = _parse_sub(source, state, flags & SRE_FLAG_VERBOSE, 0)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 459, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+                ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       not nested and not items))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\Lib\re\_parser.py", line 865, in _parse
+    raise source.error("missing ), unterminated subpattern",
+                       source.tell() - start)
+re.PatternError: missing ), unterminated subpattern at position 6
+ERROR 2025-07-31 08:05:55,247 basehttp 23296 14620 "POST /url-checker/ HTTP/1.1" 500 102261
+INFO 2025-07-31 08:07:00,049 autoreload 24512 3720 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:07:00,107 autoreload 620 10768 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:07:00,116 autoreload 23296 13460 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:07:01,694 autoreload 23624 22996 Watching for file changes with StatReloader
+INFO 2025-07-31 08:07:01,697 autoreload 21828 11352 Watching for file changes with StatReloader
+INFO 2025-07-31 08:07:01,697 autoreload 9808 20864 Watching for file changes with StatReloader
+INFO 2025-07-31 08:07:36,620 basehttp 21828 24752 "POST /url-checker/ HTTP/1.1" 200 2235
+INFO 2025-07-31 08:07:47,142 autoreload 21828 11352 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:07:47,792 autoreload 9808 20864 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:07:47,837 autoreload 23624 22996 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:07:48,442 autoreload 24216 30372 Watching for file changes with StatReloader
+INFO 2025-07-31 08:07:49,348 autoreload 13152 18536 Watching for file changes with StatReloader
+INFO 2025-07-31 08:07:49,399 autoreload 9744 22760 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:03,958 autoreload 9744 22760 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:08:03,961 autoreload 24216 30372 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:08:03,992 autoreload 13152 18536 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:08:06,091 autoreload 17572 29136 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:06,091 autoreload 27340 21192 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:06,092 autoreload 25276 23272 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:24,600 autoreload 17572 29136 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:08:24,607 autoreload 27340 21192 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:08:24,618 autoreload 25276 23272 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:08:29,185 autoreload 5592 15540 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:29,186 autoreload 4504 10724 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:29,187 autoreload 10820 30388 Watching for file changes with StatReloader
+INFO 2025-07-31 08:08:37,085 basehttp 5592 23120 "GET /url-checker/?id=5bc3869a-dd24-4872-bbbb-15072e9e14ee&vscodeBrowserReqId=1753934916926 HTTP/1.1" 200 44576
+INFO 2025-07-31 08:08:52,257 basehttp 5592 26600 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:09:14,149 basehttp 5592 27872 "POST /url-checker/ HTTP/1.1" 200 14069
+INFO 2025-07-31 08:09:16,268 autoreload 10820 30388 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 08:09:16,627 autoreload 4504 10724 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 08:09:17,167 autoreload 5592 15540 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 08:09:22,782 autoreload 8348 27856 Watching for file changes with StatReloader
+INFO 2025-07-31 08:09:22,784 autoreload 3468 20388 Watching for file changes with StatReloader
+INFO 2025-07-31 08:09:22,784 autoreload 2728 18656 Watching for file changes with StatReloader
+INFO 2025-07-31 08:09:33,914 basehttp 8348 29056 "GET /url-checker/?id=5bc3869a-dd24-4872-bbbb-15072e9e14ee&vscodeBrowserReqId=1753934973864 HTTP/1.1" 200 44576
+INFO 2025-07-31 08:10:12,085 autoreload 3468 20388 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:10:12,120 autoreload 2728 18656 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:10:12,228 autoreload 8348 27856 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:10:16,319 autoreload 24452 11616 Watching for file changes with StatReloader
+INFO 2025-07-31 08:10:16,320 autoreload 6764 19008 Watching for file changes with StatReloader
+INFO 2025-07-31 08:10:16,369 autoreload 2068 30480 Watching for file changes with StatReloader
+INFO 2025-07-31 08:10:29,342 autoreload 2068 30480 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 08:10:29,380 autoreload 6764 19008 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 08:10:29,480 autoreload 24452 11616 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\cyberaratta\settings.py changed, reloading.
+INFO 2025-07-31 08:10:33,021 autoreload 12808 27496 Watching for file changes with StatReloader
+INFO 2025-07-31 08:10:33,149 autoreload 26468 16800 Watching for file changes with StatReloader
+INFO 2025-07-31 08:10:33,202 autoreload 22864 19664 Watching for file changes with StatReloader
+INFO 2025-07-31 08:10:54,696 basehttp 22864 21492 "GET /url-checker/?id=5bc3869a-dd24-4872-bbbb-15072e9e14ee&vscodeBrowserReqId=1753935054426 HTTP/1.1" 200 44576
+INFO 2025-07-31 08:11:00,176 basehttp 22864 15728 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:11:19,559 basehttp 22864 16236 "POST /url-checker/ HTTP/1.1" 200 14069
+INFO 2025-07-31 08:13:41,575 autoreload 22864 19664 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:13:41,592 autoreload 26468 16800 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:13:41,603 autoreload 12808 27496 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:13:44,658 autoreload 26600 540 Watching for file changes with StatReloader
+
+INFO 2025-07-31 08:13:44,659 autoreload 24200 4140 Watching for file changes with StatReloader
+INFO 2025-07-31 08:14:16,812 autoreload 26600 540 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:14:16,823 autoreload 25964 19892 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:14:16,835 autoreload 24200 4140 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:14:18,297 autoreload 2272 23692 Watching for file changes with StatReloader
+INFO 2025-07-31 08:14:18,309 autoreload 15568 3924 Watching for file changes with StatReloader
+INFO 2025-07-31 08:14:18,318 autoreload 29000 1932 Watching for file changes with StatReloader
+INFO 2025-07-31 08:14:53,564 autoreload 15568 3924 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:14:53,571 autoreload 29000 1932 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:14:53,599 autoreload 2272 23692 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:14:55,107 autoreload 14796 4480 Watching for file changes with StatReloader
+INFO 2025-07-31 08:14:55,109 autoreload 17808 20100 Watching for file changes with StatReloader
+INFO 2025-07-31 08:14:55,135 autoreload 17140 25504 Watching for file changes with StatReloader
+INFO 2025-07-31 08:15:10,978 autoreload 14796 4480 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:15:11,028 autoreload 17140 25504 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:15:11,032 autoreload 17808 20100 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:15:12,364 autoreload 4940 25444 Watching for file changes with StatReloader
+INFO 2025-07-31 08:15:12,376 autoreload 6448 6100 Watching for file changes with StatReloader
+INFO 2025-07-31 08:15:12,396 autoreload 22704 22892 Watching for file changes with StatReloader
+INFO 2025-07-31 08:15:15,530 basehttp 4940 22756 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:15:22,152 basehttp 4940 9824 "GET /url-checker/?id=5bc3869a-dd24-4872-bbbb-15072e9e14ee&vscodeBrowserReqId=1753935322099 HTTP/1.1" 200 44576
+INFO 2025-07-31 08:15:34,634 basehttp 4940 18448 "POST /url-checker/ HTTP/1.1" 200 14269
+INFO 2025-07-31 08:16:55,035 basehttp 4940 26028 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:17:33,431 basehttp 4940 26028 "POST /url-checker/ HTTP/1.1" 200 14269
+INFO 2025-07-31 08:18:53,926 autoreload 22704 22892 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:18:53,977 autoreload 6448 6100 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:18:53,991 autoreload 4940 25444 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:18:55,551 autoreload 17780 3388 Watching for file changes with StatReloader
+INFO 2025-07-31 08:18:55,557 autoreload 1684 22004 Watching for file changes with StatReloader
+INFO 2025-07-31 08:18:55,587 autoreload 19868 23064 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:25,186 autoreload 19868 23064 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:25,245 autoreload 17780 3388 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:25,250 autoreload 1684 22004 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:26,814 autoreload 7972 3412 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:26,837 autoreload 10276 3592 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:26,848 autoreload 17172 13008 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:37,951 autoreload 10276 3592 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:37,989 autoreload 17172 13008 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:38,001 autoreload 7972 3412 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:41,508 autoreload 22776 23352 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:41,555 autoreload 10940 13700 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:41,648 autoreload 28356 17636 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:55,075 autoreload 22776 23352 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:55,318 autoreload 10940 13700 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:55,338 autoreload 28356 17636 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\utils\recommendations.py changed, reloading.
+INFO 2025-07-31 08:19:58,674 autoreload 22408 30480 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:58,897 autoreload 19008 18516 Watching for file changes with StatReloader
+INFO 2025-07-31 08:19:58,958 autoreload 6764 26820 Watching for file changes with StatReloader
+INFO 2025-07-31 08:20:20,529 basehttp 22408 22380 "GET /url-checker/?id=5bc3869a-dd24-4872-bbbb-15072e9e14ee&vscodeBrowserReqId=1753935620488 HTTP/1.1" 200 44576
+INFO 2025-07-31 08:20:23,533 basehttp 22408 2496 "GET /url-checker/ HTTP/1.1" 200 44576
+INFO 2025-07-31 08:20:42,743 basehttp 22408 28976 "POST /url-checker/ HTTP/1.1" 200 14291
+INFO 2025-07-31 08:20:55,176 autoreload 22408 30480 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:20:55,744 autoreload 19008 18516 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\url_checker\views.py changed, reloading.
+INFO 2025-07-31 08:20:55,748 autoreload 6764 26820 C:\Users\laris\OneDrive\Documents\GitHub\cyberaratta_v1\apps\core\security.py changed, reloading.
+INFO 2025-07-31 08:20:56,418 autoreload 10672 2780 Watching for file changes with StatReloader
+INFO 2025-07-31 08:20:57,203 autoreload 8072 8480 Watching for file changes with StatReloader
+INFO 2025-07-31 08:20:57,260 autoreload 26508 20728 Watching for file changes with StatReloader

@@ -43,10 +43,10 @@ def generate_recommendations(url_check_results, url):
                 <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Անվտանգության խորհուրդներ</h5>
             </div>
             <div class="card-body">
-                <p style="color: #000;">URL-ի անվտանգության վերլուծության ընթացքում սխալ է տեղի ունեցել: Խնդրում ենք միշտ զգույշ լինել անծանոթ կայքեր այցելելիս:</p>
+                <p style="color: #333;">URL-ի անվտանգության վերլուծության ընթացքում սխալ է տեղի ունեցել: Խնդրում ենք միշտ զգույշ լինել անծանոթ կայքեր այցելելիս:</p>
                 <div class="alert alert-info" role="alert">
                     <i class="fas fa-shield-alt me-2"></i>
-                    <strong style="color: #000;">Անվտանգության խորհուրդ:</strong> <span style="color: #000;">Միշտ ստուգեք URL-ը նախքան անձնական տվյալներ մուտքագրելը:</span>
+                    <strong style="color: #333;">Անվտանգության խորհուրդ:</strong> <span style="color: #333;">Միշտ ստուգեք URL-ը նախքան անձնական տվյալներ մուտքագրելը:</span>
                 </div>
             </div>
         </div>
@@ -69,30 +69,30 @@ def _generate_safe_recommendations(url):
             <h5 class="mb-0"><i class="fas fa-thumbs-up me-2"></i> Անվտանգության առաջարկներ</h5>
         </div>
         <div class="card-body">
-            <p class="lead" style="color: #fff;">Այս կայքը թվում է անվտանգ, բայց հիշեք՝</p>
+            <p class="lead" style="color: #333;">Այս կայքը թվում է անվտանգ, բայց հիշեք՝</p>
             
             <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-check-circle text-success me-2"></i>
-                    <span style="color: #fff;">Միշտ ստուգեք URL-ը նախքան զգայուն տեղեկություններ մուտքագրելը</span>
+                    <span style="color: #333;">Միշտ ստուգեք URL-ը նախքան զգայուն տեղեկություններ մուտքագրելը</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-check-circle text-success me-2"></i>
-                    <span style="color: #fff;">Օգտագործեք ուժեղ, եզակի գաղտնաբառեր տարբեր կայքերի համար</span>
+                    <span style="color: #333;">Օգտագործեք ուժեղ, եզակի գաղտնաբառեր տարբեր կայքերի համար</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-check-circle text-success me-2"></i>
-                    <span style="color: #fff;">Եթե հնարավոր է, միացրեք երկու գործոնով նույնականացումը (2FA)</span>
+                    <span style="color: #333;">Եթե հնարավոր է, միացրեք երկու գործոնով նույնականացումը (2FA)</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-check-circle text-success me-2"></i>
-                    <span style="color: #fff;">Թարմացրեք ձեր զննարկիչը և անվտանգության ծրագրերը կանոնավոր կերպով</span>
+                    <span style="color: #333;">Թարմացրեք ձեր զննարկիչը և անվտանգության ծրագրերը կանոնավոր կերպով</span>
                 </li>
             </ul>
             
             <div class="alert alert-success" role="alert">
                 <i class="fas fa-shield-alt me-2"></i>
-                <strong style="color: #fff;">Կայքը թվում է անվտանգ:</strong> <span style="color: #fff;">{escape(url)}-ը անցել է մեր անվտանգության ստուգումները:</span>
+                <strong style="color: #333;">Կայքը թվում է անվտանգ:</strong> <span style="color: #333;">{escape(url)}-ը անցել է մեր անվտանգության ստուգումները:</span>
             </div>
         </div>
     </div>
@@ -204,23 +204,23 @@ def _generate_malicious_recommendations(url_check_results, url):
             
             {specific_recommendations_html}
             
-            <h5 class="mt-4" style="color: #fff;">Ընդհանուր առաջարկություններ</h5>
+            <h5 class="mt-4" style="color: #ffc107; font-weight: bold;">Ընդհանուր առաջարկություններ</h5>
             <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-times-circle text-danger me-2"></i>
-                    <span style="color: #fff;">Անմիջապես լքեք այս կայքը</span>
+                    <span style="color: #333;">Անմիջապես լքեք այս կայքը</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-times-circle text-danger me-2"></i>
-                    <span style="color: #fff;">Մի մուտքագրեք անձնական տվյալներ, գաղտնաբառեր կամ վճարման տվյալներ</span>
+                    <span style="color: #333;">Մի մուտքագրեք անձնական տվյալներ, գաղտնաբառեր կամ վճարման տվյալներ</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-times-circle text-danger me-2"></i>
-                    <span style="color: #fff;">Սկանավորեք ձեր սարքը հակավիրուսային ծրագրով</span>
+                    <span style="color: #333;">Սկանավորեք ձեր սարքը հակավիրուսային ծրագրով</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-times-circle text-danger me-2"></i>
-                    <span style="color: #fff;">Թարմացրեք ձեր զննարկիչը և անվտանգության ծրագրերը</span>
+                    <span style="color: #333;">Թարմացրեք ձեր զննարկիչը և անվտանգության ծրագրերը</span>
                 </li>
             </ul>
         </div>
@@ -250,23 +250,23 @@ def _generate_suspicious_recommendations(url_check_results, url):
                 <strong style="color: #fff;">Զգուշությամբ այցելեք այս կայքը:</strong> <span style="color: #fff;">{escape(url)}-ը հայտնաբերվել է որպես կասկածելի:</span>
             </div>
             
-            <h5 style="color: #fff;">Ինչ անել</h5>
+            <h5 style="color: #ffc107; font-weight: bold;">Ինչ անել</h5>
             <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-exclamation-circle text-warning me-2"></i>
-                    <span style="color: #fff;">Մի մուտքագրեք զգայուն տվյալներ այս կայքում</span>
+                    <span style="color: #333;">Մի մուտքագրեք զգայուն տվյալներ այս կայքում</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-exclamation-circle text-warning me-2"></i>
-                    <span style="color: #fff;">Մի ներբեռնեք ֆայլեր, եթե չեք վստահում աղբյուրին</span>
+                    <span style="color: #333;">Մի ներբեռնեք ֆայլեր, եթե չեք վստահում աղբյուրին</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-exclamation-circle text-warning me-2"></i>
-                    <span style="color: #fff;">Ստուգեք URL-ը՝ համոզվելու, որ դա այն կայքն է, որը դուք ակնկալում եք</span>
+                    <span style="color: #333;">Ստուգեք URL-ը՝ համոզվելու, որ դա այն կայքն է, որը դուք ակնկալում եք</span>
                 </li>
-                <li class="list-group-item">
+                <li class="list-group-item" style="background-color: #f8f9fa; color: #333;">
                     <i class="fas fa-exclamation-circle text-warning me-2"></i>
-                    <span style="color: #fff;">Ուշադրություն դարձրեք կասկածելի նշանների՝ ինչպիսիք են քերականական սխալները, անսովոր դիզայնը</span>
+                    <span style="color: #333;">Ուշադրություն դարձրեք կասկածելի նշանների՝ ինչպիսիք են քերականական սխալները, անսովոր դիզայնը</span>
                 </li>
             </ul>
             
